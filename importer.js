@@ -101,9 +101,35 @@ const Importer = (() => {
     const amountX = amountXClusters[0].x;
 
     // Collect description items (between date and amount columns)
+    // Exclude percentage items (e.g., "2%", "1%") which are Daily Cash indicators
     const descItems = allItems.filter(it => 
-      it.x > dateX + 30 && it.x < amountX - 20 && it.text.length > 1
+      it.x > dateX + 30 && it.x < amountX - 20 && 
+      it.text.length > 1 && 
+      !/%$/.test(it.text) &&  // Exclude percentages
+      !it.text.match(/^[\d.]+$/)  // Exclude pure numbers (Daily Cash amounts)
     );
+
+    // Detect section headers to determine transaction type more accurately
+    // Look for "Payments made by" and "Transactions by" sections
+    let currentCardholder = null;
+    let currentSectionType = null;
+    const sectionBoundaries = []; // { page, y, type: 'Payments'|'Transactions', cardholder }
+    
+    for (const item of allItems) {
+      const lower = item.text.toLowerCase();
+      const paymentsMatch = item.text.match(/payments\s+made\s+by\s+(\w+\s+\w+)/i);
+      const transactionsMatch = item.text.match(/transactions\s+by\s+(\w+\s+\w+)/i);
+      
+      if (paymentsMatch) {
+        currentSectionType = 'Payments';
+        currentCardholder = paymentsMatch[1];
+        sectionBoundaries.push({ page: item.page, y: item.y, type: 'Payments', cardholder: currentCardholder });
+      } else if (transactionsMatch) {
+        currentSectionType = 'Transactions';
+        currentCardholder = transactionsMatch[1];
+        sectionBoundaries.push({ page: item.page, y: item.y, type: 'Transactions', cardholder: currentCardholder });
+      }
+    }
 
     // Build transactions per page
     const transactions = [];
@@ -156,11 +182,26 @@ const Importer = (() => {
         const dateStr = dr.date;
         const rawDesc = dr.desc;
 
-        // Detect if this is a payment (income) or charge (expense)
-        // Apple Card: Payments are credits, Transactions are charges
-        const isIncome = rawDesc.toLowerCase().includes('ach') || 
-                         rawDesc.toLowerCase().includes('internet transfer') ||
-                         rawDesc.toLowerCase().includes('payment');
+        // Determine transaction type based on section type and description hints
+        // Default: check section type, then fall back to keywords
+        let isIncome = false;
+        
+        // Find which section this row belongs to (by page and Y position)
+        const rowSection = sectionBoundaries
+          .filter(s => s.page === pg)
+          .sort((a, b) => a.y - b.y)
+          .reverse()
+          .find(s => s.y > dr.y);
+        
+        if (rowSection) {
+          isIncome = (rowSection.type === 'Payments'); // Payments = income/credits
+        } else {
+          // Fallback: use keywords
+          const lower = rawDesc.toLowerCase();
+          isIncome = lower.includes('ach') || 
+                     lower.includes('internet transfer') ||
+                     lower.includes('payment');
+        }
 
         const cleanResult = DescriptionCleaner.clean(rawDesc);
         const cleanedDesc = cleanResult.cleaned;
