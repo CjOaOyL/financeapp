@@ -2,7 +2,10 @@
    Importer — PDF extraction + CSV parsing + JSON import
    ============================================ */
 
+console.log('[Importer] Script loading...');
+
 const Importer = (() => {
+  console.log('[Importer] IIFE executing...');
   /* ---- PDF Import ---- */
 
   let pendingPdfTransactions = [];
@@ -592,6 +595,7 @@ const Importer = (() => {
 
   /** Process uploaded PDF files */
   async function handlePDFUpload(files) {
+    console.log('[Importer.handlePDFUpload] Called with', files.length, 'file(s)');
     const statusEl = document.getElementById('pdf-status');
     const previewArea = document.getElementById('pdf-preview-area');
     pendingPdfTransactions = [];
