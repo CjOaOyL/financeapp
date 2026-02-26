@@ -76,7 +76,7 @@
   });
 
   /* ---- Filters ---- */
-  const filterEls = ['filter-account', 'filter-category', 'filter-month', 'filter-search'];
+  const filterEls = ['filter-account', 'filter-cardholder', 'filter-category', 'filter-month', 'filter-search'];
   filterEls.forEach(id => {
     document.getElementById(id).addEventListener(id === 'filter-search' ? 'input' : 'change', () => {
       currentPage = 1;
@@ -106,10 +106,12 @@
   /* ---- Refresh Filters ---- */
   function refreshFilters() {
     const accounts = DataManager.getAccounts();
+    const cardholders = [...new Set(DataManager.getAll().map(t => t.cardholder || 'Unknown'))].sort();
     const categories = DataManager.getUsedCategories();
     const months = DataManager.getMonths();
 
     populateSelect('filter-account', accounts, 'All');
+    populateSelect('filter-cardholder', cardholders, 'All');
     populateSelect('filter-category', categories, 'All');
     populateSelect('filter-month', months.map(m => ({ value: m, label: formatMonth(m) })), 'All');
   }
@@ -137,6 +139,7 @@
   function refreshTransactionTable() {
     const filters = {
       account: document.getElementById('filter-account').value,
+      cardholder: document.getElementById('filter-cardholder').value,
       category: document.getElementById('filter-category').value,
       month: document.getElementById('filter-month').value,
       search: document.getElementById('filter-search').value
@@ -179,6 +182,7 @@
           </select>
         </td>
         <td>${escHtml(tx.account)}</td>
+        <td>${escHtml(tx.cardholder || 'Unknown')}</td>
         <td><button class="btn btn-sm btn-danger delete-tx" data-id="${tx.id}">✕</button></td>
       </tr>`;
     }).join('');

@@ -59,6 +59,7 @@ const DataManager = (() => {
       amount: parseFloat(tx.amount) || 0,      // positive = expense, negative = income (or use sign convention)
       category: tx.category || autoCategory(tx.description),
       account: tx.account || 'Unknown',
+      cardholder: tx.cardholder || 'Unknown',
     }));
     saveAll([...existing, ...newTx]);
     return newTx;
@@ -123,9 +124,10 @@ const DataManager = (() => {
   }
 
   /** Filter transactions by criteria */
-  function filter({ account, category, month, search } = {}) {
+  function filter({ account, cardholder, category, month, search } = {}) {
     let txs = getAll();
     if (account && account !== 'all') txs = txs.filter(t => t.account === account);
+    if (cardholder && cardholder !== 'all') txs = txs.filter(t => (t.cardholder || 'Unknown') === cardholder);
     if (category && category !== 'all') txs = txs.filter(t => t.category === category);
     if (month && month !== 'all') txs = txs.filter(t => t.date.startsWith(month));
     if (search) {

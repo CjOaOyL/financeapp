@@ -289,6 +289,12 @@ const Importer = (() => {
         const cleanResult = DescriptionCleaner.clean(rawDesc);
         const cleanedDesc = cleanResult.cleaned;
         const amount = Math.abs(parseFloat(closestAmount.text.replace(/,/g, '')));
+        
+        // Extract cardholder from section
+        let cardholder = 'Unknown';
+        if (rowSection && rowSection.cardholder) {
+          cardholder = rowSection.cardholder.trim();
+        }
 
         transactions.push({
           date: dateStr,
@@ -296,6 +302,7 @@ const Importer = (() => {
           amount,
           category: isIncome ? 'Income' : DataManager.autoCategory(cleanedDesc),
           account: 'Apple Card',
+          cardholder: cardholder,
           _raw: rawDesc,
           _originalDesc: cleanResult.original,
           _txType: cleanResult.txType,
@@ -628,8 +635,22 @@ const Importer = (() => {
     const wrap = document.getElementById('pdf-preview-table-wrap');
     const preview = txs.slice(0, 20); // Show first 20
 
-    let html = `<p style="margin-bottom:.5rem;font-size:.8rem;color:var(--clr-text-muted)">Showing ${Math.min(20, txs.length)} of ${txs.length} extracted transactions. Review and accept to import.</p>`;
-    html += '<table><thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th><th>Category</th></tr></thead><tbody>';
+    let html = '';
+    
+    // Add cardholder filter buttons if multiple cardholders
+    const cardholders = [...new Set(txs.map(t => t.cardholder || 'Unknown'))].sort();
+    if (cardholders.length > 1) {
+      html += '<div style="margin-bottom:1.5rem;padding:1rem;background:var(--clr-surface);border-radius:var(--radius);border:1px solid var(--clr-border)">';
+      html += '<p style="margin-bottom:0.8rem;font-weight:bold;color:var(--clr-text)">Manage cardholders:</p>';
+      for (const cardholder of cardholders) {
+        const count = txs.filter(t => (t.cardholder || 'Unknown') === cardholder).length;
+        html += `<button class="cardholder-filter-btn" data-cardholder="${escapeHtml(cardholder)}" style="margin-right:0.5rem;margin-bottom:0.5rem;padding:0.4rem 0.8rem;background:var(--clr-surface-hover);border:1px solid var(--clr-border);color:var(--clr-text);border-radius:4px;cursor:pointer">🗑 Delete ${escapeHtml(cardholder)}'s ${count} transactions</button>`;
+      }
+      html += '</div>';
+    }
+    
+    html += `<p style="margin-bottom:.5rem;font-size:.8rem;color:var(--clr-text-muted)">Showing ${Math.min(20, txs.length)} of ${txs.length} extracted transactions. Review and accept to import.</p>`;
+    html += '<table><thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th><th>Cardholder</th><th>Category</th></tr></thead><tbody>';
     for (const tx of preview) {
       const hasOriginal = tx._originalDesc && tx._originalDesc !== tx.description;
       const tooltipAttr = hasOriginal ? ` title="Original: ${escapeHtml(tx._originalDesc)}" style="cursor:help;border-bottom:1px dotted var(--clr-text-muted)"` : '';
@@ -639,16 +660,29 @@ const Importer = (() => {
         <td><span${tooltipAttr}>${escapeHtml(tx.description)}</span>${merchantBadge}</td>
         <td style="font-size:.75rem;color:var(--clr-text-muted)">${tx._txType || '—'}</td>
         <td>$${tx.amount.toFixed(2)}</td>
+        <td style="font-size:.85rem">${escapeHtml(tx.cardholder || 'Unknown')}</td>
         <td>${tx.category}</td>
       </tr>`;
     }
     html += '</tbody></table>';
     if (txs.length > 20) html += `<p style="font-size:.8rem;color:var(--clr-text-muted);margin-top:.5rem">...and ${txs.length - 20} more</p>`;
     wrap.innerHTML = html;
+    
+    // Attach click handlers to cardholder filter buttons
+    wrap.querySelectorAll('.cardholder-filter-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const cardholder = e.target.dataset.cardholder;
+        if (confirm(`Remove all ${cardholder}'s transactions (${pendingPdfTransactions.filter(t => (t.cardholder || 'Unknown') === cardholder).length} transactions)? This cannot be undone.`)) {
+          pendingPdfTransactions = pendingPdfTransactions.filter(t => (t.cardholder || 'Unknown') !== cardholder);
+          renderPdfPreview(pendingPdfTransactions);
+        }
+      });
+    });
   }
 
   function acceptPdfTransactions() {
     if (pendingPdfTransactions.length > 0) {
+      console.log(`[Importer] Accepting ${pendingPdfTransactions.length} transactions`);
       DataManager.add(pendingPdfTransactions);
       document.getElementById('pdf-status').textContent = `✓ Imported ${pendingPdfTransactions.length} transactions.`;
       document.getElementById('pdf-status').className = 'status-text success';
