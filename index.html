@@ -183,6 +183,38 @@
         <canvas id="chart-import-line"></canvas>
       </div>
     </div>
+
+    <!-- Transfer Detection -->
+    <div class="card" id="transfer-detection-card">
+      <div class="card-header-row">
+        <h2>🔄 Transfer Detection</h2>
+        <div style="display:flex;gap:.6rem;align-items:center">
+          <button id="btn-scan-transfers" class="btn btn-primary">Scan for Transfers</button>
+          <label class="toggle-label" title="Exclude confirmed transfers from expense/income calculations">
+            <input type="checkbox" id="toggle-exclude-transfers" checked />
+            Exclude transfers from totals
+          </label>
+        </div>
+      </div>
+      <p class="info-text">Detects matching transaction pairs across accounts (same amount, close dates) that represent money moving between your accounts rather than real expenses or income.</p>
+
+      <!-- Detected (unconfirmed) pairs -->
+      <div id="transfer-detected" class="hidden">
+        <h3>Detected Potential Transfers <span id="transfer-detected-count" class="badge">0</span></h3>
+        <div class="transfer-pairs-list" id="transfer-pairs-list"></div>
+        <div class="btn-row" style="margin-top:.8rem">
+          <button id="btn-confirm-all-transfers" class="btn btn-primary">Confirm All</button>
+          <button id="btn-dismiss-all-transfers" class="btn btn-secondary">Dismiss All</button>
+        </div>
+      </div>
+
+      <!-- Confirmed transfers -->
+      <div id="transfer-confirmed">
+        <h3>Confirmed Transfers <span id="transfer-confirmed-count" class="badge">0</span></h3>
+        <div id="transfer-confirmed-list" class="transfer-pairs-list"></div>
+        <p id="transfer-none-msg" class="info-text" style="color:var(--clr-text-muted)">No confirmed transfers yet. Click "Scan for Transfers" to detect matching pairs.</p>
+      </div>
+    </div>
   </section>
 
   <!-- ========== TAB: OVERVIEW ========== -->

@@ -298,6 +298,129 @@ input:focus, select:focus { outline: none; border-color: var(--clr-primary); }
 /* Hidden utility */
 .hidden { display: none !important; }
 
+/* ---- Transfer Detection ---- */
+#transfer-detection-card .card-header-row { flex-wrap: wrap; }
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .85rem;
+  color: var(--clr-text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+.toggle-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--clr-primary);
+}
+
+.transfer-pairs-list {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  margin-top: .6rem;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.transfer-pair-card {
+  background: var(--clr-surface-hover);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius);
+  padding: .8rem 1rem;
+  transition: border-color .2s;
+}
+.transfer-pair-card:hover { border-color: var(--clr-primary); }
+.transfer-pair-card.confirmed { border-left: 3px solid var(--clr-accent); }
+
+.transfer-pair-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .5rem;
+}
+.transfer-amount {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--clr-text);
+}
+
+.transfer-confidence {
+  font-size: .75rem;
+  padding: .15rem .5rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.confidence-high { background: rgba(16,185,129,.15); color: var(--clr-accent); }
+.confidence-med  { background: rgba(245,158,11,.15); color: var(--clr-warning); }
+.confidence-low  { background: rgba(239,68,68,.15); color: var(--clr-danger); }
+
+.transfer-confirmed-badge {
+  font-size: .75rem;
+  padding: .15rem .5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  background: rgba(16,185,129,.15);
+  color: var(--clr-accent);
+}
+
+.transfer-pair-details {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+}
+.transfer-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+}
+.transfer-label {
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 600;
+}
+.expense-side .transfer-label { color: var(--clr-expense); }
+.income-side .transfer-label  { color: var(--clr-income); }
+
+.transfer-desc {
+  font-size: .85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.transfer-meta {
+  font-size: .75rem;
+  color: var(--clr-text-muted);
+}
+.transfer-arrow {
+  font-size: 1.3rem;
+  color: var(--clr-primary);
+  flex-shrink: 0;
+}
+.transfer-reason {
+  font-size: .72rem;
+  color: var(--clr-text-muted);
+  margin-top: .3rem;
+  font-style: italic;
+}
+.transfer-pair-actions {
+  display: flex;
+  gap: .5rem;
+  margin-top: .5rem;
+  justify-content: flex-end;
+}
+
+/* Transfer row highlight in transaction table */
+tr.transfer-row {
+  opacity: .55;
+  background: rgba(99,102,241,.04);
+}
+tr.transfer-row:hover { opacity: .8; }
+
 /* Responsive */
 @media (max-width: 768px) {
   header { padding: 1rem; }

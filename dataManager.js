@@ -160,12 +160,156 @@ const DataManager = (() => {
     window.dispatchEvent(new CustomEvent('budget-updated'));
   }
 
+  /* ================================================
+     Transfer Pair Detection
+     ================================================ */
+
+  const TRANSFER_DATE_WINDOW = 3; // days tolerance for date matching
+
+  /**
+   * Detect potential transfer pairs across different accounts.
+   * A transfer pair: two transactions from different accounts where
+   * amounts match (one expense, one income) within a date window.
+   * Returns array of { tx1, tx2, confidence, reason } sorted by confidence desc.
+   */
+  function detectTransferPairs() {
+    const all = getAll();
+    const pairs = [];
+    const seen = new Set();
+
+    // Separate expenses and income
+    const expenses = all.filter(t => t.amount > 0);
+    const incomes  = all.filter(t => t.amount < 0);
+
+    for (const exp of expenses) {
+      for (const inc of incomes) {
+        // Skip if same account
+        if (exp.account === inc.account) continue;
+        // Skip if already paired
+        if (seen.has(exp.id) || seen.has(inc.id)) continue;
+
+        // Amount must match exactly (absolute value)
+        if (Math.abs(Math.abs(exp.amount) - Math.abs(inc.amount)) > 0.01) continue;
+
+        // Date proximity check
+        const daysDiff = dateDiffDays(exp.date, inc.date);
+        if (daysDiff > TRANSFER_DATE_WINDOW) continue;
+
+        // Calculate confidence score
+        let confidence = 50; // base score for amount + date match
+        const reasons = [];
+
+        // Closer dates = higher confidence
+        if (daysDiff === 0) { confidence += 20; reasons.push('same date'); }
+        else if (daysDiff === 1) { confidence += 15; reasons.push('1 day apart'); }
+        else if (daysDiff === 2) { confidence += 10; reasons.push('2 days apart'); }
+        else { confidence += 5; reasons.push(`${daysDiff} days apart`); }
+
+        // Transfer-like keywords boost confidence
+        const transferKeywords = ['transfer', 'payment', 'ach', 'wire', 'zelle', 'venmo', 'paypal', 'cash app',
+                                  'autopay', 'auto pay', 'bill pay', 'direct pay', 'online payment'];
+        const expDesc = (exp.description || '').toLowerCase();
+        const incDesc = (inc.description || '').toLowerCase();
+        const expOriginal = (exp._originalDesc || '').toLowerCase();
+        const incOriginal = (inc._originalDesc || '').toLowerCase();
+
+        const matchedKw = transferKeywords.filter(kw =>
+          expDesc.includes(kw) || incDesc.includes(kw) || expOriginal.includes(kw) || incOriginal.includes(kw)
+        );
+        if (matchedKw.length > 0) {
+          confidence += 15;
+          reasons.push('keyword: ' + matchedKw[0]);
+        }
+
+        // Already categorized as Transfer = very high confidence
+        if (exp.category === 'Transfer' || inc.category === 'Transfer') {
+          confidence += 10;
+          reasons.push('already categorized as Transfer');
+        }
+
+        // Cap at 100
+        confidence = Math.min(100, confidence);
+
+        pairs.push({
+          tx1: exp,
+          tx2: inc,
+          confidence,
+          reason: reasons.join(', '),
+          amount: Math.abs(exp.amount)
+        });
+
+        seen.add(exp.id);
+        seen.add(inc.id);
+      }
+    }
+
+    // Sort by confidence descending
+    pairs.sort((a, b) => b.confidence - a.confidence);
+    return pairs;
+  }
+
+  /** Mark a pair of transactions as transfers and link them */
+  function markTransferPair(id1, id2) {
+    const linkId = uid();
+    const all = getAll();
+    let changed = false;
+    for (const t of all) {
+      if (t.id === id1 || t.id === id2) {
+        t.category = 'Transfer';
+        t.transferPairId = linkId;
+        changed = true;
+      }
+    }
+    if (changed) saveAll(all);
+    return linkId;
+  }
+
+  /** Unmark a transfer pair — set both back to auto-category and remove link */
+  function unmarkTransferPair(linkId) {
+    const all = getAll();
+    for (const t of all) {
+      if (t.transferPairId === linkId) {
+        t.category = autoCategory(t.description);
+        delete t.transferPairId;
+      }
+    }
+    saveAll(all);
+  }
+
+  /** Get all confirmed transfer pairs (already linked) */
+  function getConfirmedTransfers() {
+    const all = getAll();
+    const byLink = {};
+    for (const t of all) {
+      if (t.transferPairId) {
+        if (!byLink[t.transferPairId]) byLink[t.transferPairId] = [];
+        byLink[t.transferPairId].push(t);
+      }
+    }
+    return Object.entries(byLink)
+      .filter(([, txs]) => txs.length === 2)
+      .map(([linkId, txs]) => ({
+        linkId,
+        tx1: txs[0],
+        tx2: txs[1],
+        amount: Math.abs(txs[0].amount)
+      }));
+  }
+
+  /** Date difference in days (absolute) */
+  function dateDiffDays(d1, d2) {
+    const a = new Date(d1);
+    const b = new Date(d2);
+    return Math.round(Math.abs(a - b) / (1000 * 60 * 60 * 24));
+  }
+
   return {
     getAll, saveAll, add, update, remove, clearAll,
     autoCategory, recategorize,
     getAccounts, getUsedCategories, getMonths, filter,
     getExpenses, getIncome,
     getBudget, saveBudget,
+    detectTransferPairs, markTransferPair, unmarkTransferPair, getConfirmedTransfers,
     CATEGORIES, CATEGORY_KEYWORDS, uid
   };
 })();

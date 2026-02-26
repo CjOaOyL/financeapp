@@ -75,6 +75,136 @@
     alert('Budget saved!');
   });
 
+  /* ---- Transfer Detection ---- */
+  let detectedPairs = [];
+
+  document.getElementById('btn-scan-transfers').addEventListener('click', () => {
+    detectedPairs = DataManager.detectTransferPairs()
+      .filter(p => !p.tx1.transferPairId && !p.tx2.transferPairId); // exclude already confirmed
+    renderDetectedPairs();
+    renderConfirmedTransfers();
+  });
+
+  document.getElementById('btn-confirm-all-transfers').addEventListener('click', () => {
+    for (const pair of detectedPairs) {
+      DataManager.markTransferPair(pair.tx1.id, pair.tx2.id);
+    }
+    detectedPairs = [];
+    renderDetectedPairs();
+    renderConfirmedTransfers();
+  });
+
+  document.getElementById('btn-dismiss-all-transfers').addEventListener('click', () => {
+    detectedPairs = [];
+    renderDetectedPairs();
+  });
+
+  function renderDetectedPairs() {
+    const container = document.getElementById('transfer-pairs-list');
+    const section = document.getElementById('transfer-detected');
+    document.getElementById('transfer-detected-count').textContent = detectedPairs.length;
+
+    if (detectedPairs.length === 0) {
+      section.classList.add('hidden');
+      container.innerHTML = '';
+      return;
+    }
+    section.classList.remove('hidden');
+
+    container.innerHTML = detectedPairs.map((pair, i) => `
+      <div class="transfer-pair-card" data-idx="${i}">
+        <div class="transfer-pair-header">
+          <span class="transfer-amount">$${pair.amount.toFixed(2)}</span>
+          <span class="transfer-confidence confidence-${pair.confidence >= 75 ? 'high' : pair.confidence >= 50 ? 'med' : 'low'}">${pair.confidence}% match</span>
+        </div>
+        <div class="transfer-pair-details">
+          <div class="transfer-side expense-side">
+            <span class="transfer-label">Expense</span>
+            <span class="transfer-desc">${escHtml(pair.tx1.description)}</span>
+            <span class="transfer-meta">${pair.tx1.date} · ${escHtml(pair.tx1.account)}</span>
+          </div>
+          <span class="transfer-arrow">⇄</span>
+          <div class="transfer-side income-side">
+            <span class="transfer-label">Income</span>
+            <span class="transfer-desc">${escHtml(pair.tx2.description)}</span>
+            <span class="transfer-meta">${pair.tx2.date} · ${escHtml(pair.tx2.account)}</span>
+          </div>
+        </div>
+        <div class="transfer-reason">${escHtml(pair.reason)}</div>
+        <div class="transfer-pair-actions">
+          <button class="btn btn-sm btn-primary confirm-pair" data-idx="${i}">✓ Confirm</button>
+          <button class="btn btn-sm btn-secondary dismiss-pair" data-idx="${i}">✕ Dismiss</button>
+        </div>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('.confirm-pair').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx);
+        const pair = detectedPairs[idx];
+        DataManager.markTransferPair(pair.tx1.id, pair.tx2.id);
+        detectedPairs.splice(idx, 1);
+        renderDetectedPairs();
+        renderConfirmedTransfers();
+      });
+    });
+
+    container.querySelectorAll('.dismiss-pair').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.idx);
+        detectedPairs.splice(idx, 1);
+        renderDetectedPairs();
+      });
+    });
+  }
+
+  function renderConfirmedTransfers() {
+    const confirmed = DataManager.getConfirmedTransfers();
+    const container = document.getElementById('transfer-confirmed-list');
+    const noneMsg = document.getElementById('transfer-none-msg');
+    document.getElementById('transfer-confirmed-count').textContent = confirmed.length;
+
+    if (confirmed.length === 0) {
+      container.innerHTML = '';
+      noneMsg.classList.remove('hidden');
+      return;
+    }
+    noneMsg.classList.add('hidden');
+
+    container.innerHTML = confirmed.map(pair => `
+      <div class="transfer-pair-card confirmed">
+        <div class="transfer-pair-header">
+          <span class="transfer-amount">$${pair.amount.toFixed(2)}</span>
+          <span class="transfer-confirmed-badge">✓ Confirmed</span>
+        </div>
+        <div class="transfer-pair-details">
+          <div class="transfer-side expense-side">
+            <span class="transfer-desc">${escHtml(pair.tx1.description)}</span>
+            <span class="transfer-meta">${pair.tx1.date} · ${escHtml(pair.tx1.account)}</span>
+          </div>
+          <span class="transfer-arrow">⇄</span>
+          <div class="transfer-side income-side">
+            <span class="transfer-desc">${escHtml(pair.tx2.description)}</span>
+            <span class="transfer-meta">${pair.tx2.date} · ${escHtml(pair.tx2.account)}</span>
+          </div>
+        </div>
+        <div class="transfer-pair-actions">
+          <button class="btn btn-sm btn-danger undo-pair" data-link="${pair.linkId}">↩ Undo</button>
+        </div>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('.undo-pair').forEach(btn => {
+      btn.addEventListener('click', () => {
+        DataManager.unmarkTransferPair(btn.dataset.link);
+        renderConfirmedTransfers();
+      });
+    });
+  }
+
+  // Initialize confirmed transfers on load
+  renderConfirmedTransfers();
+
   /* ---- Filters ---- */
   const filterEls = ['filter-account', 'filter-cardholder', 'filter-category', 'filter-month', 'filter-search'];
   filterEls.forEach(id => {
@@ -170,10 +300,12 @@
       const hasOriginal = tx._originalDesc && tx._originalDesc !== tx.description;
       const tooltipAttr = hasOriginal ? ` title="Original: ${escHtml(tx._originalDesc)}" style="cursor:help"` : '';
       const txTypeBadge = tx._txType ? `<span style="font-size:.65rem;background:rgba(99,102,241,.15);color:var(--clr-primary);padding:.1rem .3rem;border-radius:3px;margin-left:.4rem">${escHtml(tx._txType)}</span>` : '';
+      const isTransfer = tx.transferPairId || tx.category === 'Transfer';
+      const transferBadge = isTransfer ? '<span style="font-size:.65rem;background:rgba(99,102,241,.15);color:var(--clr-primary);padding:.1rem .3rem;border-radius:3px;margin-left:.4rem">🔄 Transfer</span>' : '';
       return `
-      <tr>
+      <tr class="${isTransfer ? 'transfer-row' : ''}">
         <td>${tx.date}</td>
-        <td><span${tooltipAttr}>${escHtml(tx.description)}</span>${txTypeBadge}</td>
+        <td><span${tooltipAttr}>${escHtml(tx.description)}</span>${txTypeBadge}${transferBadge}</td>
         <td class="${tx.category === 'Income' ? 'amount-positive' : 'amount-negative'}">$${Math.abs(tx.amount).toFixed(2)}</td>
         <td>
           <select class="cat-select" data-id="${tx.id}" style="width:auto;margin:0;padding:.2rem .4rem;font-size:.8rem;">
