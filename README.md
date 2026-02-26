@@ -66,13 +66,28 @@ Click the **Import** tab and choose your import method:
 ## Import Methods
 
 ### PDF Bank Statements
-The dashboard automatically detects column positions in bank statement PDFs:
-- Navy Federal Credit Union (full support)
-- Apple Card (server-side extraction + JSON import)
-- Standard bank statements (fixed-width columns)
+The dashboard automatically detects and imports columns from bank statement PDFs:
 
-**Browser-side**: Uses pdf.js to extract text positions and match date/description/amount columns
-**Server-side**: PyMuPDF (fitz) for complex layouts like Apple Card
+**Supported Formats:**
+- **Apple Card** ✅ Direct browser import with section detection
+- **Navy Federal** ✅ MM-DD format with spatial column matching  
+- **Standard bank statements** ✅ Fixed-width columns with date/description/amount
+
+**How to Import:**
+1. Click **Import** tab → **PDF Import**
+2. Select your bank statement PDF
+3. Dashboard automatically detects format:
+   - **Apple Card**: Detects payment vs transaction sections
+   - **Navy Federal**: Finds MM-DD dates and column positions
+   - **Other banks**: Matches numeric patterns for amounts
+4. Preview extracted transactions
+5. Click **Accept** to import
+
+The parser uses:
+- **pdf.js** (browser-side) for spatial coordinate matching of columns
+- Section header detection for Apple Card (Payments vs Transactions)
+- Multi-line description handling
+- Smart amount detection with Daily Cash filtering
 
 ### CSV Files
 1. Export your bank statement as CSV
@@ -80,39 +95,33 @@ The dashboard automatically detects column positions in bank statement PDFs:
 3. Map columns: Date, Description, Amount, Category
 4. Preview and accept
 
-### JSON Pre-Extracted Data
-Use for pre-processed transactions (recommended for Apple Card):
+### JSON Pre-Extracted Data (Optional)
+For advanced users who can pre-extract data:
 ```bash
 python extract_apple_card.py "August 2025.pdf" > apple_card.json
 ```
 
-Then:
-1. Upload JSON via **Import** tab → **JSON Import**
-2. Transactions auto-categorize based on merchant keywords
-3. Preview before accepting import
+Then upload via **Import** tab → **JSON Import**.
 
 ### Example: Apple Card August 2025
-The repo includes a sample `apple_card_august_2025.json` with 50 real transactions:
+The repo includes a sample `apple_card_august_2025.json` with 50 real transactions from August 2025:
 - 12 payments (income/credits): $1,456.99
 - 38 charges (expenses): $28.22 in daily cash
 - 2 cardholders: Jermel Levons + Janesha Levons
 
-To use:
-1. Click **Import** tab
-2. Select **JSON Import** → `apple_card_august_2025.json`
-3. Review preview → Click **Accept**
-4. View in **Overview** tab → filter by "Apple Card" account
+**To test PDF import directly:**
+1. Download the original Apple Card PDF (if you have it)
+2. Click **Import** tab → **PDF Import**
+3. Select the PDF
+4. Dashboard extracts all transactions automatically
+5. Preview → Accept to import
 
-## Extraction Scripts
+Or use the pre-extracted JSON:
+1. Click **Import** tab → **JSON Import**
+2. Select `apple_card_august_2025.json`
+3. Review and accept
 
-### For Apple Card PDFs
-```bash
-python extract_apple_card.py "/path/to/Apple Card Statement.pdf"
-```
-
-Outputs JSON with:
-- Date, description, amount → import via JSON interface
-- Separates payments (income) from charges (expenses)
+## Extraction Scripts (Optional)
 - Preserves cardholder info for multi-account cards
 - Handles daily cash percentages and balances
 
