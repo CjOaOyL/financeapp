@@ -1,0 +1,402 @@
+[
+  {
+    "date": "08/08/2025",
+    "description": "ACH Deposit Internet transfer from account ending in 1129",
+    "amount": -15.0,
+    "cardholder": "Jermel Levons",
+    "type": "Payments",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/11/2025",
+    "description": "ACH Deposit Internet transfer from account ending in 1129",
+    "amount": -50.0,
+    "cardholder": "Jermel Levons",
+    "type": "Payments",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/12/2025",
+    "description": "ACH Deposit Internet transfer from account ending in 1129",
+    "amount": -151.0,
+    "cardholder": "Jermel Levons",
+    "type": "Payments",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/14/2025",
+    "description": "ACH Deposit Internet transfer from account ending in 1129",
+    "amount": -20.0,
+    "cardholder": "Jermel Levons",
+    "type": "Payments",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/23/2025",
+    "description": "ACH Deposit Internet transfer from account ending in 1129",
+    "amount": -66.0,
+    "cardholder": "Jermel Levons",
+    "type": "Payments",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/26/2025",
+    "description": "ACH Deposit Internet transfer from account ending in 1129",
+    "amount": -14.99,
+    "cardholder": "Jermel Levons",
+    "type": "Payments",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/28/2025",
+    "description": "ACH Deposit Internet transfer from account ending in 1129",
+    "amount": -100.0,
+    "cardholder": "Jermel Levons",
+    "type": "Payments",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/28/2025",
+    "description": "ACH Deposit Internet transfer from account ending in 1129",
+    "amount": -100.0,
+    "cardholder": "Jermel Levons",
+    "type": "Payments",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/16/2025",
+    "description": "ACH Deposit Internet transfer from account ending in 3740",
+    "amount": -100.0,
+    "cardholder": "Janesha Levons",
+    "type": "Payments",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/23/2025",
+    "description": "ACH Deposit Internet transfer from account ending in 3740",
+    "amount": -400.0,
+    "cardholder": "Janesha Levons",
+    "type": "Payments",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/30/2025",
+    "description": "ACH Deposit Internet transfer from account ending in 3740",
+    "amount": -300.0,
+    "cardholder": "Janesha Levons",
+    "type": "Payments",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/30/2025",
+    "description": "ACH Deposit Internet transfer from account ending in 3740",
+    "amount": -140.0,
+    "cardholder": "Janesha Levons",
+    "type": "Payments",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/08/2025",
+    "description": "BARNES & NOBLE #2019 3029 STATE RT 50 SARATOGA SPRI12866 NY USA",
+    "amount": 0.11,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/08/2025",
+    "description": "BARNES & NOBLE #2019 3029 STATE RT 50 SARATOGA SPRI12866 NY USA",
+    "amount": 0.13,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/08/2025",
+    "description": "CITY OF SARATOGA SPRIN474 BROADWAY SARATOGA SPRI75024 NY USA",
+    "amount": 0.05,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/11/2025",
+    "description": "NETFLIX.COM 9 Straits View Marina One West Tower #14-07/12 Singapore 018937 SGPSGP",
+    "amount": 0.11,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/11/2025",
+    "description": "CITY OF SARATOGA SPRIN474 BROADWAY SARATOGA SPRI75024 NY USA",
+    "amount": 0.05,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/11/2025",
+    "description": "MTA*LIRR STATION TIX 146-01 ARCHER AVE JAMAICA 11435 NY USA",
+    "amount": 0.31,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/12/2025",
+    "description": "TRINITY HEALTH CORP-EC20555 VICTOR PARK WAY LIVONIA 48152 MI USA",
+    "amount": 1.5,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/13/2025",
+    "description": "C2 PROOF OASIS 3 BREWSTER RD NEWARK 07114-3702NJ USA",
+    "amount": 0.34,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/22/2025",
+    "description": "Sunday*Barlume 900 Broadway New York 10003 NY USA",
+    "amount": 1.31,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/23/2025",
+    "description": "Town of Huntington, NY128 S Tryon St Ste 1000 Charlotte 28208 NC USA",
+    "amount": 0.02,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/26/2025",
+    "description": "APPLE.COM/BILL ONE APPLE PARK WAY 866-712-7753 95014 CA USA",
+    "amount": 0.45,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/27/2025",
+    "description": "EWR C1 ABRUZZO 3 BREWSTER RD NEWARK 07114-3702NJ USA",
+    "amount": 1.06,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/27/2025",
+    "description": "EWR C1 ABRUZZO 3 BREWSTER RD NEWARK 07114-3702NJ USA",
+    "amount": 0.34,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/27/2025",
+    "description": "EWR C1 ABRUZZO 3 BREWSTER RD NEWARK 07114-3702NJ USA",
+    "amount": 0.39,
+    "cardholder": "Jermel Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "07/31/2025",
+    "description": "STEWARTS SHOP 310 2532 ROUTE 9N GREENFIELD CE12833 NY USA",
+    "amount": 0.03,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "07/31/2025",
+    "description": "SQ *PDT MAISON 35 Maple Ave Saratoga Spri12866 NY USA",
+    "amount": 0.51,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "07/31/2025",
+    "description": "SQ *COMFORT KITCHEN 9 Maple Avenue Saratoga Spri12866 NY USA",
+    "amount": 0.23,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "07/31/2025",
+    "description": "STEWARTS SHOP 315 51 LUTHER FOREST BLVD BALLSTON SPA 12866 NY USA",
+    "amount": 0.12,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/02/2025",
+    "description": "SQ *CHIC UNDERNEATH 7 Spring St Saratoga Spri12866 NY USA",
+    "amount": 2.22,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/03/2025",
+    "description": "MARKET32 PCHOPPER #158175 BALLSTON AVE SARATOGA SPRI12866 NY USA",
+    "amount": 0.66,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/05/2025",
+    "description": "SQ *COMFORT KITCHEN 9 Maple Avenue Saratoga Spri12866 NY USA",
+    "amount": 0.19,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/05/2025",
+    "description": "STEWARTS SHOP 310 2532 ROUTE 9N GREENFIELD CE12833 NY USA",
+    "amount": 0.4,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/05/2025",
+    "description": "TOPS MARKETS #700 100 MAIN ST CORINTH 12822 NY USA",
+    "amount": 0.36,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/08/2025",
+    "description": "APPLE.COM/BILL ONE APPLE PARK WAY 866-712-7753 95014 CA USA",
+    "amount": 0.99,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/11/2025",
+    "description": "APPLE.COM/BILL ONE APPLE PARK WAY 866-712-7753 95014 CA USA",
+    "amount": 0.58,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/14/2025",
+    "description": "APPLE.COM/BILL ONE APPLE PARK WAY 866-712-7753 95014 CA USA",
+    "amount": 0.45,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/16/2025",
+    "description": "FP MOVEMENT 06050 98 Church St. BURLINGTON 5401 VT USA",
+    "amount": 5.12,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/17/2025",
+    "description": "HOMEPORT 52 Church St BURLINGTON 05401 VT USA",
+    "amount": 0.6,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/23/2025",
+    "description": "CDTA Facilities Inc 525 East St Rensselaer 12144 NY USA",
+    "amount": 0.28,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/23/2025",
+    "description": "ENCOUNTER 482 BROADWAY SARATOGA SPRI12866 NY USA",
+    "amount": 4.77,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/24/2025",
+    "description": "APPLE.COM/BILL ONE APPLE PARK WAY 866-712-7753 95014 CA USA",
+    "amount": 1.28,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/25/2025",
+    "description": "SQ *LAKE LUZERNE WINE 107 Lake Ave LAKE LUZERNE 12846 NY USA",
+    "amount": 0.43,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/26/2025",
+    "description": "CUMBERLAND FARMS 1578 103 MAPLE STREET CORINTH 12822 NY USA",
+    "amount": 0.6,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/26/2025",
+    "description": "SQ *COMFORT KITCHEN 286 Church Street Saratoga Spri12866 NY USA",
+    "amount": 0.53,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/27/2025",
+    "description": "SQ *THE NOOK CAFE 480 Broadway SARATOGA SPRI12866 NY USA",
+    "amount": 0.14,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/28/2025",
+    "description": "MRS. LONDON`S SARATOGA464 BROADWAY SARATOGA SPRI12866 NY USA",
+    "amount": 0.18,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/28/2025",
+    "description": "SQ *COMFORT KITCHEN 286 Church Street Saratoga Spri12866 NY USA",
+    "amount": 0.41,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  },
+  {
+    "date": "08/29/2025",
+    "description": "ENCOUNTER 482 BROADWAY SARATOGA SPRI12866 NY USA",
+    "amount": 0.97,
+    "cardholder": "Janesha Levons",
+    "type": "Transactions",
+    "account": "Apple Card"
+  }
+]
