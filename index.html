@@ -32,6 +32,7 @@
     <button class="nav-btn" data-tab="merchants">🏪 Merchants</button>
     <button class="nav-btn" data-tab="savings">💡 Savings</button>
     <button class="nav-btn" data-tab="budget">🎯 Budget</button>
+    <button class="nav-btn" data-tab="classify">🏷️ Classify</button>
   </nav>
 
   <!-- ========== TAB: IMPORT ========== -->
@@ -371,6 +372,60 @@
     </div>
   </section>
 
+  <!-- ========== TAB: CLASSIFY ========== -->
+  <section id="tab-classify" class="tab-content">
+    <div class="card">
+      <div class="card-header-row">
+        <div>
+          <h2>🏷️ Smart Classification Assistant</h2>
+          <p class="info-text">Drag-and-drop unclassified transactions into category buckets, accept AI suggestions, or get more info via web search.</p>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <button id="btn-reclassify" class="btn btn-primary">🔄 Re-classify with Updated Keywords</button>
+          <button id="btn-analyze" class="btn btn-accent">🧠 Analyze Unclassified</button>
+        </div>
+      </div>
+      <div id="reclassify-status" class="status-text" style="margin-bottom:.5rem"></div>
+
+      <!-- Stats bar -->
+      <div class="classify-stats" id="classify-stats">
+        <span class="classify-stat"><strong id="stat-total">0</strong> total</span>
+        <span class="classify-stat"><strong id="stat-unclassified">0</strong> unclassified</span>
+        <span class="classify-stat"><strong id="stat-suggested">0</strong> with suggestions</span>
+        <span class="classify-stat"><strong id="stat-unknown">0</strong> unknown</span>
+      </div>
+    </div>
+
+    <!-- Drag-and-drop classification board -->
+    <div class="classify-board" id="classify-board">
+      <!-- Unclassified column -->
+      <div class="classify-column unclassified-column" id="col-unclassified">
+        <div class="classify-col-header">
+          <h3>❓ Unclassified <span class="badge" id="badge-unclassified">0</span></h3>
+        </div>
+        <div class="classify-col-body drop-zone" data-category="Other" id="unclassified-items">
+          <p class="empty-message">No unclassified transactions! 🎉</p>
+        </div>
+      </div>
+
+      <!-- Category columns -->
+      <div class="classify-categories" id="classify-categories">
+        <!-- Dynamically generated category drop zones -->
+      </div>
+    </div>
+
+    <!-- Context / Info Panel (shown when user clicks "More Info") -->
+    <div id="context-panel" class="card hidden">
+      <div class="card-header-row">
+        <h3 id="context-title">Transaction Details</h3>
+        <button id="btn-close-context" class="btn btn-sm btn-secondary">✕ Close</button>
+      </div>
+      <div id="context-body">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+  </section>
+
   <footer>
     <p>Data is stored locally in your browser (localStorage). No data is sent to any server.</p>
   </footer>
@@ -382,6 +437,7 @@
   <script src="analysis.js"></script>
   <script src="budget.js"></script>
   <script src="exporter.js"></script>
+  <script src="classifier.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -376,7 +376,7 @@
   /* ---- Tab Refresh ---- */
   function refreshTab(tab) {
     const txs = DataManager.getAll();
-    if (txs.length === 0 && tab !== 'import') return;
+    if (txs.length === 0 && tab !== 'import' && tab !== 'classify') return;
 
     switch (tab) {
       case 'overview':
@@ -396,6 +396,9 @@
         break;
       case 'budget':
         refreshBudget();
+        break;
+      case 'classify':
+        refreshClassify();
         break;
     }
   }
@@ -496,6 +499,358 @@
   function refreshBudget() {
     Budget.renderBudgetTable();
     Budget.renderBudgetChart();
+  }
+
+  /* ============================================
+     CLASSIFY TAB — Drag-and-Drop Classification
+     ============================================ */
+
+  let classifyAnalysis = []; // results from Classifier.analyzeUnclassified()
+  let draggedTxId = null;
+
+  // Reclassify button — re-run auto-categorizer with expanded keywords
+  document.getElementById('btn-reclassify').addEventListener('click', () => {
+    const count = Classifier.reclassifyAll();
+    const statusEl = document.getElementById('reclassify-status');
+    statusEl.textContent = count > 0
+      ? `✅ Reclassified ${count} transaction${count > 1 ? 's' : ''} with updated keywords!`
+      : 'No new classifications found. Try "Analyze Unclassified" for deeper analysis.';
+    statusEl.className = 'status-text ' + (count > 0 ? 'success' : '');
+    refreshClassify();
+  });
+
+  // Analyze button — run the smart analyzer
+  document.getElementById('btn-analyze').addEventListener('click', () => {
+    classifyAnalysis = Classifier.analyzeUnclassified();
+    renderClassifyBoard();
+  });
+
+  // Close context panel
+  document.getElementById('btn-close-context').addEventListener('click', () => {
+    document.getElementById('context-panel').classList.add('hidden');
+  });
+
+  function refreshClassify() {
+    classifyAnalysis = Classifier.analyzeUnclassified();
+    renderClassifyBoard();
+  }
+
+  function renderClassifyBoard() {
+    const all = DataManager.getAll();
+    const totalCount = all.length;
+    const unclassifiedAll = all.filter(t => t.category === 'Other');
+    const withSuggestions = classifyAnalysis.filter(a => a.suggestedCategory);
+    const unknown = classifyAnalysis.filter(a => !a.suggestedCategory);
+
+    // Update stats
+    document.getElementById('stat-total').textContent = totalCount;
+    document.getElementById('stat-unclassified').textContent = unclassifiedAll.length;
+    document.getElementById('stat-suggested').textContent = withSuggestions.length;
+    document.getElementById('stat-unknown').textContent = unknown.length;
+
+    // Render unclassified column
+    const unclassifiedEl = document.getElementById('unclassified-items');
+    document.getElementById('badge-unclassified').textContent = classifyAnalysis.length;
+
+    if (classifyAnalysis.length === 0) {
+      unclassifiedEl.innerHTML = '<p class="empty-message">No unclassified transactions! 🎉</p>';
+    } else {
+      unclassifiedEl.innerHTML = classifyAnalysis.map(a => renderTxCard(a)).join('');
+      attachCardHandlers(unclassifiedEl);
+      makeDraggable(unclassifiedEl);
+    }
+
+    // Render category columns
+    const catContainer = document.getElementById('classify-categories');
+    const usedCategories = DataManager.CATEGORIES.filter(c => c !== 'Other');
+
+    // Group suggestions by category
+    const suggestedByCat = {};
+    for (const a of withSuggestions) {
+      if (!suggestedByCat[a.suggestedCategory]) suggestedByCat[a.suggestedCategory] = [];
+      suggestedByCat[a.suggestedCategory].push(a);
+    }
+
+    // Sort: categories with suggestions first, then alphabetical
+    const sortedCats = [...usedCategories].sort((a, b) => {
+      const aHas = suggestedByCat[a] ? 1 : 0;
+      const bHas = suggestedByCat[b] ? 1 : 0;
+      if (aHas !== bHas) return bHas - aHas;
+      return a.localeCompare(b);
+    });
+
+    catContainer.innerHTML = sortedCats.map(cat => {
+      const suggestions = suggestedByCat[cat] || [];
+      const catIcon = getCategoryIcon(cat);
+      return `
+        <div class="classify-column cat-column" data-category="${cat}">
+          <div class="classify-col-header">
+            <h3>${catIcon} ${cat} <span class="badge">${suggestions.length}</span></h3>
+          </div>
+          <div class="classify-col-body drop-zone" data-category="${cat}">
+            ${suggestions.length === 0
+              ? '<p class="empty-message drop-hint">Drop transactions here</p>'
+              : suggestions.map(a => renderSuggestionCard(a)).join('')
+            }
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Attach drag-and-drop to all drop zones
+    catContainer.querySelectorAll('.drop-zone').forEach(zone => {
+      makeDropZone(zone);
+      attachCardHandlers(zone);
+      makeDraggable(zone);
+    });
+
+    // Also make the unclassified column a drop zone (for dragging back)
+    makeDropZone(unclassifiedEl);
+  }
+
+  function renderTxCard(analysis) {
+    const tx = analysis.tx;
+    const amt = Math.abs(tx.amount);
+    const hasSuggestion = !!analysis.suggestedCategory;
+    const confClass = analysis.confidence >= 60 ? 'high' : analysis.confidence >= 30 ? 'med' : 'low';
+
+    return `
+      <div class="classify-card ${hasSuggestion ? 'has-suggestion' : ''}" draggable="true" data-tx-id="${tx.id}" data-suggested="${analysis.suggestedCategory || ''}">
+        <div class="classify-card-top">
+          <span class="classify-card-amount">$${amt.toFixed(2)}</span>
+          <span class="classify-card-date">${tx.date}</span>
+        </div>
+        <div class="classify-card-desc" title="${escHtml(tx._originalDesc || tx.description)}">${escHtml(tx.description)}</div>
+        <div class="classify-card-meta">${escHtml(tx.account)}${tx.cardholder && tx.cardholder !== 'Unknown' ? ' · ' + escHtml(tx.cardholder) : ''}</div>
+        ${hasSuggestion ? `
+          <div class="classify-card-suggestion">
+            <span class="confidence-badge confidence-${confClass}">${analysis.confidence}%</span>
+            Suggested: <strong>${analysis.suggestedCategory}</strong>
+          </div>
+          <div class="classify-card-reason">${analysis.reasons.slice(0, 2).join('; ')}</div>
+        ` : ''}
+        <div class="classify-card-actions">
+          ${hasSuggestion ? `<button class="btn btn-sm btn-accent accept-suggestion" data-tx-id="${tx.id}" data-cat="${analysis.suggestedCategory}">✓ Accept</button>` : ''}
+          <button class="btn btn-sm btn-secondary more-info" data-tx-id="${tx.id}">🔍 More Info</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderSuggestionCard(analysis) {
+    const tx = analysis.tx;
+    const amt = Math.abs(tx.amount);
+    const confClass = analysis.confidence >= 60 ? 'high' : analysis.confidence >= 30 ? 'med' : 'low';
+
+    return `
+      <div class="classify-card has-suggestion in-bucket" draggable="true" data-tx-id="${tx.id}" data-suggested="${analysis.suggestedCategory}">
+        <div class="classify-card-top">
+          <span class="classify-card-amount">$${amt.toFixed(2)}</span>
+          <span class="confidence-badge confidence-${confClass}">${analysis.confidence}%</span>
+        </div>
+        <div class="classify-card-desc" title="${escHtml(tx._originalDesc || tx.description)}">${escHtml(tx.description)}</div>
+        <div class="classify-card-meta">${tx.date} · ${escHtml(tx.account)}</div>
+        <div class="classify-card-actions">
+          <button class="btn btn-sm btn-accent accept-suggestion" data-tx-id="${tx.id}" data-cat="${analysis.suggestedCategory}">✓ Accept</button>
+          <button class="btn btn-sm btn-secondary more-info" data-tx-id="${tx.id}">🔍 More Info</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function attachCardHandlers(container) {
+    // Accept suggestion buttons
+    container.querySelectorAll('.accept-suggestion').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const txId = btn.dataset.txId;
+        const cat = btn.dataset.cat;
+        DataManager.update(txId, { category: cat });
+        refreshClassify();
+      });
+    });
+
+    // More Info buttons
+    container.querySelectorAll('.more-info').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const txId = btn.dataset.txId;
+        const tx = DataManager.getAll().find(t => t.id === txId);
+        if (!tx) return;
+        await showContextPanel(tx);
+      });
+    });
+  }
+
+  function makeDraggable(container) {
+    container.querySelectorAll('.classify-card').forEach(card => {
+      card.addEventListener('dragstart', (e) => {
+        draggedTxId = card.dataset.txId;
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', draggedTxId);
+      });
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+        draggedTxId = null;
+        // Remove all drag-over highlights
+        document.querySelectorAll('.drop-zone.drag-over').forEach(z => z.classList.remove('drag-over'));
+      });
+    });
+  }
+
+  function makeDropZone(zone) {
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      zone.classList.add('drag-over');
+    });
+    zone.addEventListener('dragleave', (e) => {
+      // Only remove class if we actually left the zone
+      if (!zone.contains(e.relatedTarget)) {
+        zone.classList.remove('drag-over');
+      }
+    });
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const txId = e.dataTransfer.getData('text/plain') || draggedTxId;
+      if (!txId) return;
+
+      const targetCategory = zone.dataset.category;
+      if (targetCategory === 'Other') {
+        // Dragging back to unclassified — don't change, just leave as Other
+        return;
+      }
+
+      // Update this transaction's category
+      DataManager.update(txId, { category: targetCategory });
+      refreshClassify();
+    });
+  }
+
+  /* ---- Context / Info Panel ---- */
+
+  async function showContextPanel(tx) {
+    const panel = document.getElementById('context-panel');
+    const body = document.getElementById('context-body');
+    const title = document.getElementById('context-title');
+
+    panel.classList.remove('hidden');
+    title.textContent = tx.description;
+    body.innerHTML = '<p class="info-text">Loading context...</p>';
+
+    // Get local context first
+    const ctx = Classifier.getTransactionContext(tx);
+
+    // Build context HTML
+    let html = '';
+
+    // Clues section
+    html += '<div class="context-section"><h4>📋 Transaction Clues</h4><ul>';
+    for (const clue of ctx.clues) {
+      html += `<li>${escHtml(clue)}</li>`;
+    }
+    html += '</ul></div>';
+
+    // Nearby transactions
+    if (ctx.nearby.length > 0) {
+      html += '<div class="context-section"><h4>📍 Nearby Transactions (±1 day)</h4>';
+      html += '<div class="context-nearby">';
+      for (const n of ctx.nearby) {
+        html += `<div class="context-nearby-tx">
+          <span class="context-nearby-desc">${escHtml(n.description)}</span>
+          <span class="context-nearby-cat">${n.category}</span>
+          <span class="context-nearby-amt">$${Math.abs(n.amount).toFixed(2)}</span>
+        </div>`;
+      }
+      html += '</div></div>';
+    }
+
+    // Quick-assign buttons
+    html += '<div class="context-section"><h4>⚡ Quick Assign Category</h4>';
+    html += '<div class="context-quick-cats">';
+    const topCats = ['Dining', 'Shopping', 'Entertainment', 'Transportation', 'Groceries', 'Healthcare', 'Travel', 'Subscriptions', 'Personal Care', 'Utilities', 'Gifts & Donations', 'Housing', 'Education', 'Insurance'];
+    for (const cat of topCats) {
+      html += `<button class="btn btn-sm btn-secondary quick-cat-btn" data-tx-id="${tx.id}" data-cat="${cat}">${getCategoryIcon(cat)} ${cat}</button>`;
+    }
+    html += '</div></div>';
+
+    // Web search section (loading)
+    html += '<div class="context-section" id="context-search-section"><h4>🌐 Web Search Results</h4>';
+    html += '<p class="info-text">Searching...</p></div>';
+
+    body.innerHTML = html;
+
+    // Attach quick-cat handlers
+    body.querySelectorAll('.quick-cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        DataManager.update(btn.dataset.txId, { category: btn.dataset.cat });
+        panel.classList.add('hidden');
+        refreshClassify();
+      });
+    });
+
+    // Now do the web search asynchronously
+    try {
+      const searchResult = await Classifier.searchForContext(tx);
+      const searchSection = document.getElementById('context-search-section');
+      if (!searchSection) return;
+
+      let searchHtml = '<h4>🌐 Web Search Results</h4>';
+
+      if (searchResult.summary && searchResult.summary !== 'No instant answer found. Click "Search Web" for full results.') {
+        searchHtml += `<div class="context-search-summary">`;
+        if (searchResult.businessType) {
+          searchHtml += `<strong>${escHtml(searchResult.businessType)}</strong><br>`;
+        }
+        searchHtml += `<p>${escHtml(searchResult.summary)}</p>`;
+        if (searchResult.suggestedCategory) {
+          searchHtml += `<div class="context-search-suggestion">
+            Based on search results, this might be: <strong>${searchResult.suggestedCategory}</strong>
+            <button class="btn btn-sm btn-accent apply-search-cat" data-tx-id="${tx.id}" data-cat="${searchResult.suggestedCategory}">✓ Apply</button>
+          </div>`;
+        }
+        searchHtml += '</div>';
+      }
+
+      if (searchResult.results.length > 0) {
+        searchHtml += '<div class="context-search-results">';
+        for (const r of searchResult.results) {
+          searchHtml += `<div class="context-search-result">${escHtml(r)}</div>`;
+        }
+        searchHtml += '</div>';
+      }
+
+      searchHtml += `<a href="${searchResult.searchUrl}" target="_blank" rel="noopener" class="btn btn-sm btn-secondary" style="margin-top:.5rem">🔎 Search Web for "${escHtml(searchResult.query)}"</a>`;
+
+      searchSection.innerHTML = searchHtml;
+
+      // Attach apply button
+      searchSection.querySelectorAll('.apply-search-cat').forEach(btn => {
+        btn.addEventListener('click', () => {
+          DataManager.update(btn.dataset.txId, { category: btn.dataset.cat });
+          panel.classList.add('hidden');
+          refreshClassify();
+        });
+      });
+    } catch (err) {
+      const searchSection = document.getElementById('context-search-section');
+      if (searchSection) {
+        searchSection.innerHTML = `<h4>🌐 Web Search</h4><p class="info-text">Search unavailable. <a href="https://duckduckgo.com/?q=${encodeURIComponent(tx.description + ' business')}" target="_blank">Search manually</a></p>`;
+      }
+    }
+  }
+
+  function getCategoryIcon(cat) {
+    const icons = {
+      'Housing': '🏠', 'Utilities': '💡', 'Groceries': '🛒', 'Dining': '🍽',
+      'Transportation': '🚗', 'Healthcare': '🏥', 'Entertainment': '🎬',
+      'Shopping': '🛍', 'Subscriptions': '📱', 'Insurance': '🛡',
+      'Education': '📚', 'Personal Care': '💅', 'Gifts & Donations': '🎁',
+      'Travel': '✈️', 'Income': '💰', 'Transfer': '🔄', 'Other': '❓'
+    };
+    return icons[cat] || '📦';
   }
 
   /* ---- Utility ---- */

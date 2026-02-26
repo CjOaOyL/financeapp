@@ -421,6 +421,301 @@ tr.transfer-row {
 }
 tr.transfer-row:hover { opacity: .8; }
 
+/* ============================================
+   CLASSIFY TAB — Drag-and-Drop Board
+   ============================================ */
+
+.classify-stats {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: .6rem 0;
+}
+.classify-stat {
+  font-size: .85rem;
+  color: var(--clr-text-muted);
+}
+.classify-stat strong {
+  color: var(--clr-text);
+  font-size: 1.1rem;
+}
+
+.classify-board {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.classify-column {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.unclassified-column {
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.classify-col-header {
+  padding: .8rem 1rem;
+  background: var(--clr-surface-hover);
+  border-bottom: 1px solid var(--clr-border);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.classify-col-header h3 {
+  font-size: .9rem;
+  margin: 0;
+  color: var(--clr-text);
+}
+
+.classify-col-body {
+  padding: .6rem;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  overflow-y: auto;
+  transition: background .2s, border-color .2s;
+}
+
+.unclassified-column .classify-col-body {
+  max-height: calc(80vh - 50px);
+}
+
+.classify-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.cat-column {
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+.cat-column .classify-col-body {
+  max-height: 340px;
+}
+
+/* Drop zone visual feedback */
+.drop-zone.drag-over {
+  background: rgba(99, 102, 241, .08);
+  outline: 2px dashed var(--clr-primary);
+  outline-offset: -2px;
+}
+
+.empty-message {
+  color: var(--clr-text-muted);
+  font-size: .8rem;
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+}
+
+/* ---- Classify Cards (draggable items) ---- */
+
+.classify-card {
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-border);
+  border-radius: 8px;
+  padding: .65rem .8rem;
+  cursor: grab;
+  transition: transform .15s, box-shadow .15s, opacity .15s, border-color .15s;
+  user-select: none;
+}
+.classify-card:hover {
+  border-color: var(--clr-primary);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, .15);
+}
+.classify-card.dragging {
+  opacity: .4;
+  transform: rotate(2deg);
+}
+.classify-card:active {
+  cursor: grabbing;
+}
+
+.classify-card.has-suggestion {
+  border-left: 3px solid var(--clr-warning);
+}
+.classify-card.in-bucket {
+  border-left-color: var(--clr-accent);
+}
+
+.classify-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .25rem;
+}
+.classify-card-amount {
+  font-weight: 700;
+  font-size: .95rem;
+}
+.classify-card-date {
+  font-size: .72rem;
+  color: var(--clr-text-muted);
+}
+
+.classify-card-desc {
+  font-size: .82rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: .2rem;
+}
+.classify-card-meta {
+  font-size: .7rem;
+  color: var(--clr-text-muted);
+  margin-bottom: .3rem;
+}
+
+.classify-card-suggestion {
+  font-size: .75rem;
+  color: var(--clr-text-muted);
+  margin-bottom: .15rem;
+}
+.classify-card-suggestion strong {
+  color: var(--clr-warning);
+}
+
+.classify-card-reason {
+  font-size: .68rem;
+  color: var(--clr-text-muted);
+  font-style: italic;
+  margin-bottom: .3rem;
+  line-height: 1.3;
+}
+
+.classify-card-actions {
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+}
+
+.confidence-badge {
+  font-size: .65rem;
+  padding: .1rem .4rem;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.confidence-high { background: rgba(16,185,129,.15); color: var(--clr-accent); }
+.confidence-med  { background: rgba(245,158,11,.15); color: var(--clr-warning); }
+.confidence-low  { background: rgba(239,68,68,.15); color: var(--clr-danger); }
+
+/* ---- Context / Info Panel ---- */
+
+#context-panel {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  max-height: 60vh;
+  overflow-y: auto;
+  border-color: var(--clr-primary);
+  box-shadow: 0 -4px 20px rgba(0,0,0,.4);
+}
+
+.context-section {
+  margin-bottom: 1.2rem;
+}
+.context-section h4 {
+  font-size: .9rem;
+  margin-bottom: .5rem;
+  color: var(--clr-text);
+}
+.context-section ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  font-size: .82rem;
+  color: var(--clr-text-muted);
+}
+.context-section ul li { margin-bottom: .25rem; }
+
+.context-nearby {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+}
+.context-nearby-tx {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  font-size: .8rem;
+  padding: .3rem .5rem;
+  background: var(--clr-bg);
+  border-radius: 4px;
+}
+.context-nearby-desc { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.context-nearby-cat {
+  font-size: .7rem;
+  padding: .1rem .4rem;
+  background: rgba(99,102,241,.1);
+  color: var(--clr-primary);
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.context-nearby-amt { font-weight: 600; white-space: nowrap; }
+
+.context-quick-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+}
+
+.context-search-summary {
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-border);
+  border-radius: 6px;
+  padding: .8rem 1rem;
+  font-size: .82rem;
+  margin-bottom: .5rem;
+}
+.context-search-summary p { margin-top: .3rem; color: var(--clr-text-muted); }
+.context-search-suggestion {
+  margin-top: .5rem;
+  padding: .4rem .6rem;
+  background: rgba(16,185,129,.08);
+  border-radius: 4px;
+  font-size: .82rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.context-search-results {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+}
+.context-search-result {
+  font-size: .78rem;
+  color: var(--clr-text-muted);
+  padding: .3rem .5rem;
+  background: var(--clr-bg);
+  border-radius: 4px;
+}
+
+/* ---- Classify Responsive ---- */
+@media (max-width: 900px) {
+  .classify-board {
+    grid-template-columns: 1fr;
+  }
+  .unclassified-column {
+    max-height: 50vh;
+  }
+  .classify-categories {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   header { padding: 1rem; }
