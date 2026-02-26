@@ -16,7 +16,11 @@ const Importer = (() => {
     const arrayBuf = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuf }).promise;
 
-    // Try spatial (coordinate-based) extraction first
+    // Try Apple Card format first (MM/DD/YYYY dates with cardholder sections)
+    const appleCardTxs = await parseAppleCardPDF(pdf, file.name);
+    if (appleCardTxs.length > 0) return appleCardTxs;
+
+    // Try spatial (coordinate-based) extraction for Navy Federal format
     const spatialTxs = await parsePDFSpatial(pdf, file.name);
     if (spatialTxs.length > 0) return spatialTxs;
 
@@ -29,6 +33,155 @@ const Importer = (() => {
       fullText += strings.join(' ') + '\n';
     }
     return extractTransactionsFromText(fullText, file.name);
+  }
+
+  /**
+   * Apple Card PDF parser — detects Apple Card statement layout
+   * (MM/DD/YYYY dates, separate Payments and Transactions sections, Daily Cash)
+   */
+  async function parseAppleCardPDF(pdf, sourceName) {
+    // Extract all text to detect if this is an Apple Card statement
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const strings = content.items.map(item => item.str);
+      fullText += strings.join(' ') + '\n';
+    }
+
+    // Check if this looks like an Apple Card statement
+    if (!fullText.includes('Apple Card') && !fullText.includes('Goldman Sachs') && 
+        !(fullText.includes('Payments') && fullText.includes('Transactions') && fullText.includes('Daily Cash'))) {
+      return [];
+    }
+
+    // Collect all text items with coordinates from every page
+    const allItems = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      for (const item of content.items) {
+        const text = item.str.trim();
+        if (!text) continue;
+        const x = Math.round(item.transform[4] * 10) / 10;
+        const y = Math.round(item.transform[5] * 10) / 10;
+        allItems.push({ x, y, text, page: i, width: item.width });
+      }
+    }
+
+    // Find date column (MM/DD/YYYY format at left)
+    const mmddyyyyPattern = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+    const dateItems = allItems.filter(it => mmddyyyyPattern.test(it.text));
+    if (dateItems.length === 0) return [];
+
+    // Find the most common X position for dates
+    const dateXCounts = {};
+    for (const it of dateItems) {
+      const xr = Math.round(it.x);
+      dateXCounts[xr] = (dateXCounts[xr] || 0) + 1;
+    }
+    const dateX = parseInt(Object.entries(dateXCounts).sort((a, b) => b[1] - a[1])[0][0]);
+
+    // Find description and amount columns
+    const amountPattern = /^\d{1,3}(,\d{3})*\.\d{2}$/;
+    const amountItems = allItems.filter(it => amountPattern.test(it.text) && it.x > dateX + 200);
+    if (amountItems.length === 0) return [];
+
+    // Find amount column X (leftmost numeric cluster)
+    const amountXCounts = {};
+    for (const it of amountItems) {
+      const xr = Math.round(it.x / 10) * 10;
+      amountXCounts[xr] = (amountXCounts[xr] || 0) + 1;
+    }
+    const amountXClusters = Object.entries(amountXCounts)
+      .map(([x, c]) => ({ x: parseInt(x), count: c }))
+      .sort((a, b) => a.x - b.x);
+    
+    if (amountXClusters.length === 0) return [];
+    const amountX = amountXClusters[0].x;
+
+    // Collect description items (between date and amount columns)
+    const descItems = allItems.filter(it => 
+      it.x > dateX + 30 && it.x < amountX - 20 && it.text.length > 1
+    );
+
+    // Build transactions per page
+    const transactions = [];
+    const pagesWithDates = [...new Set(dateItems.map(d => d.page))];
+
+    for (const pg of pagesWithDates) {
+      const pgDates = dateItems.filter(d => d.page === pg).sort((a, b) => b.y - a.y);
+      const pgDescs = descItems.filter(d => d.page === pg).sort((a, b) => b.y - a.y);
+      const pgAmounts = amountItems.filter(d => d.page === pg).sort((a, b) => b.y - a.y);
+
+      // Build description rows
+      const descRows = [];
+      for (const dateItem of pgDates) {
+        const nearDescs = pgDescs.filter(d => Math.abs(d.y - dateItem.y) < 4);
+        if (nearDescs.length === 0) continue;
+        const descText = nearDescs.map(d => d.text).join(' ');
+
+        // Skip headers and non-transaction text
+        const lower = descText.toLowerCase();
+        if (lower.includes('date') || lower.includes('description') || lower.includes('daily cash') ||
+            lower.includes('total') || lower.includes('amount') || lower.includes('for ')) continue;
+
+        descRows.push({ y: dateItem.y, date: dateItem.text, desc: descText });
+      }
+
+      // Append continuation lines to descriptions
+      for (const descItem of pgDescs) {
+        const hasDate = pgDates.some(d => Math.abs(d.y - descItem.y) < 4);
+        if (hasDate) continue;
+
+        // Find closest preceding row
+        let closest = null;
+        let closestDist = Infinity;
+        for (const dr of descRows) {
+          const dist = dr.y - descItem.y;
+          if (dist > 0 && dist < closestDist && dist < 15) {
+            closestDist = dist;
+            closest = dr;
+          }
+        }
+        if (closest) closest.desc += ' ' + descItem.text;
+      }
+
+      // Match amounts to descriptions (sequential)
+      const n = Math.min(descRows.length, pgAmounts.length);
+      for (let i = 0; i < n; i++) {
+        const dr = descRows[i];
+        const amtItem = pgAmounts[i];
+
+        const dateStr = dr.date;
+        const rawDesc = dr.desc;
+
+        // Detect if this is a payment (income) or charge (expense)
+        // Apple Card: Payments are credits, Transactions are charges
+        const isIncome = rawDesc.toLowerCase().includes('ach') || 
+                         rawDesc.toLowerCase().includes('internet transfer') ||
+                         rawDesc.toLowerCase().includes('payment');
+
+        const cleanResult = DescriptionCleaner.clean(rawDesc);
+        const cleanedDesc = cleanResult.cleaned;
+        const amount = Math.abs(parseFloat(amtItem.text.replace(/,/g, '')));
+
+        transactions.push({
+          date: dateStr,
+          description: cleanedDesc,
+          amount,
+          category: isIncome ? 'Income' : DataManager.autoCategory(cleanedDesc),
+          account: 'Apple Card',
+          _raw: rawDesc,
+          _originalDesc: cleanResult.original,
+          _txType: cleanResult.txType,
+          _merchant: cleanResult.merchant,
+          _isIncome: isIncome
+        });
+      }
+    }
+
+    return transactions;
   }
 
   /**
