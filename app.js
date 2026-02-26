@@ -525,6 +525,66 @@
     renderClassifyBoard();
   });
 
+  // Auto-Search Addresses button
+  document.getElementById('btn-auto-search').addEventListener('click', async () => {
+    const btn = document.getElementById('btn-auto-search');
+    const statusEl = document.getElementById('auto-search-status');
+    const progressWrap = document.getElementById('auto-search-progress');
+    const progressFill = document.getElementById('search-progress-fill');
+    const progressText = document.getElementById('search-progress-text');
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Searching...';
+    statusEl.textContent = 'Scanning for transactions with addresses...';
+    statusEl.className = 'status-text';
+    progressWrap.classList.remove('hidden');
+    progressFill.style.width = '0%';
+
+    try {
+      const result = await Classifier.autoSearchAndClassify((current, total, desc) => {
+        const pct = Math.round((current / total) * 100);
+        progressFill.style.width = pct + '%';
+        progressText.textContent = `Searching ${current}/${total}: ${desc.slice(0, 40)}...`;
+      });
+
+      progressWrap.classList.add('hidden');
+
+      if (result.searched === 0) {
+        statusEl.textContent = 'No unclassified transactions with addresses found.';
+        statusEl.className = 'status-text';
+      } else {
+        statusEl.textContent = `✅ Searched ${result.searched} transactions with addresses. Auto-classified ${result.classified}. ${result.searched - result.classified} still need manual review.`;
+        statusEl.className = 'status-text success';
+
+        // Show details of what was found
+        if (result.results.length > 0) {
+          const detailsHtml = result.results.map(r => {
+            const icon = r.appliedCategory ? '✅' : '❓';
+            const cat = r.appliedCategory || 'Unknown';
+            const summary = (r.searchResult.summary || '').slice(0, 100);
+            return `<div class="auto-search-result">
+              <span class="auto-search-icon">${icon}</span>
+              <span class="auto-search-desc">${escHtml(r.tx.description)}</span>
+              <span class="auto-search-addr">${escHtml(r.addressText)}</span>
+              <span class="auto-search-cat">${cat}</span>
+              ${summary ? `<span class="auto-search-summary">${escHtml(summary)}</span>` : ''}
+            </div>`;
+          }).join('');
+          statusEl.innerHTML += `<div class="auto-search-results-list" style="margin-top:.6rem">${detailsHtml}</div>`;
+        }
+      }
+
+      refreshClassify();
+    } catch (err) {
+      progressWrap.classList.add('hidden');
+      statusEl.textContent = '❌ Error during web search: ' + err.message;
+      statusEl.className = 'status-text error';
+    }
+
+    btn.disabled = false;
+    btn.textContent = '🌐 Auto-Search Addresses';
+  });
+
   // Close context panel
   document.getElementById('btn-close-context').addEventListener('click', () => {
     document.getElementById('context-panel').classList.add('hidden');

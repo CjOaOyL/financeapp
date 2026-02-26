@@ -234,6 +234,219 @@ const Classifier = (() => {
     return (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
   }
 
+  /* ---- Address Detection ---- */
+
+  // US state abbreviations
+  const US_STATES = 'AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|DC';
+
+  // Patterns that indicate a street address is present
+  const ADDRESS_PATTERNS = [
+    // "123 Main St" / "456 N Broadway Ave" etc.
+    /\b\d{1,5}\s+[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*\s+(?:St|Street|Ave|Avenue|Blvd|Boulevard|Dr|Drive|Rd|Road|Ln|Lane|Way|Ct|Court|Pl|Place|Cir|Circle|Pkwy|Parkway|Hwy|Highway|Pike|Ter|Terrace|Trail|Trl)\b/i,
+    // "City, ST" or "City, State" patterns (e.g., "Norfolk, VA" or "VIRGINIA BEACH VA")
+    new RegExp('\\b[A-Z][a-zA-Z\\s]{2,20},?\\s*(?:' + US_STATES + ')\\b', 'i'),
+    // Zip codes
+    /\b\d{5}(?:-\d{4})?\b/,
+    // "#123" or "Suite 456" unit numbers paired with street context
+    /(?:Suite|Ste|Apt|Unit|#)\s*\d+/i,
+  ];
+
+  /**
+   * Detect if a transaction description contains an address.
+   * Returns { hasAddress, addressText, businessName } or null.
+   */
+  function detectAddress(tx) {
+    const desc = tx._originalDesc || tx.description || '';
+    const cleaned = tx.description || '';
+    const combined = desc + ' ' + cleaned;
+
+    let matched = false;
+    let matchedParts = [];
+
+    for (const pat of ADDRESS_PATTERNS) {
+      const m = combined.match(pat);
+      if (m) {
+        matched = true;
+        matchedParts.push(m[0].trim());
+      }
+    }
+
+    if (!matched) return null;
+
+    // Try to extract the business name (part before the address)
+    // Apple Card format often: "Business Name  City  ST"
+    // Bank format often: "BUSINESS NAME 123 MAIN ST CITY VA 12345"
+    const statePattern = new RegExp(',?\\s*(?:' + US_STATES + ')(?:\\s+\\d{5})?\\s*$', 'i');
+    const streetPattern = /\s+\d{1,5}\s+[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*\s+(?:St|Street|Ave|Avenue|Blvd|Boulevard|Dr|Drive|Rd|Road|Ln|Lane|Way|Ct|Court|Pl|Place|Cir|Circle|Pkwy|Parkway|Hwy|Highway|Pike|Ter|Terrace|Trail|Trl)\b.*/i;
+
+    let businessName = cleaned || desc;
+    // Strip address portions to isolate business name
+    businessName = businessName.replace(streetPattern, '').trim();
+    businessName = businessName.replace(statePattern, '').trim();
+    businessName = businessName.replace(/\s+\d{5}(-\d{4})?\s*$/, '').trim(); // trailing zip
+    businessName = businessName.replace(/\s{2,}/g, ' ').trim();
+
+    // If businessName is empty or too short, use the full description
+    if (businessName.length < 2) businessName = cleaned || desc;
+
+    // Build the most complete address text we can
+    const addressText = matchedParts.join(', ');
+
+    return { hasAddress: true, addressText, businessName };
+  }
+
+  /**
+   * Auto-search and classify all unclassified transactions that contain addresses.
+   * Searches the web for "businessName + addressText" and categorizes based on results.
+   * Returns { classified, searched, results[] } where results has per-tx details.
+   * Calls progressCallback(current, total, txDesc) if provided.
+   */
+  async function autoSearchAndClassify(progressCallback) {
+    const all = DataManager.getAll();
+    const unclassified = all.filter(t => t.category === 'Other');
+    const withAddresses = [];
+
+    for (const tx of unclassified) {
+      const addr = detectAddress(tx);
+      if (addr) {
+        withAddresses.push({ tx, ...addr });
+      }
+    }
+
+    const results = [];
+    let classified = 0;
+
+    for (let i = 0; i < withAddresses.length; i++) {
+      const { tx, businessName, addressText } = withAddresses[i];
+      if (progressCallback) progressCallback(i + 1, withAddresses.length, tx.description);
+
+      // Build search query: business name + address for specificity
+      const searchQuery = `${businessName} ${addressText}`.trim();
+      const cacheKey = normForComparison(searchQuery);
+
+      // Check cache
+      const cache = getSearchCache();
+      let searchResult = cache[cacheKey];
+
+      if (!searchResult) {
+        searchResult = await webSearchForBusiness(searchQuery, businessName);
+        // Cache it
+        cache[cacheKey] = searchResult;
+        setSearchCache(cache);
+
+        // Small delay to be nice to APIs
+        await new Promise(r => setTimeout(r, 400));
+      }
+
+      const entry = {
+        tx,
+        businessName,
+        addressText,
+        searchResult,
+        appliedCategory: null
+      };
+
+      if (searchResult.suggestedCategory) {
+        // Auto-apply the category
+        const txInAll = all.find(t => t.id === tx.id);
+        if (txInAll) {
+          txInAll.category = searchResult.suggestedCategory;
+          entry.appliedCategory = searchResult.suggestedCategory;
+          classified++;
+        }
+      }
+
+      results.push(entry);
+    }
+
+    if (classified > 0) {
+      DataManager.saveAll(all);
+    }
+
+    return { classified, searched: withAddresses.length, results };
+  }
+
+  /**
+   * Search for a business by name + address using multiple APIs.
+   */
+  async function webSearchForBusiness(query, businessName) {
+    let summary = '';
+    let businessType = '';
+    let suggestedCategory = null;
+    let results = [];
+    const searchUrl = `https://duckduckgo.com/?q=${encodeURIComponent(query)}`;
+
+    // 1) DuckDuckGo Instant Answer
+    try {
+      const apiUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1&skip_disambig=1`;
+      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
+      const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+      if (resp.ok) {
+        const proxyData = await resp.json();
+        const data = JSON.parse(proxyData.contents);
+        if (data.Abstract) summary = data.Abstract;
+        else if (data.AbstractText) summary = data.AbstractText;
+        if (data.Heading) businessType = data.Heading;
+        if (data.RelatedTopics) {
+          results = data.RelatedTopics.filter(t => t.Text).slice(0, 5).map(t => t.Text);
+        }
+        if (summary) suggestedCategory = inferCategoryFromText(summary + ' ' + results.join(' '));
+      }
+    } catch (e) { console.log('Classifier: DDG failed for', query, e.message); }
+
+    // 2) Wikipedia fallback
+    if (!summary) {
+      try {
+        const wikiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(businessName)}`;
+        const wikiResp = await fetch(wikiUrl, { signal: AbortSignal.timeout(5000) });
+        if (wikiResp.ok) {
+          const data = await wikiResp.json();
+          if (data.extract) {
+            summary = data.extract;
+            businessType = data.title || '';
+            suggestedCategory = inferCategoryFromText(summary);
+          }
+        }
+      } catch (e) { console.log('Classifier: Wiki failed for', businessName, e.message); }
+    }
+
+    // 3) If still no category, try inferring from the business name alone
+    if (!suggestedCategory) {
+      // Use our pattern rules on the business name
+      const desc = businessName.toLowerCase();
+      for (const rule of PATTERN_RULES) {
+        if (rule.pattern.test(desc)) {
+          suggestedCategory = rule.category;
+          summary = summary || rule.reason;
+          break;
+        }
+      }
+    }
+
+    // 4) If still nothing, try keyword match on business name
+    if (!suggestedCategory) {
+      for (const [cat, keywords] of Object.entries(DataManager.CATEGORY_KEYWORDS)) {
+        for (const kw of keywords) {
+          if (businessName.toLowerCase().includes(kw.toLowerCase().trim())) {
+            suggestedCategory = cat;
+            summary = summary || `Keyword "${kw}" matches category ${cat}`;
+            break;
+          }
+        }
+        if (suggestedCategory) break;
+      }
+    }
+
+    return {
+      query,
+      summary: summary || 'No information found for this business.',
+      businessType,
+      suggestedCategory,
+      results,
+      searchUrl
+    };
+  }
+
   /* ---- Web Search for Context ---- */
 
   function getSearchCache() {
@@ -464,6 +677,8 @@ const Classifier = (() => {
     getTransactionContext,
     inferCategoryFromText,
     reclassifyAll,
+    detectAddress,
+    autoSearchAndClassify,
     PATTERN_RULES
   };
 })();
