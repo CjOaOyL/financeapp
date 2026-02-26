@@ -126,62 +126,57 @@ const Importer = (() => {
     const dateX = parseInt(Object.entries(dateXCounts).sort((a, b) => b[1] - a[1])[0][0]);
     console.log(`[Apple Card Parser] Date column X: ${dateX}`);
 
-    // Find amount items using increasingly lenient pattern matching
-    // Pattern 1: Standard currency format
-    const amountPattern = /^\d{1,3}(,\d{3})*\.\d{2}$/;
-    let amountItemsToUse = allItems.filter(it => amountPattern.test(it.text) && it.x > dateX + 200);
-    console.log(`[Apple Card Parser] Pattern 1 found: ${amountItemsToUse.length} amounts`);
+    // Find amount items — Apple Card uses formats like "-$15.00", "$5.51", "$1,456.99"
+    // Note: the minus sign comes BEFORE the dollar sign in Apple Card PDFs
+    const amountPattern = /^-?\$?\d{1,3}(,\d{3})*\.\d{2}$/;
+    const allAmountItems = allItems.filter(it => amountPattern.test(it.text) && it.x > dateX + 100);
+    console.log(`[Apple Card Parser] All amount-matching items: ${allAmountItems.length}`);
+    console.log(`[Apple Card Parser] Sample amount items:`, allAmountItems.slice(0, 8).map(it => `"${it.text}" (x=${it.x})`));
 
-    // Pattern 2: If not enough, try with optional minus/dollar
-    if (amountItemsToUse.length < 30) {
-      const betterAmountPattern = /^\$?-?\d{1,3}(,\d{3})*(\.\d{2})?$/;
-      amountItemsToUse = allItems.filter(it => 
-        betterAmountPattern.test(it.text) && it.x > dateX + 200
-      );
-      console.log(`[Apple Card Parser] Pattern 2 found: ${amountItemsToUse.length} amounts`);
-    }
-    
-    // Pattern 3: If still not enough, try very lenient (just numbers)
-    if (amountItemsToUse.length < 30) {
-      const basicNumPattern = /^-?\d{1,3}(,\d{3})*(\.\d{2})?$/;
-      amountItemsToUse = allItems.filter(it => 
-        basicNumPattern.test(it.text) && it.x > dateX + 150
-      );
-      console.log(`[Apple Card Parser] Pattern 3 found: ${amountItemsToUse.length} amounts`);
-    }
-    
-    // Debug: Show all numeric-looking items and their positions
-    const allNumeric = allItems.filter(it => /^\$?-?\d{1,3}(,\d{3})*(\.\d{2})?$/.test(it.text));
-    console.log(`[Apple Card Parser] Total numeric items: ${allNumeric.length}`);
-    console.log(`[Apple Card Parser] Numeric X-positions:`, 
-      [...new Set(allNumeric.map(it => Math.round(it.x / 10) * 10))].slice(0, 10).sort((a,b) => a-b));
-    console.log(`[Apple Card Parser] Sample numeric items:`, allNumeric.slice(0, 5).map(it => `"${it.text}" (x=${it.x})`));
-    
-    if (amountItemsToUse.length === 0) {
-      console.log(`[Apple Card Parser] NO AMOUNTS FOUND - trying fallback`);
+    if (allAmountItems.length === 0) {
+      console.log(`[Apple Card Parser] NO AMOUNTS FOUND - returning empty`);
       return [];
     }
-
-    // Find amount column X
+    
+    // Cluster by X position to find distinct columns
     const amountXCounts = {};
-    for (const it of amountItemsToUse) {
+    for (const it of allAmountItems) {
       const xr = Math.round(it.x / 10) * 10;
       amountXCounts[xr] = (amountXCounts[xr] || 0) + 1;
     }
     const amountXClusters = Object.entries(amountXCounts)
       .map(([x, c]) => ({ x: parseInt(x), count: c }))
       .sort((a, b) => a.x - b.x);
+    console.log(`[Apple Card Parser] Amount X clusters:`, amountXClusters);
     
-    if (amountXClusters.length === 0) return [];
-    const amountX = amountXClusters[0].x;
+    // Pick the RIGHTMOST cluster — that's the actual transaction/payment amount column
+    // (Leftmost dollar columns are usually Daily Cash amounts)
+    const amountX = amountXClusters[amountXClusters.length - 1].x;
+    console.log(`[Apple Card Parser] Using rightmost amount column X: ${amountX}`);
+    
+    // Filter to only items near the rightmost amount column (within 20px)
+    // Also exclude amounts on rows containing "Total" text (summary lines)
+    const totalLineYs = new Set();
+    for (const item of allItems) {
+      if (item.text.toLowerCase().includes('total')) {
+        totalLineYs.add(`${item.page}-${Math.round(item.y)}`);
+      }
+    }
+    const amountItemsToUse = allAmountItems.filter(it => {
+      const inColumn = Math.abs(Math.round(it.x / 10) * 10 - amountX) <= 20;
+      const onTotalLine = totalLineYs.has(`${it.page}-${Math.round(it.y)}`);
+      return inColumn && !onTotalLine;
+    });
+    console.log(`[Apple Card Parser] Filtered to ${amountItemsToUse.length} items in amount column (excl totals)`);
 
     // Collect description items (between date and amount columns)
     // Exclude percentage items (e.g., "2%", "1%") which are Daily Cash indicators
+    // Exclude dollar amounts (Daily Cash column at x≈446)
     const descItems = allItems.filter(it => 
-      it.x > dateX + 30 && it.x < amountX - 20 && 
+      it.x > dateX + 30 && it.x < amountX - 50 && 
       it.text.length > 1 && 
       !/%$/.test(it.text) &&  // Exclude percentages
-      !it.text.match(/^[\d.]+$/)  // Exclude pure numbers (Daily Cash amounts)
+      !amountPattern.test(it.text)  // Exclude any dollar amounts (Daily Cash column)
     );
 
     // Detect section headers to determine transaction type more accurately
@@ -206,6 +201,8 @@ const Importer = (() => {
       }
     }
 
+    console.log(`[Apple Card Parser] Section boundaries found:`, sectionBoundaries);
+
     // Build transactions per page
     const transactions = [];
     const pagesWithDates = [...new Set(dateItems.map(d => d.page))];
@@ -214,6 +211,13 @@ const Importer = (() => {
       const pgDates = dateItems.filter(d => d.page === pg).sort((a, b) => b.y - a.y);
       const pgDescs = descItems.filter(d => d.page === pg).sort((a, b) => b.y - a.y);
       const pgAmounts = amountItemsToUse.filter(d => d.page === pg).sort((a, b) => b.y - a.y);
+      
+      console.log(`[Apple Card Parser] Page ${pg}: ${pgDates.length} dates, ${pgDescs.length} descs, ${pgAmounts.length} amounts`);
+      
+      if (pgAmounts.length === 0) {
+        console.log(`[Apple Card Parser] Page ${pg}: skipping - no amounts`);
+        continue;
+      }
 
       // Build description rows
       const descRows = [];
@@ -225,8 +229,7 @@ const Importer = (() => {
         // Skip headers and non-transaction text
         const lower = descText.toLowerCase();
         if (lower.includes('date') || lower.includes('description') || lower.includes('daily cash') ||
-            lower.includes('total') || lower.includes('amount') || 
-            lower === 'for jermel levons' || lower === 'for janesha levons') continue;
+            lower.includes('total') || lower.includes('amount')) continue;
 
         descRows.push({ y: dateItem.y, date: dateItem.text, desc: descText });
       }
@@ -240,7 +243,7 @@ const Importer = (() => {
         const lower = descItem.text.toLowerCase();
         if (lower.includes('payments') || lower.includes('transactions') || lower.includes('total')) continue;
 
-        // Find closest preceding row
+        // Find closest preceding row (in pdf.js, preceding = higher Y on same page)
         let closest = null;
         let closestDist = Infinity;
         for (const dr of descRows) {
@@ -252,48 +255,65 @@ const Importer = (() => {
         }
         if (closest) closest.desc += ' ' + descItem.text;
       }
+      
+      console.log(`[Apple Card Parser] Page ${pg}: ${descRows.length} transaction rows built`);
 
       // Match amounts to descriptions by Y-position proximity
       for (const dr of descRows) {
         // Find amount closest in Y to this description
-        const closestAmount = pgAmounts.reduce((closest, amt) => {
+        let closestAmount = pgAmounts[0];
+        let closestDist = Math.abs(pgAmounts[0].y - dr.y);
+        for (const amt of pgAmounts) {
           const dist = Math.abs(amt.y - dr.y);
-          const closestDist = Math.abs(closest.y - dr.y);
-          return dist < closestDist ? amt : closest;
-        });
+          if (dist < closestDist) {
+            closestDist = dist;
+            closestAmount = amt;
+          }
+        }
+        
+        // Skip if closest amount is too far (>15 units) — probably mismatched
+        if (closestDist > 15) {
+          console.log(`[Apple Card Parser] Skipping row "${dr.desc}" — closest amount ${closestAmount.text} is ${closestDist.toFixed(1)} units away`);
+          continue;
+        }
 
         const dateStr = dr.date;
         const rawDesc = dr.desc;
 
-        // Determine transaction type based on section type and description hints
-        // Default: check section type, then fall back to keywords
+        // Determine section: find the most recent section boundary before this row
+        // Works across pages: check same page (above = higher Y in pdf.js) or earlier pages
+        let rowSection = null;
+        for (const s of sectionBoundaries) {
+          if (s.page < pg || (s.page === pg && s.y > dr.y)) {
+            // This section header comes before the current row in reading order
+            if (!rowSection || s.page > rowSection.page || (s.page === rowSection.page && s.y < rowSection.y)) {
+              rowSection = s; // pick the closest preceding section header
+            }
+          }
+        }
+
         let isIncome = false;
-        
-        // Find which section this row belongs to (by page and Y position)
-        const rowSection = sectionBoundaries
-          .filter(s => s.page === pg)
-          .sort((a, b) => a.y - b.y)
-          .reverse()
-          .find(s => s.y > dr.y);
-        
         if (rowSection) {
-          isIncome = (rowSection.type === 'Payments'); // Payments = income/credits
+          isIncome = (rowSection.type === 'Payments');
         } else {
-          // Fallback: use keywords
           const lower = rawDesc.toLowerCase();
-          isIncome = lower.includes('ach') || 
-                     lower.includes('internet transfer') ||
-                     lower.includes('payment');
+          isIncome = lower.includes('ach') || lower.includes('internet transfer') || lower.includes('payment');
         }
 
         const cleanResult = DescriptionCleaner.clean(rawDesc);
         const cleanedDesc = cleanResult.cleaned;
-        const amount = Math.abs(parseFloat(closestAmount.text.replace(/,/g, '')));
+        // Strip $, -, and commas to get the numeric value
+        const amount = Math.abs(parseFloat(closestAmount.text.replace(/[$,]/g, '')));
         
         // Extract cardholder from section
         let cardholder = 'Unknown';
         if (rowSection && rowSection.cardholder) {
           cardholder = rowSection.cardholder.trim();
+        }
+
+        if (isNaN(amount) || amount === 0) {
+          console.log(`[Apple Card Parser] Skipping row "${dr.desc}" — invalid amount from "${closestAmount.text}"`);
+          continue;
         }
 
         transactions.push({
@@ -314,7 +334,8 @@ const Importer = (() => {
 
     console.log(`[Apple Card Parser] Final result: ${transactions.length} transactions extracted`);
     if (transactions.length > 0) {
-      console.log(`[Apple Card Parser] Sample:`, transactions[0]);
+      console.log(`[Apple Card Parser] First:`, transactions[0]);
+      console.log(`[Apple Card Parser] Last:`, transactions[transactions.length - 1]);
     }
     return transactions;
   }
