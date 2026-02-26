@@ -73,7 +73,9 @@ const Importer = (() => {
     const mmddyyyyPattern = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
     const dateItems = allItems.filter(it => mmddyyyyPattern.test(it.text));
     if (dateItems.length === 0) return [];
-
+    
+    console.log(`[Apple Card Parser] Found ${dateItems.length} date items`);
+    console.log(`[Apple Card Parser] Sample dates:`, dateItems.slice(0, 3).map(d => `${d.text} (x=${d.x})`));
     // Find the most common X position for dates
     const dateXCounts = {};
     for (const it of dateItems) {
@@ -81,11 +83,13 @@ const Importer = (() => {
       dateXCounts[xr] = (dateXCounts[xr] || 0) + 1;
     }
     const dateX = parseInt(Object.entries(dateXCounts).sort((a, b) => b[1] - a[1])[0][0]);
+    console.log(`[Apple Card Parser] Date column X: ${dateX}`);
 
     // Find amount items using increasingly lenient pattern matching
     // Pattern 1: Standard currency format
     const amountPattern = /^\d{1,3}(,\d{3})*\.\d{2}$/;
     let amountItemsToUse = allItems.filter(it => amountPattern.test(it.text) && it.x > dateX + 200);
+    console.log(`[Apple Card Parser] Pattern 1 found: ${amountItemsToUse.length} amounts`);
 
     // Pattern 2: If not enough, try with optional minus/dollar
     if (amountItemsToUse.length < 30) {
@@ -93,6 +97,7 @@ const Importer = (() => {
       amountItemsToUse = allItems.filter(it => 
         betterAmountPattern.test(it.text) && it.x > dateX + 200
       );
+      console.log(`[Apple Card Parser] Pattern 2 found: ${amountItemsToUse.length} amounts`);
     }
     
     // Pattern 3: If still not enough, try very lenient (just numbers)
@@ -101,9 +106,20 @@ const Importer = (() => {
       amountItemsToUse = allItems.filter(it => 
         basicNumPattern.test(it.text) && it.x > dateX + 150
       );
+      console.log(`[Apple Card Parser] Pattern 3 found: ${amountItemsToUse.length} amounts`);
     }
     
-    if (amountItemsToUse.length === 0) return [];
+    // Debug: Show all numeric-looking items and their positions
+    const allNumeric = allItems.filter(it => /^\$?-?\d{1,3}(,\d{3})*(\.\d{2})?$/.test(it.text));
+    console.log(`[Apple Card Parser] Total numeric items: ${allNumeric.length}`);
+    console.log(`[Apple Card Parser] Numeric X-positions:`, 
+      [...new Set(allNumeric.map(it => Math.round(it.x / 10) * 10))].slice(0, 10).sort((a,b) => a-b));
+    console.log(`[Apple Card Parser] Sample numeric items:`, allNumeric.slice(0, 5).map(it => `"${it.text}" (x=${it.x})`));
+    
+    if (amountItemsToUse.length === 0) {
+      console.log(`[Apple Card Parser] NO AMOUNTS FOUND - trying fallback`);
+      return [];
+    }
 
     // Find amount column X
     const amountXCounts = {};
@@ -248,6 +264,10 @@ const Importer = (() => {
       }
     }
 
+    console.log(`[Apple Card Parser] Final result: ${transactions.length} transactions extracted`);
+    if (transactions.length > 0) {
+      console.log(`[Apple Card Parser] Sample:`, transactions[0]);
+    }
     return transactions;
   }
 
