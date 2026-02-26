@@ -13,18 +13,31 @@ const Importer = (() => {
    * Falls back to line-by-line heuristic parsing if spatial method yields nothing.
    */
   async function parsePDF(file) {
+    console.log(`[PDF Parser] Starting PDF import for: ${file.name}`);
     const arrayBuf = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuf }).promise;
+    console.log(`[PDF Parser] PDF loaded, ${pdf.numPages} pages`);
 
     // Try Apple Card format first (MM/DD/YYYY dates with cardholder sections)
+    console.log(`[PDF Parser] Attempting Apple Card parser...`);
     const appleCardTxs = await parseAppleCardPDF(pdf, file.name);
-    if (appleCardTxs.length > 0) return appleCardTxs;
+    console.log(`[PDF Parser] Apple Card parser returned ${appleCardTxs.length} transactions`);
+    if (appleCardTxs.length > 0) {
+      console.log(`[PDF Parser] Using Apple Card results`);
+      return appleCardTxs;
+    }
 
     // Try spatial (coordinate-based) extraction for Navy Federal format
+    console.log(`[PDF Parser] Attempting spatial (Navy Federal) parser...`);
     const spatialTxs = await parsePDFSpatial(pdf, file.name);
-    if (spatialTxs.length > 0) return spatialTxs;
+    console.log(`[PDF Parser] Spatial parser returned ${spatialTxs.length} transactions`);
+    if (spatialTxs.length > 0) {
+      console.log(`[PDF Parser] Using spatial results`);
+      return spatialTxs;
+    }
 
     // Fall back to line-by-line heuristic
+    console.log(`[PDF Parser] Attempting fallback heuristic parser...`);
     let fullText = '';
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
@@ -32,7 +45,9 @@ const Importer = (() => {
       const strings = content.items.map(item => item.str);
       fullText += strings.join(' ') + '\n';
     }
-    return extractTransactionsFromText(fullText, file.name);
+    const heuristicTxs = extractTransactionsFromText(fullText, file.name);
+    console.log(`[PDF Parser] Heuristic parser returned ${heuristicTxs.length} transactions`);
+    return heuristicTxs;
   }
 
   /**
@@ -40,6 +55,7 @@ const Importer = (() => {
    * (MM/DD/YYYY dates, separate Payments and Transactions sections, Daily Cash)
    */
   async function parseAppleCardPDF(pdf, sourceName) {
+    console.log(`[Apple Card Parser] Started parsing`);
     // Extract all text to detect if this is an Apple Card statement
     let fullText = '';
     for (let i = 1; i <= pdf.numPages; i++) {
@@ -50,10 +66,26 @@ const Importer = (() => {
     }
 
     // Check if this looks like an Apple Card statement
-    if (!fullText.includes('Apple Card') && !fullText.includes('Goldman Sachs') && 
-        !(fullText.includes('Payments') && fullText.includes('Transactions') && fullText.includes('Daily Cash'))) {
+    const hasAppleCard = fullText.includes('Apple Card');
+    const hasGoldmanSachs = fullText.includes('Goldman Sachs');
+    const hasPayments = fullText.includes('Payments');
+    const hasTransactions = fullText.includes('Transactions');
+    const hasDailyCash = fullText.includes('Daily Cash');
+    
+    console.log(`[Apple Card Parser] Detection check:`);
+    console.log(`  - Apple Card: ${hasAppleCard}`);
+    console.log(`  - Goldman Sachs: ${hasGoldmanSachs}`);
+    console.log(`  - Payments: ${hasPayments}`);
+    console.log(`  - Transactions: ${hasTransactions}`);
+    console.log(`  - Daily Cash: ${hasDailyCash}`);
+    
+    if (!hasAppleCard && !hasGoldmanSachs && 
+        !(hasPayments && hasTransactions && hasDailyCash)) {
+      console.log(`[Apple Card Parser] Not detected as Apple Card - returning empty`);
       return [];
     }
+    
+    console.log(`[Apple Card Parser] Detected as Apple Card - proceeding with extraction`);
 
     // Collect all text items with coordinates from every page
     const allItems = [];
@@ -68,11 +100,17 @@ const Importer = (() => {
         allItems.push({ x, y, text, page: i, width: item.width });
       }
     }
+    
+    console.log(`[Apple Card Parser] Collected ${allItems.length} text items total`);
 
     // Find date column (MM/DD/YYYY format at left)
     const mmddyyyyPattern = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
     const dateItems = allItems.filter(it => mmddyyyyPattern.test(it.text));
-    if (dateItems.length === 0) return [];
+    console.log(`[Apple Card Parser] Found ${dateItems.length} MM/DD/YYYY dates`);
+    if (dateItems.length === 0) {
+      console.log(`[Apple Card Parser] No dates found - returning empty`);
+      return [];
+    }
     
     console.log(`[Apple Card Parser] Found ${dateItems.length} date items`);
     console.log(`[Apple Card Parser] Sample dates:`, dateItems.slice(0, 3).map(d => `${d.text} (x=${d.x})`));
