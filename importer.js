@@ -316,8 +316,11 @@ const Importer = (() => {
           continue;
         }
 
+        // Normalize date from MM/DD/YYYY to YYYY-MM-DD
+        const normalizedDate = normalizeDate(dateStr) || dateStr;
+
         transactions.push({
-          date: dateStr,
+          date: normalizedDate,
           description: cleanedDesc,
           amount,
           category: isIncome ? 'Income' : DataManager.autoCategory(cleanedDesc),
