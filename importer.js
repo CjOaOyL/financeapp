@@ -82,14 +82,32 @@ const Importer = (() => {
     }
     const dateX = parseInt(Object.entries(dateXCounts).sort((a, b) => b[1] - a[1])[0][0]);
 
-    // Find description and amount columns
+    // Find amount items using increasingly lenient pattern matching
+    // Pattern 1: Standard currency format
     const amountPattern = /^\d{1,3}(,\d{3})*\.\d{2}$/;
-    const amountItems = allItems.filter(it => amountPattern.test(it.text) && it.x > dateX + 200);
-    if (amountItems.length === 0) return [];
+    let amountItemsToUse = allItems.filter(it => amountPattern.test(it.text) && it.x > dateX + 200);
 
-    // Find amount column X (leftmost numeric cluster)
+    // Pattern 2: If not enough, try with optional minus/dollar
+    if (amountItemsToUse.length < 30) {
+      const betterAmountPattern = /^\$?-?\d{1,3}(,\d{3})*(\.\d{2})?$/;
+      amountItemsToUse = allItems.filter(it => 
+        betterAmountPattern.test(it.text) && it.x > dateX + 200
+      );
+    }
+    
+    // Pattern 3: If still not enough, try very lenient (just numbers)
+    if (amountItemsToUse.length < 30) {
+      const basicNumPattern = /^-?\d{1,3}(,\d{3})*(\.\d{2})?$/;
+      amountItemsToUse = allItems.filter(it => 
+        basicNumPattern.test(it.text) && it.x > dateX + 150
+      );
+    }
+    
+    if (amountItemsToUse.length === 0) return [];
+
+    // Find amount column X
     const amountXCounts = {};
-    for (const it of amountItems) {
+    for (const it of amountItemsToUse) {
       const xr = Math.round(it.x / 10) * 10;
       amountXCounts[xr] = (amountXCounts[xr] || 0) + 1;
     }
@@ -138,34 +156,39 @@ const Importer = (() => {
     for (const pg of pagesWithDates) {
       const pgDates = dateItems.filter(d => d.page === pg).sort((a, b) => b.y - a.y);
       const pgDescs = descItems.filter(d => d.page === pg).sort((a, b) => b.y - a.y);
-      const pgAmounts = amountItems.filter(d => d.page === pg).sort((a, b) => b.y - a.y);
+      const pgAmounts = amountItemsToUse.filter(d => d.page === pg).sort((a, b) => b.y - a.y);
 
       // Build description rows
       const descRows = [];
       for (const dateItem of pgDates) {
-        const nearDescs = pgDescs.filter(d => Math.abs(d.y - dateItem.y) < 4);
+        const nearDescs = pgDescs.filter(d => Math.abs(d.y - dateItem.y) < 6);
         if (nearDescs.length === 0) continue;
         const descText = nearDescs.map(d => d.text).join(' ');
 
         // Skip headers and non-transaction text
         const lower = descText.toLowerCase();
         if (lower.includes('date') || lower.includes('description') || lower.includes('daily cash') ||
-            lower.includes('total') || lower.includes('amount') || lower.includes('for ')) continue;
+            lower.includes('total') || lower.includes('amount') || 
+            lower === 'for jermel levons' || lower === 'for janesha levons') continue;
 
         descRows.push({ y: dateItem.y, date: dateItem.text, desc: descText });
       }
 
       // Append continuation lines to descriptions
       for (const descItem of pgDescs) {
-        const hasDate = pgDates.some(d => Math.abs(d.y - descItem.y) < 4);
+        const hasDate = pgDates.some(d => Math.abs(d.y - descItem.y) < 6);
         if (hasDate) continue;
+
+        // Skip section headers and non-transaction items
+        const lower = descItem.text.toLowerCase();
+        if (lower.includes('payments') || lower.includes('transactions') || lower.includes('total')) continue;
 
         // Find closest preceding row
         let closest = null;
         let closestDist = Infinity;
         for (const dr of descRows) {
           const dist = dr.y - descItem.y;
-          if (dist > 0 && dist < closestDist && dist < 15) {
+          if (dist > 0 && dist < closestDist && dist < 20) {
             closestDist = dist;
             closest = dr;
           }
@@ -173,11 +196,14 @@ const Importer = (() => {
         if (closest) closest.desc += ' ' + descItem.text;
       }
 
-      // Match amounts to descriptions (sequential)
-      const n = Math.min(descRows.length, pgAmounts.length);
-      for (let i = 0; i < n; i++) {
-        const dr = descRows[i];
-        const amtItem = pgAmounts[i];
+      // Match amounts to descriptions by Y-position proximity
+      for (const dr of descRows) {
+        // Find amount closest in Y to this description
+        const closestAmount = pgAmounts.reduce((closest, amt) => {
+          const dist = Math.abs(amt.y - dr.y);
+          const closestDist = Math.abs(closest.y - dr.y);
+          return dist < closestDist ? amt : closest;
+        });
 
         const dateStr = dr.date;
         const rawDesc = dr.desc;
@@ -205,7 +231,7 @@ const Importer = (() => {
 
         const cleanResult = DescriptionCleaner.clean(rawDesc);
         const cleanedDesc = cleanResult.cleaned;
-        const amount = Math.abs(parseFloat(amtItem.text.replace(/,/g, '')));
+        const amount = Math.abs(parseFloat(closestAmount.text.replace(/,/g, '')));
 
         transactions.push({
           date: dateStr,
