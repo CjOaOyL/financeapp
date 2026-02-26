@@ -754,6 +754,85 @@ tr.transfer-row:hover { opacity: .8; }
 }
 .auto-search-summary { color: var(--clr-text-muted); font-size: .7rem; font-style: italic; flex-basis: 100%; }
 
+/* ---- Vendor Match Preview ---- */
+.vendor-match-preview {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius);
+  padding: .8rem;
+}
+.vendor-match-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .6rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--clr-border);
+}
+.vendor-match-list {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.vendor-match-row {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  font-size: .82rem;
+  padding: .4rem .6rem;
+  background: var(--clr-surface-hover);
+  border-radius: 6px;
+  flex-wrap: wrap;
+}
+.vendor-match-name { font-weight: 600; min-width: 120px; }
+.vendor-match-count { color: var(--clr-text-muted); font-size: .75rem; }
+.vendor-match-arrow { color: var(--clr-text-muted); }
+.vendor-match-cat {
+  font-size: .75rem;
+  padding: .15rem .5rem;
+  background: rgba(99,102,241,.12);
+  color: var(--clr-primary);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.vendor-match-done { color: var(--clr-accent); font-size: .8rem; }
+
+/* ---- Vendor Toast Notification ---- */
+.vendor-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-primary);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  padding: 1rem 1.2rem;
+  z-index: 10000;
+  max-width: 420px;
+  transform: translateY(120%);
+  opacity: 0;
+  transition: transform .3s ease, opacity .3s ease;
+}
+.vendor-toast.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+.vendor-toast-content {
+  display: flex;
+  gap: .6rem;
+  align-items: flex-start;
+  margin-bottom: .7rem;
+}
+.vendor-toast-icon { font-size: 1.3rem; flex-shrink: 0; }
+.vendor-toast-text { font-size: .85rem; line-height: 1.4; }
+.vendor-toast-actions {
+  display: flex;
+  gap: .5rem;
+  justify-content: flex-end;
+}
+
 /* ---- Classify Responsive ---- */
 @media (max-width: 900px) {
   .classify-board {

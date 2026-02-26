@@ -525,6 +525,67 @@
     renderClassifyBoard();
   });
 
+  // Vendor Match button — apply known vendor categories to unclassified siblings
+  document.getElementById('btn-vendor-match').addEventListener('click', () => {
+    const statusEl = document.getElementById('vendor-match-status');
+    const actionable = Classifier.getActionableVendorGroups();
+
+    if (actionable.length === 0) {
+      statusEl.textContent = 'No vendor matches found. Classify at least one transaction from a vendor first, then other instances will be auto-matched.';
+      statusEl.className = 'status-text';
+      return;
+    }
+
+    // Show preview before applying
+    const previewHtml = actionable.map(g =>
+      `<div class="vendor-match-row">
+        <span class="vendor-match-name">${escHtml(g.name)}</span>
+        <span class="vendor-match-count">${g.unclassifiedCount} unclassified</span>
+        <span class="vendor-match-arrow">→</span>
+        <span class="vendor-match-cat">${getCategoryIcon(g.dominantCategory)} ${g.dominantCategory}</span>
+        <button class="btn btn-sm btn-accent vendor-apply-one" data-vendor-key="${escHtml(g.vendorKey)}" data-cat="${escHtml(g.dominantCategory)}">✓ Apply</button>
+        <button class="btn btn-sm btn-secondary vendor-skip-one" data-vendor-key="${escHtml(g.vendorKey)}">✕ Skip</button>
+      </div>`
+    ).join('');
+
+    const totalCount = actionable.reduce((s, g) => s + g.unclassifiedCount, 0);
+    statusEl.innerHTML = `
+      <div class="vendor-match-preview">
+        <div class="vendor-match-header">
+          <strong>🏪 Found ${actionable.length} vendor${actionable.length > 1 ? 's' : ''} with ${totalCount} unclassified transaction${totalCount > 1 ? 's' : ''}</strong>
+          <button id="btn-vendor-apply-all" class="btn btn-sm btn-accent">✓ Apply All</button>
+        </div>
+        <div class="vendor-match-list">${previewHtml}</div>
+      </div>`;
+    statusEl.className = 'status-text';
+
+    // Apply All button
+    document.getElementById('btn-vendor-apply-all').addEventListener('click', () => {
+      const result = Classifier.applyAllVendorCategories();
+      statusEl.innerHTML = `✅ Applied vendor categories: ${result.totalUpdated} transaction${result.totalUpdated > 1 ? 's' : ''} across ${result.groupsApplied} vendor${result.groupsApplied > 1 ? 's' : ''} updated.`;
+      statusEl.className = 'status-text success';
+      refreshClassify();
+    });
+
+    // Individual Apply buttons
+    statusEl.querySelectorAll('.vendor-apply-one').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.vendorKey;
+        const cat = btn.dataset.cat;
+        const count = Classifier.applyVendorCategory(key, cat);
+        btn.closest('.vendor-match-row').innerHTML = `<span class="vendor-match-done">✅ Applied ${cat} to ${count} transaction${count > 1 ? 's' : ''}</span>`;
+        refreshClassify();
+      });
+    });
+
+    // Skip buttons
+    statusEl.querySelectorAll('.vendor-skip-one').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.vendor-match-row').remove();
+      });
+    });
+  });
+
   // Auto-Search Addresses button
   document.getElementById('btn-auto-search').addEventListener('click', async () => {
     const btn = document.getElementById('btn-auto-search');
@@ -603,10 +664,15 @@
     const unknown = classifyAnalysis.filter(a => !a.suggestedCategory);
 
     // Update stats
+    // Vendor match stat
+    const vendorMatchCount = Classifier.getActionableVendorGroups()
+      .reduce((s, g) => s + g.unclassifiedCount, 0);
+
     document.getElementById('stat-total').textContent = totalCount;
     document.getElementById('stat-unclassified').textContent = unclassifiedAll.length;
     document.getElementById('stat-suggested').textContent = withSuggestions.length;
     document.getElementById('stat-unknown').textContent = unknown.length;
+    document.getElementById('stat-vendor-matches').textContent = vendorMatchCount;
 
     // Render unclassified column
     const unclassifiedEl = document.getElementById('unclassified-items');
@@ -726,6 +792,7 @@
         const txId = btn.dataset.txId;
         const cat = btn.dataset.cat;
         DataManager.update(txId, { category: cat });
+        promptVendorSiblings(txId, cat);
         refreshClassify();
       });
     });
@@ -783,10 +850,81 @@
         return;
       }
 
-      // Update this transaction's category
-      DataManager.update(txId, { category: targetCategory });
+      // Update this transaction's category (mark as manual since user dragged it)
+      DataManager.update(txId, { category: targetCategory, _manualOverride: true });
+      promptVendorSiblings(txId, targetCategory);
       refreshClassify();
     });
+  }
+
+  /* ---- Vendor Sibling Auto-Prompt ---- */
+
+  /**
+   * After classifying a transaction, check if the same vendor has other
+   * unclassified transactions and offer to apply the same category.
+   */
+  function promptVendorSiblings(txId, category) {
+    const result = Classifier.findVendorSiblings(txId);
+    if (!result || result.siblings.length === 0) return;
+
+    const { vendorName, siblings, vendorKey } = result;
+    const count = siblings.length;
+
+    // Show a toast notification offering to apply to siblings
+    showVendorToast(vendorName, category, count, vendorKey);
+  }
+
+  function showVendorToast(vendorName, category, count, vendorKey) {
+    // Remove any existing toast
+    const existing = document.getElementById('vendor-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'vendor-toast';
+    toast.className = 'vendor-toast';
+    toast.innerHTML = `
+      <div class="vendor-toast-content">
+        <span class="vendor-toast-icon">🏪</span>
+        <span class="vendor-toast-text">
+          <strong>${count}</strong> more transaction${count > 1 ? 's' : ''} from <strong>${escHtml(vendorName)}</strong> ${count > 1 ? 'are' : 'is'} unclassified.
+          Apply <strong>${category}</strong> to all?
+        </span>
+      </div>
+      <div class="vendor-toast-actions">
+        <button class="btn btn-sm btn-accent" id="vendor-toast-apply">✓ Apply to All ${count}</button>
+        <button class="btn btn-sm btn-secondary" id="vendor-toast-dismiss">✕ No Thanks</button>
+      </div>
+    `;
+    document.body.appendChild(toast);
+
+    // Animate in
+    requestAnimationFrame(() => toast.classList.add('visible'));
+
+    // Apply button
+    document.getElementById('vendor-toast-apply').addEventListener('click', () => {
+      const updated = Classifier.applyVendorCategory(vendorKey, category);
+      toast.classList.remove('visible');
+      setTimeout(() => toast.remove(), 300);
+      refreshClassify();
+      // Brief success feedback
+      const statusEl = document.getElementById('vendor-match-status');
+      statusEl.textContent = `✅ Applied ${category} to ${updated} transaction${updated > 1 ? 's' : ''} from ${vendorName}.`;
+      statusEl.className = 'status-text success';
+    });
+
+    // Dismiss button
+    document.getElementById('vendor-toast-dismiss').addEventListener('click', () => {
+      toast.classList.remove('visible');
+      setTimeout(() => toast.remove(), 300);
+    });
+
+    // Auto-dismiss after 12 seconds
+    setTimeout(() => {
+      if (document.getElementById('vendor-toast')) {
+        toast.classList.remove('visible');
+        setTimeout(() => { if (toast.parentNode) toast.remove(); }, 300);
+      }
+    }, 12000);
   }
 
   /* ---- Context / Info Panel ---- */
@@ -845,8 +983,11 @@
     // Attach quick-cat handlers
     body.querySelectorAll('.quick-cat-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        DataManager.update(btn.dataset.txId, { category: btn.dataset.cat });
+        const txId = btn.dataset.txId;
+        const cat = btn.dataset.cat;
+        DataManager.update(txId, { category: cat, _manualOverride: true });
         panel.classList.add('hidden');
+        promptVendorSiblings(txId, cat);
         refreshClassify();
       });
     });
@@ -889,8 +1030,11 @@
       // Attach apply button
       searchSection.querySelectorAll('.apply-search-cat').forEach(btn => {
         btn.addEventListener('click', () => {
-          DataManager.update(btn.dataset.txId, { category: btn.dataset.cat });
+          const txId = btn.dataset.txId;
+          const cat = btn.dataset.cat;
+          DataManager.update(txId, { category: cat });
           panel.classList.add('hidden');
+          promptVendorSiblings(txId, cat);
           refreshClassify();
         });
       });

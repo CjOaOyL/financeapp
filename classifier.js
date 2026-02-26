@@ -234,6 +234,204 @@ const Classifier = (() => {
     return (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
   }
 
+  /* ---- Vendor Normalization & Grouping ---- */
+
+  /**
+   * Normalize a transaction to a canonical vendor key.
+   * Uses resolved _merchant when available, otherwise strips
+   * addresses, store numbers, and noise from the cleaned description.
+   */
+  function normalizeVendorKey(tx) {
+    // 1) If DescriptionCleaner already resolved a merchant name, use it
+    if (tx._merchant) {
+      return tx._merchant.toLowerCase().trim();
+    }
+
+    let name = (tx.description || tx._originalDesc || '').trim();
+    if (!name) return '';
+
+    // 2) Strip store/location numbers: #1234, Store 456, Ste 12, Unit 3
+    name = name.replace(/\s*#\d+/g, '');
+    name = name.replace(/\b(?:store|ste|suite|unit|loc|location)\s*#?\d+/gi, '');
+
+    // 3) Strip address components: street numbers, City ST, zip codes
+    name = name.replace(/\s+\d{1,5}\s+[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*\s+(?:St|Street|Ave|Avenue|Blvd|Boulevard|Dr|Drive|Rd|Road|Ln|Lane|Way|Ct|Court|Pl|Place|Cir|Circle|Pkwy|Parkway|Hwy|Highway|Pike|Ter|Terrace|Trail|Trl)\b.*/i, '');
+    name = name.replace(new RegExp(',?\\s*(?:' + US_STATES + ')(?:\\s+\\d{5}(?:-\\d{4})?)?\\s*$', 'i'), '');
+    name = name.replace(/\s+\d{5}(-\d{4})?\s*$/, ''); // trailing zip
+
+    // 4) Strip trailing digits/codes (6+ digits)
+    name = name.replace(/\s+\d{6,}\s*$/, '');
+
+    // 5) Collapse whitespace and lowercase
+    name = name.replace(/\s{2,}/g, ' ').trim().toLowerCase();
+
+    // 6) Try matching against the merchant lookup for further normalization
+    if (typeof DescriptionCleaner !== 'undefined' && DescriptionCleaner.MERCHANT_LOOKUP) {
+      const lookup = DescriptionCleaner.MERCHANT_LOOKUP;
+      for (const [key, resolved] of Object.entries(lookup)) {
+        if (name.startsWith(key) || name.includes(key)) {
+          return resolved.toLowerCase();
+        }
+      }
+    }
+
+    return name;
+  }
+
+  /**
+   * Group ALL transactions by normalized vendor key.
+   * Returns an object: { vendorKey: { name, transactions[], classified[], unclassified[], dominantCategory } }
+   */
+  function getVendorGroups() {
+    const all = DataManager.getAll();
+    const groups = {};
+
+    for (const tx of all) {
+      const key = normalizeVendorKey(tx);
+      if (!key || key.length < 2) continue; // skip empty/tiny keys
+
+      if (!groups[key]) {
+        groups[key] = {
+          name: tx._merchant || tx.description,
+          transactions: [],
+          classified: [],
+          unclassified: []
+        };
+      }
+      groups[key].transactions.push(tx);
+      if (tx.category === 'Other') {
+        groups[key].unclassified.push(tx);
+      } else {
+        groups[key].classified.push(tx);
+      }
+    }
+
+    // Determine dominant category for each group (most common non-Other category)
+    for (const group of Object.values(groups)) {
+      if (group.classified.length > 0) {
+        const catCounts = {};
+        for (const tx of group.classified) {
+          catCounts[tx.category] = (catCounts[tx.category] || 0) + 1;
+        }
+        group.dominantCategory = Object.entries(catCounts)
+          .sort((a, b) => b[1] - a[1])[0][0];
+      } else {
+        group.dominantCategory = null;
+      }
+    }
+
+    return groups;
+  }
+
+  /**
+   * Get vendor groups that have actionable matches:
+   * groups where at least one tx is classified AND at least one is unclassified.
+   * Returns sorted array of { vendorKey, name, dominantCategory, classifiedCount, unclassifiedCount, unclassifiedTxs }
+   */
+  function getActionableVendorGroups() {
+    const groups = getVendorGroups();
+    const actionable = [];
+
+    for (const [key, group] of Object.entries(groups)) {
+      if (group.classified.length > 0 && group.unclassified.length > 0) {
+        actionable.push({
+          vendorKey: key,
+          name: group.name,
+          dominantCategory: group.dominantCategory,
+          classifiedCount: group.classified.length,
+          unclassifiedCount: group.unclassified.length,
+          unclassifiedTxs: group.unclassified
+        });
+      }
+    }
+
+    // Sort by unclassified count descending
+    actionable.sort((a, b) => b.unclassifiedCount - a.unclassifiedCount);
+    return actionable;
+  }
+
+  /**
+   * Apply a category to all unclassified transactions matching a vendor key.
+   * Skips transactions with _manualOverride = true.
+   * Returns count of transactions updated.
+   */
+  function applyVendorCategory(vendorKey, category) {
+    const all = DataManager.getAll();
+    let count = 0;
+
+    for (const tx of all) {
+      if (tx.category !== 'Other') continue;
+      if (tx._manualOverride) continue;
+      const key = normalizeVendorKey(tx);
+      if (key === vendorKey) {
+        tx.category = category;
+        count++;
+      }
+    }
+
+    if (count > 0) DataManager.saveAll(all);
+    return count;
+  }
+
+  /**
+   * Apply vendor categories for ALL actionable vendor groups at once.
+   * Returns { totalUpdated, groupsApplied, details[] }
+   */
+  function applyAllVendorCategories() {
+    const actionable = getActionableVendorGroups();
+    const all = DataManager.getAll();
+    let totalUpdated = 0;
+    const details = [];
+
+    for (const group of actionable) {
+      let groupCount = 0;
+      for (const tx of all) {
+        if (tx.category !== 'Other') continue;
+        if (tx._manualOverride) continue;
+        const key = normalizeVendorKey(tx);
+        if (key === group.vendorKey) {
+          tx.category = group.dominantCategory;
+          groupCount++;
+        }
+      }
+      if (groupCount > 0) {
+        details.push({ name: group.name, category: group.dominantCategory, count: groupCount });
+        totalUpdated += groupCount;
+      }
+    }
+
+    if (totalUpdated > 0) DataManager.saveAll(all);
+    return { totalUpdated, groupsApplied: details.length, details };
+  }
+
+  /**
+   * Find sibling unclassified transactions for the same vendor as a given tx.
+   * Returns { vendorKey, vendorName, siblings[] } or null if no siblings.
+   */
+  function findVendorSiblings(txId) {
+    const all = DataManager.getAll();
+    const tx = all.find(t => t.id === txId);
+    if (!tx) return null;
+
+    const key = normalizeVendorKey(tx);
+    if (!key || key.length < 2) return null;
+
+    const siblings = all.filter(t =>
+      t.id !== txId &&
+      t.category === 'Other' &&
+      !t._manualOverride &&
+      normalizeVendorKey(t) === key
+    );
+
+    if (siblings.length === 0) return null;
+
+    return {
+      vendorKey: key,
+      vendorName: tx._merchant || tx.description,
+      siblings
+    };
+  }
+
   /* ---- Address Detection ---- */
 
   // US state abbreviations
@@ -679,6 +877,12 @@ const Classifier = (() => {
     reclassifyAll,
     detectAddress,
     autoSearchAndClassify,
+    normalizeVendorKey,
+    getVendorGroups,
+    getActionableVendorGroups,
+    applyVendorCategory,
+    applyAllVendorCategories,
+    findVendorSiblings,
     PATTERN_RULES
   };
 })();

@@ -384,9 +384,11 @@
           <button id="btn-reclassify" class="btn btn-primary">🔄 Re-classify with Updated Keywords</button>
           <button id="btn-analyze" class="btn btn-accent">🧠 Analyze Unclassified</button>
           <button id="btn-auto-search" class="btn btn-secondary">🌐 Auto-Search Addresses</button>
+          <button id="btn-vendor-match" class="btn btn-secondary">🏪 Match Vendors</button>
         </div>
       </div>
       <div id="reclassify-status" class="status-text" style="margin-bottom:.5rem"></div>
+      <div id="vendor-match-status" class="status-text" style="margin-bottom:.5rem"></div>
       <div id="auto-search-status" class="status-text" style="margin-bottom:.5rem"></div>
       <div id="auto-search-progress" class="hidden" style="margin-bottom:.8rem">
         <div class="progress-bar-wrap"><div class="progress-bar-fill" id="search-progress-fill"></div></div>
@@ -399,6 +401,7 @@
         <span class="classify-stat"><strong id="stat-unclassified">0</strong> unclassified</span>
         <span class="classify-stat"><strong id="stat-suggested">0</strong> with suggestions</span>
         <span class="classify-stat"><strong id="stat-unknown">0</strong> unknown</span>
+        <span class="classify-stat"><strong id="stat-vendor-matches">0</strong> vendor matches</span>
       </div>
     </div>
 
