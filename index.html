@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personal Finance Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </script>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1>💰 Personal Finance Dashboard</h1>
+      <p class="subtitle">6-Month Expenditure Analysis &amp; Budget Planner</p>
+    </div>
+    <div class="header-actions">
+      <button id="btn-export-report" class="btn btn-accent" title="Export full report">📄 Export Report</button>
+      <button id="btn-export-csv" class="btn btn-secondary" title="Export transactions as CSV">⬇ Export CSV</button>
+      <button id="btn-clear-data" class="btn btn-danger" title="Clear all data">🗑 Clear Data</button>
+    </div>
+  </header>
+
+  <nav id="main-nav">
+    <button class="nav-btn active" data-tab="import">📥 Import Data</button>
+    <button class="nav-btn" data-tab="overview">📊 Overview</button>
+    <button class="nav-btn" data-tab="categories">🏷 Categories</button>
+    <button class="nav-btn" data-tab="trends">📈 Trends</button>
+    <button class="nav-btn" data-tab="merchants">🏪 Merchants</button>
+    <button class="nav-btn" data-tab="savings">💡 Savings</button>
+    <button class="nav-btn" data-tab="budget">🎯 Budget</button>
+  </nav>
+
+  <!-- ========== TAB: IMPORT ========== -->
+  <section id="tab-import" class="tab-content active">
+    <div class="card">
+      <h2>Import Transactions</h2>
+      <p class="info-text">Upload PDF bank statements, CSV exports, or enter transactions manually. Data is stored locally in your browser.</p>
+
+      <div class="import-grid">
+        <!-- PDF Import -->
+        <div class="import-box">
+          <h3>📄 PDF Bank Statements</h3>
+          <p>Upload PDF statements — text will be extracted and parsed for transactions.</p>
+          <label class="file-upload-label">
+            <input type="file" id="pdf-upload" accept=".pdf" multiple />
+            <span class="btn btn-primary">Choose PDF Files</span>
+          </label>
+          <div id="pdf-status" class="status-text"></div>
+          <!-- PDF Parse Preview -->
+          <div id="pdf-preview-area" class="hidden">
+            <h4>Extracted Transactions Preview</h4>
+            <p class="info-text" style="font-size:.8rem">Descriptions are auto-cleaned: POS/debit/credit prefixes stripped, truncated merchant names resolved, reference numbers removed. Original text preserved on hover.</p>
+            <div id="pdf-preview-table-wrap"></div>
+            <div class="btn-row">
+              <button id="btn-pdf-accept" class="btn btn-primary">Accept &amp; Import</button>
+              <button id="btn-pdf-reject" class="btn btn-secondary">Discard</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CSV Import -->
+        <div class="import-box">
+          <h3>📊 CSV Import</h3>
+          <p>Upload CSV exports from your bank. Map columns after upload.</p>
+          <label class="file-upload-label">
+            <input type="file" id="csv-upload" accept=".csv,.txt" multiple />
+            <span class="btn btn-primary">Choose CSV Files</span>
+          </label>
+          <div id="csv-status" class="status-text"></div>
+          <!-- CSV Column Mapping -->
+          <div id="csv-mapping-area" class="hidden">
+            <h4>Map CSV Columns</h4>
+            <div class="mapping-grid">
+              <label>Date Column: <select id="csv-col-date"></select></label>
+              <label>Description Column: <select id="csv-col-desc"></select></label>
+              <label>Amount Column: <select id="csv-col-amount"></select></label>
+              <label>Category Column (optional): <select id="csv-col-category"><option value="">— None —</option></select></label>
+            </div>
+            <label>Account Name: <input type="text" id="csv-account-name" placeholder="e.g. Chase Checking" /></label>
+            <div class="btn-row">
+              <button id="btn-csv-import" class="btn btn-primary">Import Transactions</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- JSON Import -->
+        <div class="import-box">
+          <h3>📋 JSON Import</h3>
+          <p>Load pre-extracted transaction data from JSON files.</p>
+          <label class="file-upload-label">
+            <input type="file" id="json-upload" accept=".json" />
+            <span class="btn btn-primary">Choose JSON File</span>
+          </label>
+          <div id="json-status" class="status-text"></div>
+          <div id="json-preview-area" class="hidden">
+            <h4>JSON Transactions Preview</h4>
+            <div id="json-preview-table-wrap"></div>
+            <div class="btn-row">
+              <button id="btn-json-accept" class="btn btn-primary">Accept &amp; Import</button>
+              <button id="btn-json-reject" class="btn btn-secondary">Discard</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manual Entry -->
+        <div class="import-box">
+          <h3>✏️ Manual Entry</h3>
+          <p>Add individual transactions manually.</p>
+          <form id="manual-form">
+            <label>Date: <input type="date" id="manual-date" required /></label>
+            <label>Description: <input type="text" id="manual-desc" placeholder="e.g. Starbucks" required /></label>
+            <label>Amount ($): <input type="number" id="manual-amount" step="0.01" placeholder="0.00" required /></label>
+            <label>Category:
+              <select id="manual-category">
+                <option value="Housing">Housing</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Groceries">Groceries</option>
+                <option value="Dining">Dining</option>
+                <option value="Transportation">Transportation</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Subscriptions">Subscriptions</option>
+                <option value="Insurance">Insurance</option>
+                <option value="Education">Education</option>
+                <option value="Personal Care">Personal Care</option>
+                <option value="Gifts & Donations">Gifts &amp; Donations</option>
+                <option value="Travel">Travel</option>
+                <option value="Income">Income</option>
+                <option value="Transfer">Transfer</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
+            <label>Account:
+              <input type="text" id="manual-account" placeholder="e.g. Chase Checking" />
+            </label>
+            <button type="submit" class="btn btn-primary">Add Transaction</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transaction Table -->
+    <div class="card">
+      <div class="card-header-row">
+        <h2>All Transactions <span id="tx-count" class="badge">0</span></h2>
+        <div class="filter-row">
+          <label>Account: <select id="filter-account"><option value="all">All</option></select></label>
+          <label>Category: <select id="filter-category"><option value="all">All</option></select></label>
+          <label>Month: <select id="filter-month"><option value="all">All</option></select></label>
+          <input type="text" id="filter-search" placeholder="Search description..." />
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="tx-table">
+          <thead>
+            <tr>
+              <th data-sort="date">Date ⇅</th>
+              <th data-sort="description">Description ⇅</th>
+              <th data-sort="amount">Amount ⇅</th>
+              <th data-sort="category">Category ⇅</th>
+              <th data-sort="account">Account ⇅</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tx-tbody"></tbody>
+        </table>
+      </div>
+      <div id="tx-pagination" class="pagination"></div>
+    </div>
+
+    <!-- Filtered Data Line Chart -->
+    <div class="card">
+      <h2>Spending Over Time</h2>
+      <p class="info-text">Daily totals for the current filtered transactions.</p>
+      <div class="chart-container" style="height:320px;position:relative">
+        <canvas id="chart-import-line"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TAB: OVERVIEW ========== -->
+  <section id="tab-overview" class="tab-content">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Total Spending (6 mo)</span>
+        <span id="kpi-total" class="kpi-value">$0.00</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Monthly Average</span>
+        <span id="kpi-avg" class="kpi-value">$0.00</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Highest Month</span>
+        <span id="kpi-high-month" class="kpi-value">—</span>
+        <span id="kpi-high-amount" class="kpi-sub">$0.00</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Lowest Month</span>
+        <span id="kpi-low-month" class="kpi-value">—</span>
+        <span id="kpi-low-amount" class="kpi-sub">$0.00</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Total Income</span>
+        <span id="kpi-income" class="kpi-value">$0.00</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Net Cash Flow</span>
+        <span id="kpi-net" class="kpi-value">$0.00</span>
+      </div>
+    </div>
+    <div class="chart-grid">
+      <div class="card">
+        <h3>Monthly Spending vs Income</h3>
+        <canvas id="chart-overview-bar"></canvas>
+      </div>
+      <div class="card">
+        <h3>Spending by Category (All Time)</h3>
+        <canvas id="chart-overview-pie"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TAB: CATEGORIES ========== -->
+  <section id="tab-categories" class="tab-content">
+    <div class="card">
+      <h2>Spending by Category</h2>
+      <div class="chart-grid">
+        <div><canvas id="chart-cat-pie"></canvas></div>
+        <div><canvas id="chart-cat-bar"></canvas></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Category Breakdown Table</h3>
+      <table id="cat-table">
+        <thead>
+          <tr><th>Category</th><th>Total</th><th>% of Spending</th><th>Avg/Month</th><th># Transactions</th></tr>
+        </thead>
+        <tbody id="cat-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========== TAB: TRENDS ========== -->
+  <section id="tab-trends" class="tab-content">
+    <div class="card">
+      <h2>Monthly Spending Trends</h2>
+      <canvas id="chart-trends-line"></canvas>
+    </div>
+    <div class="card">
+      <h3>Category Trends Over Time</h3>
+      <canvas id="chart-trends-stacked"></canvas>
+    </div>
+    <div class="card">
+      <h3>Month-over-Month Change</h3>
+      <canvas id="chart-trends-delta"></canvas>
+    </div>
+  </section>
+
+  <!-- ========== TAB: MERCHANTS ========== -->
+  <section id="tab-merchants" class="tab-content">
+    <div class="card">
+      <h2>Top Merchants / Payees</h2>
+      <canvas id="chart-merchants-bar"></canvas>
+    </div>
+    <div class="card">
+      <h3>Merchant Details</h3>
+      <table id="merchant-table">
+        <thead>
+          <tr><th>Merchant</th><th>Total Spent</th><th># Transactions</th><th>Avg per Transaction</th><th>Category</th></tr>
+        </thead>
+        <tbody id="merchant-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========== TAB: SAVINGS ========== -->
+  <section id="tab-savings" class="tab-content">
+    <div class="card">
+      <h2>💡 Savings Opportunities</h2>
+      <p class="info-text">Based on your spending patterns, here are personalized recommendations to reduce expenses.</p>
+      <div id="savings-recommendations"></div>
+    </div>
+    <div class="card">
+      <h3>Potential Monthly Savings</h3>
+      <div class="kpi-grid">
+        <div class="kpi-card highlight">
+          <span class="kpi-label">Estimated Savings</span>
+          <span id="kpi-savings" class="kpi-value">$0.00</span>
+          <span class="kpi-sub">per month</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Annual Projection</span>
+          <span id="kpi-savings-annual" class="kpi-value">$0.00</span>
+        </div>
+      </div>
+      <canvas id="chart-savings-waterfall"></canvas>
+    </div>
+  </section>
+
+  <!-- ========== TAB: BUDGET ========== -->
+  <section id="tab-budget" class="tab-content">
+    <div class="card">
+      <h2>🎯 Budget Targets</h2>
+      <p class="info-text">Set monthly budget targets per category. Targets are auto-populated from your average spending with a 10% reduction goal. Adjust as needed.</p>
+      <button id="btn-auto-budget" class="btn btn-primary">Auto-Generate from Averages</button>
+      <button id="btn-save-budget" class="btn btn-accent">Save Budget</button>
+      <table id="budget-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Avg Monthly Spend</th>
+            <th>Budget Target</th>
+            <th>Difference</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="budget-tbody"></tbody>
+        <tfoot>
+          <tr class="budget-total-row">
+            <td><strong>Total</strong></td>
+            <td id="budget-total-avg">$0.00</td>
+            <td id="budget-total-target">$0.00</td>
+            <td id="budget-total-diff">$0.00</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Budget vs Actual (Most Recent Month)</h3>
+      <canvas id="chart-budget-comparison"></canvas>
+    </div>
+  </section>
+
+  <footer>
+    <p>Data is stored locally in your browser (localStorage). No data is sent to any server.</p>
+  </footer>
+
+  <script src="dataManager.js"></script>
+  <script src="descriptionCleaner.js"></script>
+  <script src="importer.js"></script>
+  <script src="charts.js"></script>
+  <script src="analysis.js"></script>
+  <script src="budget.js"></script>
+  <script src="exporter.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
