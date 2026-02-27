@@ -635,6 +635,30 @@ const Classifier = (() => {
       }
     }
 
+    // 5) TransactionLookup.com fallback (HTML scrape via CORS proxy)
+    if (!suggestedCategory) {
+      try {
+        const lookupUrl = `https://www.transactionlookup.com/search?q=${encodeURIComponent(businessName)}`;
+        const corsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(lookupUrl)}`;
+        const resp = await fetch(corsUrl, { signal: AbortSignal.timeout(8000) });
+        if (resp.ok) {
+          const data = await resp.json();
+          const html = data.contents;
+          // Try to extract merchant and category from HTML (look for result table)
+          // Example: <td>Merchant Name</td> ... <td>Category</td>
+          const rowMatch = html.match(/<tr[^>]*>\s*<td[^>]*>(.*?)<\/td>\s*<td[^>]*>(.*?)<\/td>\s*<td[^>]*>(.*?)<\/td>/i);
+          if (rowMatch) {
+            const merchant = rowMatch[2].replace(/<[^>]+>/g, '').trim();
+            const category = rowMatch[3].replace(/<[^>]+>/g, '').trim();
+            if (category && category.length > 2 && category.toLowerCase() !== 'unknown') {
+              suggestedCategory = category;
+              summary = `TransactionLookup.com: ${merchant} → ${category}`;
+            }
+          }
+        }
+      } catch (e) { console.log('Classifier: TransactionLookup.com failed for', businessName, e.message); }
+    }
+
     return {
       query,
       summary: summary || 'No information found for this business.',
@@ -731,6 +755,29 @@ const Classifier = (() => {
       } catch (e) {
         console.log('Classifier: Wikipedia lookup failed', e.message);
       }
+    }
+
+    // TransactionLookup.com fallback (HTML scrape via CORS proxy)
+    if (!suggestedCategory) {
+      try {
+        const lookupUrl = `https://www.transactionlookup.com/search?q=${encodeURIComponent(query)}`;
+        const corsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(lookupUrl)}`;
+        const resp = await fetch(corsUrl, { signal: AbortSignal.timeout(8000) });
+        if (resp.ok) {
+          const data = await resp.json();
+          const html = data.contents;
+          // Try to extract merchant and category from HTML (look for result table)
+          const rowMatch = html.match(/<tr[^>]*>\s*<td[^>]*>(.*?)<\/td>\s*<td[^>]*>(.*?)<\/td>\s*<td[^>]*>(.*?)<\/td>/i);
+          if (rowMatch) {
+            const merchant = rowMatch[2].replace(/<[^>]+>/g, '').trim();
+            const category = rowMatch[3].replace(/<[^>]+>/g, '').trim();
+            if (category && category.length > 2 && category.toLowerCase() !== 'unknown') {
+              suggestedCategory = category;
+              summary = `TransactionLookup.com: ${merchant} → ${category}`;
+            }
+          }
+        }
+      } catch (e) { console.log('Classifier: TransactionLookup.com failed for', query, e.message); }
     }
 
     const result = {

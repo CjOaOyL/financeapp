@@ -56,7 +56,7 @@
   });
 
   /* ---- Header Actions ---- */
-  document.getElementById('btn-export-report').addEventListener('click', () => Exporter.exportReport());
+  document.getElementById('btn-export-report').addEventListener('click', () => Exporter.exportPDFReport());
   document.getElementById('btn-export-csv').addEventListener('click', () => Exporter.exportCSV());
   document.getElementById('btn-clear-data').addEventListener('click', () => {
     if (confirm('Delete all transaction data and budget targets? This cannot be undone.')) {
