@@ -469,6 +469,18 @@ const Classifier = (() => {
       }
     }
 
+    const fullAddressPattern = new RegExp(
+      '\\b\\d{1,6}\\s+[A-Za-z0-9\\.' + "'" + '\\-\\s]{2,70}\\s+(?:St|Street|Ave|Avenue|Blvd|Boulevard|Dr|Drive|Rd|Road|Ln|Lane|Way|Ct|Court|Pl|Place|Cir|Circle|Pkwy|Parkway|Hwy|Highway|Pike|Ter|Terrace|Trail|Trl)\\b(?:[^\\n]{0,60})?(?:\\b(?:' + US_STATES + ')\\b)?(?:\\s+\\d{5}(?:-\\d{4})?)?',
+      'i'
+    );
+    const fullAddressMatch = combined.replace(/\s{2,}/g, ' ').trim().match(fullAddressPattern);
+    if (fullAddressMatch) {
+      matched = true;
+      matchedParts.unshift(fullAddressMatch[0].trim());
+    }
+
+    matchedParts = [...new Set(matchedParts.map(p => p.replace(/\s{2,}/g, ' ').trim()).filter(Boolean))];
+
     if (!matched) return null;
 
     // Try to extract the business name (part before the address)
@@ -488,7 +500,7 @@ const Classifier = (() => {
     if (businessName.length < 2) businessName = cleaned || desc;
 
     // Build the most complete address text we can
-    const addressText = matchedParts.join(', ');
+    const addressText = matchedParts.slice(0, 3).join(', ');
 
     return { hasAddress: true, addressText, businessName };
   }
@@ -520,14 +532,14 @@ const Classifier = (() => {
 
       // Build search query: business name + address for specificity
       const searchQuery = `${businessName} ${addressText}`.trim();
-      const cacheKey = normForComparison(searchQuery);
+      const cacheKey = `addr_v2_${normForComparison(searchQuery)}`;
 
       // Check cache
       const cache = getSearchCache();
       let searchResult = cache[cacheKey];
 
       if (!searchResult) {
-        searchResult = await webSearchForBusiness(searchQuery, businessName);
+        searchResult = await webSearchForBusiness(searchQuery, businessName, addressText);
         // Cache it
         cache[cacheKey] = searchResult;
         setSearchCache(cache);
@@ -567,32 +579,73 @@ const Classifier = (() => {
   /**
    * Search for a business by name + address using multiple APIs.
    */
-  async function webSearchForBusiness(query, businessName) {
+  async function webSearchForBusiness(query, businessName, addressText = '') {
     let summary = '';
     let businessType = '';
     let suggestedCategory = null;
     let results = [];
-    const searchUrl = `https://duckduckgo.com/?q=${encodeURIComponent(query)}`;
+    const queryCandidates = buildSearchQueryCandidates(query, businessName, addressText);
+    const activeQuery = queryCandidates[0] || query || businessName || addressText;
+    const searchUrl = `https://duckduckgo.com/?q=${encodeURIComponent(activeQuery)}`;
+
+    if (addressText) {
+      for (const q of queryCandidates.slice(0, 3)) {
+        const osm = await openStreetMapLookup(q);
+        if (!osm) continue;
+        summary = summary || osm.summary;
+        businessType = businessType || osm.businessType;
+        if (osm.suggestedCategory && !suggestedCategory) suggestedCategory = osm.suggestedCategory;
+        if (osm.results && osm.results.length) results = [...results, ...osm.results].slice(0, 6);
+        if (suggestedCategory) break;
+      }
+    }
 
     // 1) DuckDuckGo Instant Answer
-    try {
-      const apiUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1&skip_disambig=1`;
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
-      const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
-      if (resp.ok) {
-        const proxyData = await resp.json();
-        const data = JSON.parse(proxyData.contents);
-        if (data.Abstract) summary = data.Abstract;
-        else if (data.AbstractText) summary = data.AbstractText;
-        if (data.Heading) businessType = data.Heading;
-        if (data.RelatedTopics) {
-          results = data.RelatedTopics.filter(t => t.Text).slice(0, 5).map(t => t.Text);
+    for (const q of queryCandidates) {
+      try {
+        const apiUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_redirect=1&no_html=1&skip_disambig=1`;
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
+        const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+        if (resp.ok) {
+          const proxyData = await resp.json();
+          const data = JSON.parse(proxyData.contents);
+          if (!summary) {
+            if (data.Abstract) summary = data.Abstract;
+            else if (data.AbstractText) summary = data.AbstractText;
+          }
+          if (!businessType && data.Heading) businessType = data.Heading;
+          if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+            const topicText = data.RelatedTopics.filter(t => t.Text).slice(0, 5).map(t => t.Text);
+            if (topicText.length > 0) {
+              results = [...results, ...topicText].slice(0, 6);
+            }
+          }
+          if (!suggestedCategory && (summary || results.length > 0)) {
+            suggestedCategory = inferCategoryFromText(`${summary} ${results.join(' ')}`);
+          }
+          if (summary || suggestedCategory) break;
         }
-        if (summary) suggestedCategory = inferCategoryFromText(summary + ' ' + results.join(' '));
-      }
-    } catch (e) { console.log('Classifier: DDG failed for', query, e.message); }
+      } catch (e) { console.log('Classifier: DDG failed for', q, e.message); }
+    }
 
-    // 2) Wikipedia fallback
+    // 2) DuckDuckGo HTML fallback (more useful for local/address searches)
+    if (!summary || !suggestedCategory) {
+      for (const q of queryCandidates) {
+        const htmlResult = await duckDuckGoHtmlSearch(q);
+        if (!htmlResult) continue;
+
+        if (!summary && htmlResult.summary) summary = htmlResult.summary;
+        if (htmlResult.results.length > 0) {
+          results = [...results, ...htmlResult.results].slice(0, 6);
+        }
+        if (!suggestedCategory) {
+          suggestedCategory = inferCategoryFromText(`${summary} ${results.join(' ')}`);
+        }
+        if (summary || suggestedCategory) break;
+      }
+    }
+
+    // 3) Wikipedia fallback
     if (!summary) {
       try {
         const wikiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(businessName)}`;
@@ -608,7 +661,7 @@ const Classifier = (() => {
       } catch (e) { console.log('Classifier: Wiki failed for', businessName, e.message); }
     }
 
-    // 3) If still no category, try inferring from the business name alone
+    // 4) If still no category, try inferring from the business name alone
     if (!suggestedCategory) {
       // Use our pattern rules on the business name
       const desc = businessName.toLowerCase();
@@ -621,7 +674,7 @@ const Classifier = (() => {
       }
     }
 
-    // 4) If still nothing, try keyword match on business name
+    // 5) If still nothing, try keyword match on business name
     if (!suggestedCategory) {
       for (const [cat, keywords] of Object.entries(DataManager.CATEGORY_KEYWORDS)) {
         for (const kw of keywords) {
@@ -635,7 +688,7 @@ const Classifier = (() => {
       }
     }
 
-    // 5) TransactionLookup.com fallback (HTML scrape via CORS proxy)
+    // 6) TransactionLookup.com fallback (HTML scrape via CORS proxy)
     if (!suggestedCategory) {
       try {
         const lookupUrl = `https://www.transactionlookup.com/search?q=${encodeURIComponent(businessName)}`;
@@ -651,7 +704,8 @@ const Classifier = (() => {
             const merchant = rowMatch[2].replace(/<[^>]+>/g, '').trim();
             const category = rowMatch[3].replace(/<[^>]+>/g, '').trim();
             if (category && category.length > 2 && category.toLowerCase() !== 'unknown') {
-              suggestedCategory = category;
+              const mappedCategory = inferCategoryFromText(`${merchant} ${category}`);
+              suggestedCategory = mappedCategory || category;
               summary = `TransactionLookup.com: ${merchant} → ${category}`;
             }
           }
@@ -667,6 +721,98 @@ const Classifier = (() => {
       results,
       searchUrl
     };
+  }
+
+  function buildSearchQueryCandidates(query, businessName, addressText) {
+    const normalizedBusiness = (businessName || '').replace(/\s{2,}/g, ' ').trim();
+    const normalizedAddress = (addressText || '').replace(/\s{2,}/g, ' ').trim();
+    const normalizedQuery = (query || '').replace(/\s{2,}/g, ' ').trim();
+
+    const candidates = [];
+
+    if (normalizedBusiness && normalizedAddress) {
+      candidates.push(`"${normalizedBusiness}" "${normalizedAddress}"`);
+      candidates.push(`${normalizedBusiness} ${normalizedAddress}`);
+      candidates.push(`${normalizedBusiness} near ${normalizedAddress}`);
+    }
+    if (normalizedQuery) candidates.push(normalizedQuery);
+    if (normalizedAddress) candidates.push(normalizedAddress);
+    if (normalizedBusiness) candidates.push(`${normalizedBusiness} business`);
+
+    return [...new Set(candidates.map(c => c.trim()).filter(c => c.length > 2))].slice(0, 6);
+  }
+
+  async function openStreetMapLookup(query) {
+    try {
+      const osmUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=3&q=${encodeURIComponent(query)}`;
+      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(osmUrl)}`;
+      const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(7000) });
+      if (!resp.ok) return null;
+
+      const proxyData = await resp.json();
+      const data = JSON.parse(proxyData.contents || '[]');
+      if (!Array.isArray(data) || data.length === 0) return null;
+
+      const top = data[0];
+      const textForInference = [top.display_name, top.type, top.class, top.category].filter(Boolean).join(' ');
+      const inferred = inferCategoryFromText(textForInference);
+
+      return {
+        summary: `OpenStreetMap match: ${top.display_name || query}`,
+        businessType: [top.type, top.class].filter(Boolean).join(' / '),
+        suggestedCategory: inferred,
+        results: [textForInference].filter(Boolean)
+      };
+    } catch (e) {
+      console.log('Classifier: OSM failed for', query, e.message);
+      return null;
+    }
+  }
+
+  async function duckDuckGoHtmlSearch(query) {
+    try {
+      const ddgHtmlUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
+      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(ddgHtmlUrl)}`;
+      const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+      if (!resp.ok) return null;
+
+      const proxyData = await resp.json();
+      const html = proxyData.contents || '';
+      if (!html) return null;
+
+      const stripTags = (str) =>
+        (str || '')
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/&amp;/g, '&')
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'")
+          .replace(/&nbsp;/g, ' ')
+          .replace(/\s{2,}/g, ' ')
+          .trim();
+
+      const snippets = [];
+      for (const match of html.matchAll(/result__snippet[^>]*>([\s\S]*?)<\/(?:a|div)>/gi)) {
+        const text = stripTags(match[1]);
+        if (text.length > 8) snippets.push(text);
+        if (snippets.length >= 5) break;
+      }
+
+      const titles = [];
+      for (const match of html.matchAll(/result__a[^>]*>([\s\S]*?)<\/a>/gi)) {
+        const text = stripTags(match[1]);
+        if (text.length > 2) titles.push(text);
+        if (titles.length >= 5) break;
+      }
+
+      const combined = [...titles, ...snippets].slice(0, 6);
+      return {
+        summary: snippets[0] || titles[0] || '',
+        results: combined
+      };
+    } catch (e) {
+      console.log('Classifier: DDG HTML failed for', query, e.message);
+      return null;
+    }
   }
 
   /* ---- Web Search for Context ---- */
