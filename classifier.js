@@ -530,9 +530,10 @@ const Classifier = (() => {
       const { tx, businessName, addressText } = withAddresses[i];
       if (progressCallback) progressCallback(i + 1, withAddresses.length, tx.description);
 
-      // Build search query: business name + address for specificity
-      const searchQuery = `${businessName} ${addressText}`.trim();
-      const cacheKey = `addr_v2_${normForComparison(searchQuery)}`;
+      // Build search query: use full original description (what user would copy-paste)
+      const fullDesc = (tx._originalDesc || tx.description || '').trim();
+      const searchQuery = fullDesc || `${businessName} ${addressText}`.trim();
+      const cacheKey = `addr_v3_${normForComparison(searchQuery)}`;
 
       // Check cache
       const cache = getSearchCache();
@@ -577,7 +578,8 @@ const Classifier = (() => {
   }
 
   /**
-   * Search for a business by name + address using multiple APIs.
+   * Search for a business by name + address using multiple real search engines.
+   * Priority: Google scrape → DDG Lite → DDG HTML → DDG Instant → OSM → Wiki → keywords → TransactionLookup
    */
   async function webSearchForBusiness(query, businessName, addressText = '') {
     let summary = '';
@@ -588,65 +590,74 @@ const Classifier = (() => {
     const activeQuery = queryCandidates[0] || query || businessName || addressText;
     const searchUrl = `https://duckduckgo.com/?q=${encodeURIComponent(activeQuery)}`;
 
-    if (addressText) {
-      for (const q of queryCandidates.slice(0, 3)) {
-        const osm = await openStreetMapLookup(q);
-        if (!osm) continue;
-        summary = summary || osm.summary;
-        businessType = businessType || osm.businessType;
-        if (osm.suggestedCategory && !suggestedCategory) suggestedCategory = osm.suggestedCategory;
-        if (osm.results && osm.results.length) results = [...results, ...osm.results].slice(0, 6);
-        if (suggestedCategory) break;
+    // Helper: attempt a search engine and absorb results
+    async function trySearchEngine(name, searchFn, candidates) {
+      if (suggestedCategory) return;
+      for (const q of candidates) {
+        try {
+          const r = await searchFn(q);
+          if (!r) continue;
+          if (!summary && r.summary) summary = r.summary;
+          if (!businessType && r.businessType) businessType = r.businessType;
+          if (r.results && r.results.length > 0) {
+            results = [...results, ...r.results].slice(0, 10);
+          }
+          if (!suggestedCategory && r.suggestedCategory) {
+            suggestedCategory = r.suggestedCategory;
+          }
+          if (!suggestedCategory && (summary || results.length > 0)) {
+            suggestedCategory = inferCategoryFromText(`${summary} ${results.join(' ')}`);
+          }
+          if (suggestedCategory) {
+            console.log(`Classifier [${name}]: found category "${suggestedCategory}" for "${q}"`);
+            return;
+          }
+          if (summary) return; // got info even if no category yet, move on
+        } catch (e) { console.log(`Classifier [${name}] error for "${q}":`, e.message); }
       }
     }
 
-    // 1) DuckDuckGo Instant Answer
-    for (const q of queryCandidates) {
-      try {
-        const apiUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_redirect=1&no_html=1&skip_disambig=1`;
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
-        const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
-        if (resp.ok) {
-          const proxyData = await resp.json();
-          const data = JSON.parse(proxyData.contents);
+    // 1) Google search scrape — most similar to manual user search
+    await trySearchEngine('Google', googleSearchScrape, queryCandidates.slice(0, 3));
+
+    // 2) DuckDuckGo Lite — simpler HTML, more parseable
+    await trySearchEngine('DDG-Lite', duckDuckGoLiteSearch, queryCandidates.slice(0, 3));
+
+    // 3) DuckDuckGo full HTML
+    await trySearchEngine('DDG-HTML', duckDuckGoHtmlSearch, queryCandidates.slice(0, 2));
+
+    // 4) OpenStreetMap (good for address-based lookups)
+    if (addressText) {
+      await trySearchEngine('OSM', openStreetMapLookup, queryCandidates.slice(0, 2));
+    }
+
+    // 5) DuckDuckGo Instant Answer API (good for well-known chains)
+    if (!suggestedCategory) {
+      for (const q of queryCandidates.slice(0, 2)) {
+        try {
+          const apiUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_redirect=1&no_html=1&skip_disambig=1`;
+          const result = await proxyFetch(apiUrl, 6000);
+          if (!result) continue;
+          const data = JSON.parse(result.text);
           if (!summary) {
             if (data.Abstract) summary = data.Abstract;
             else if (data.AbstractText) summary = data.AbstractText;
           }
           if (!businessType && data.Heading) businessType = data.Heading;
-          if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+          if (data.RelatedTopics) {
             const topicText = data.RelatedTopics.filter(t => t.Text).slice(0, 5).map(t => t.Text);
-            if (topicText.length > 0) {
-              results = [...results, ...topicText].slice(0, 6);
-            }
+            results = [...results, ...topicText].slice(0, 10);
           }
           if (!suggestedCategory && (summary || results.length > 0)) {
             suggestedCategory = inferCategoryFromText(`${summary} ${results.join(' ')}`);
           }
           if (summary || suggestedCategory) break;
-        }
-      } catch (e) { console.log('Classifier: DDG failed for', q, e.message); }
-    }
-
-    // 2) DuckDuckGo HTML fallback (more useful for local/address searches)
-    if (!summary || !suggestedCategory) {
-      for (const q of queryCandidates) {
-        const htmlResult = await duckDuckGoHtmlSearch(q);
-        if (!htmlResult) continue;
-
-        if (!summary && htmlResult.summary) summary = htmlResult.summary;
-        if (htmlResult.results.length > 0) {
-          results = [...results, ...htmlResult.results].slice(0, 6);
-        }
-        if (!suggestedCategory) {
-          suggestedCategory = inferCategoryFromText(`${summary} ${results.join(' ')}`);
-        }
-        if (summary || suggestedCategory) break;
+        } catch (e) { console.log('Classifier: DDG API failed for', q, e.message); }
       }
     }
 
-    // 3) Wikipedia fallback
-    if (!summary) {
+    // 6) Wikipedia fallback
+    if (!summary && !suggestedCategory) {
       try {
         const wikiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(businessName)}`;
         const wikiResp = await fetch(wikiUrl, { signal: AbortSignal.timeout(5000) });
@@ -661,9 +672,8 @@ const Classifier = (() => {
       } catch (e) { console.log('Classifier: Wiki failed for', businessName, e.message); }
     }
 
-    // 4) If still no category, try inferring from the business name alone
+    // 7) Pattern rules on business name
     if (!suggestedCategory) {
-      // Use our pattern rules on the business name
       const desc = businessName.toLowerCase();
       for (const rule of PATTERN_RULES) {
         if (rule.pattern.test(desc)) {
@@ -674,7 +684,7 @@ const Classifier = (() => {
       }
     }
 
-    // 5) If still nothing, try keyword match on business name
+    // 8) Keyword match on business name
     if (!suggestedCategory) {
       for (const [cat, keywords] of Object.entries(DataManager.CATEGORY_KEYWORDS)) {
         for (const kw of keywords) {
@@ -688,21 +698,17 @@ const Classifier = (() => {
       }
     }
 
-    // 6) TransactionLookup.com fallback (HTML scrape via CORS proxy)
+    // 9) TransactionLookup.com fallback
     if (!suggestedCategory) {
       try {
         const lookupUrl = `https://www.transactionlookup.com/search?q=${encodeURIComponent(businessName)}`;
-        const corsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(lookupUrl)}`;
-        const resp = await fetch(corsUrl, { signal: AbortSignal.timeout(8000) });
-        if (resp.ok) {
-          const data = await resp.json();
-          const html = data.contents;
-          // Try to extract merchant and category from HTML (look for result table)
-          // Example: <td>Merchant Name</td> ... <td>Category</td>
+        const result = await proxyFetch(lookupUrl, 8000);
+        if (result && result.text) {
+          const html = result.text;
           const rowMatch = html.match(/<tr[^>]*>\s*<td[^>]*>(.*?)<\/td>\s*<td[^>]*>(.*?)<\/td>\s*<td[^>]*>(.*?)<\/td>/i);
           if (rowMatch) {
-            const merchant = rowMatch[2].replace(/<[^>]+>/g, '').trim();
-            const category = rowMatch[3].replace(/<[^>]+>/g, '').trim();
+            const merchant = stripHtml(rowMatch[2]);
+            const category = stripHtml(rowMatch[3]);
             if (category && category.length > 2 && category.toLowerCase() !== 'unknown') {
               const mappedCategory = inferCategoryFromText(`${merchant} ${category}`);
               suggestedCategory = mappedCategory || category;
@@ -730,87 +736,271 @@ const Classifier = (() => {
 
     const candidates = [];
 
-    if (normalizedBusiness && normalizedAddress) {
-      candidates.push(`"${normalizedBusiness}" "${normalizedAddress}"`);
-      candidates.push(`${normalizedBusiness} ${normalizedAddress}`);
-      candidates.push(`${normalizedBusiness} near ${normalizedAddress}`);
+    // 1. Full original description (exactly what the user would copy-paste)
+    if (normalizedQuery && normalizedQuery.length > 5) {
+      candidates.push(normalizedQuery);
     }
-    if (normalizedQuery) candidates.push(normalizedQuery);
-    if (normalizedAddress) candidates.push(normalizedAddress);
-    if (normalizedBusiness) candidates.push(`${normalizedBusiness} business`);
+
+    // 2. Business name + full address (natural search)
+    if (normalizedBusiness && normalizedAddress) {
+      candidates.push(`${normalizedBusiness} ${normalizedAddress}`);
+    }
+
+    // 3. Just the address (often enough to find the business at that location)
+    if (normalizedAddress && normalizedAddress.length > 8) {
+      candidates.push(normalizedAddress);
+    }
+
+    // 4. Business name alone
+    if (normalizedBusiness && normalizedBusiness.length > 2) {
+      candidates.push(normalizedBusiness);
+    }
+
+    // 5. Business name + "store" or "business" for better search results
+    if (normalizedBusiness && normalizedBusiness.length > 2) {
+      candidates.push(`${normalizedBusiness} store business`);
+    }
 
     return [...new Set(candidates.map(c => c.trim()).filter(c => c.length > 2))].slice(0, 6);
   }
 
-  async function openStreetMapLookup(query) {
+  /* ---- Multi-Proxy Fetch ---- */
+
+  const CORS_PROXIES = [
+    url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+    url => `https://corsproxy.io/?${encodeURIComponent(url)}`
+  ];
+
+  /**
+   * Fetch a URL through multiple CORS proxies until one works.
+   * Returns { text, json?, ok } or null.
+   */
+  async function proxyFetch(url, timeoutMs = 8000) {
+    for (const makeProxy of CORS_PROXIES) {
+      try {
+        const proxyUrl = makeProxy(url);
+        const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(timeoutMs) });
+        if (!resp.ok) continue;
+
+        const contentType = resp.headers.get('content-type') || '';
+        const text = await resp.text();
+        if (!text || text.length < 5) continue;
+
+        // allorigins returns JSON wrapper; codetabs/corsproxy return raw
+        if (contentType.includes('application/json') || text.startsWith('{')) {
+          try {
+            const json = JSON.parse(text);
+            // allorigins wraps: { contents: "...", status: {...} }
+            if (json.contents !== undefined) {
+              return { text: json.contents, ok: true };
+            }
+            return { text: JSON.stringify(json), json, ok: true };
+          } catch { /* not JSON, treat as raw */ }
+        }
+        return { text, ok: true };
+      } catch (e) {
+        console.log(`Classifier: proxy failed for ${url}:`, e.message);
+      }
+    }
+    return null;
+  }
+
+  /* ---- Search Engine Implementations ---- */
+
+  function stripHtml(str) {
+    return (str || '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+      .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ')
+      .replace(/\s{2,}/g, ' ').trim();
+  }
+
+  /**
+   * Google search scrape — closest to what the user does manually.
+   * Extracts titles + snippets from Google search results HTML.
+   */
+  async function googleSearchScrape(query) {
     try {
-      const osmUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=3&q=${encodeURIComponent(query)}`;
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(osmUrl)}`;
-      const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(7000) });
-      if (!resp.ok) return null;
+      const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}&num=5&hl=en`;
+      const result = await proxyFetch(googleUrl, 10000);
+      if (!result || !result.text) return null;
 
-      const proxyData = await resp.json();
-      const data = JSON.parse(proxyData.contents || '[]');
-      if (!Array.isArray(data) || data.length === 0) return null;
+      const html = result.text;
+      const snippets = [];
+      const titles = [];
 
-      const top = data[0];
-      const textForInference = [top.display_name, top.type, top.class, top.category].filter(Boolean).join(' ');
-      const inferred = inferCategoryFromText(textForInference);
+      // Extract titles from <h3> tags (Google search result headings)
+      for (const m of html.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>/gi)) {
+        const t = stripHtml(m[1]);
+        if (t.length > 3) titles.push(t);
+        if (titles.length >= 6) break;
+      }
+
+      // Extract visible text snippets near result divs
+      // Google uses <span> blocks inside result containers
+      for (const m of html.matchAll(/<span[^>]*>([^<]{30,300})<\/span>/gi)) {
+        const t = stripHtml(m[1]);
+        if (t.length > 20 && !t.includes('document.') && !t.includes('function(')) {
+          snippets.push(t);
+        }
+        if (snippets.length >= 8) break;
+      }
+
+      // Also try extracting from <div class="BNeawe"> (Google lite result blocks)
+      for (const m of html.matchAll(/class="BNeawe[^"]*"[^>]*>([\s\S]*?)<\/div>/gi)) {
+        const t = stripHtml(m[1]);
+        if (t.length > 15 && t.length < 500) snippets.push(t);
+        if (snippets.length >= 10) break;
+      }
+
+      const combined = [...new Set([...titles, ...snippets])].slice(0, 8);
+      if (combined.length === 0) return null;
 
       return {
-        summary: `OpenStreetMap match: ${top.display_name || query}`,
-        businessType: [top.type, top.class].filter(Boolean).join(' / '),
-        suggestedCategory: inferred,
-        results: [textForInference].filter(Boolean)
+        summary: snippets[0] || titles[0] || '',
+        results: combined
       };
     } catch (e) {
-      console.log('Classifier: OSM failed for', query, e.message);
+      console.log('Classifier: Google scrape failed for', query, e.message);
       return null;
     }
   }
 
+  /**
+   * DuckDuckGo Lite — simpler HTML than full DDG, easier to parse.
+   */
+  async function duckDuckGoLiteSearch(query) {
+    try {
+      const ddgUrl = `https://lite.duckduckgo.com/lite/?q=${encodeURIComponent(query)}`;
+      const result = await proxyFetch(ddgUrl, 8000);
+      if (!result || !result.text) return null;
+
+      const html = result.text;
+      const snippets = [];
+      const titles = [];
+
+      // DDG Lite uses <a> for titles and <td> for snippets in a table layout
+      for (const m of html.matchAll(/<a[^>]+class="result-link"[^>]*>([\s\S]*?)<\/a>/gi)) {
+        const t = stripHtml(m[1]);
+        if (t.length > 3) titles.push(t);
+        if (titles.length >= 5) break;
+      }
+
+      // Also try generic <a rel="nofollow"> links (DDG lite result format)
+      if (titles.length === 0) {
+        for (const m of html.matchAll(/<a[^>]+rel="nofollow"[^>]*>([\s\S]*?)<\/a>/gi)) {
+          const t = stripHtml(m[1]);
+          if (t.length > 5 && !t.startsWith('http')) titles.push(t);
+          if (titles.length >= 5) break;
+        }
+      }
+
+      // Snippet text is in <td> cells with class "result-snippet"
+      for (const m of html.matchAll(/class="result-snippet"[^>]*>([\s\S]*?)<\/td>/gi)) {
+        const t = stripHtml(m[1]);
+        if (t.length > 10) snippets.push(t);
+        if (snippets.length >= 5) break;
+      }
+
+      // Fallback: extract visible <td> content that looks like snippets
+      if (snippets.length === 0) {
+        for (const m of html.matchAll(/<td[^>]*>([^<]{25,400})<\/td>/gi)) {
+          const t = stripHtml(m[1]);
+          if (t.length > 20) snippets.push(t);
+          if (snippets.length >= 5) break;
+        }
+      }
+
+      const combined = [...new Set([...titles, ...snippets])].slice(0, 6);
+      if (combined.length === 0) return null;
+
+      return {
+        summary: snippets[0] || titles[0] || '',
+        results: combined
+      };
+    } catch (e) {
+      console.log('Classifier: DDG Lite failed for', query, e.message);
+      return null;
+    }
+  }
+
+  /**
+   * DuckDuckGo HTML (full version) — fallback if Lite doesn't work.
+   */
   async function duckDuckGoHtmlSearch(query) {
     try {
       const ddgHtmlUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(ddgHtmlUrl)}`;
-      const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
-      if (!resp.ok) return null;
+      const result = await proxyFetch(ddgHtmlUrl, 8000);
+      if (!result || !result.text) return null;
 
-      const proxyData = await resp.json();
-      const html = proxyData.contents || '';
-      if (!html) return null;
-
-      const stripTags = (str) =>
-        (str || '')
-          .replace(/<[^>]+>/g, ' ')
-          .replace(/&amp;/g, '&')
-          .replace(/&quot;/g, '"')
-          .replace(/&#39;/g, "'")
-          .replace(/&nbsp;/g, ' ')
-          .replace(/\s{2,}/g, ' ')
-          .trim();
-
+      const html = result.text;
       const snippets = [];
-      for (const match of html.matchAll(/result__snippet[^>]*>([\s\S]*?)<\/(?:a|div)>/gi)) {
-        const text = stripTags(match[1]);
+      const titles = [];
+
+      for (const match of html.matchAll(/result__snippet[^>]*>([\s\S]*?)<\/(?:a|div|span)>/gi)) {
+        const text = stripHtml(match[1]);
         if (text.length > 8) snippets.push(text);
         if (snippets.length >= 5) break;
       }
 
-      const titles = [];
       for (const match of html.matchAll(/result__a[^>]*>([\s\S]*?)<\/a>/gi)) {
-        const text = stripTags(match[1]);
+        const text = stripHtml(match[1]);
         if (text.length > 2) titles.push(text);
         if (titles.length >= 5) break;
       }
 
-      const combined = [...titles, ...snippets].slice(0, 6);
+      // Additional: extract from result__url links for site identification
+      for (const match of html.matchAll(/result__url[^>]*>([\s\S]*?)<\/a>/gi)) {
+        const text = stripHtml(match[1]);
+        if (text.length > 5) snippets.push(`Site: ${text}`);
+        if (snippets.length >= 8) break;
+      }
+
+      const combined = [...new Set([...titles, ...snippets])].slice(0, 6);
+      if (combined.length === 0) return null;
+
       return {
         summary: snippets[0] || titles[0] || '',
         results: combined
       };
     } catch (e) {
       console.log('Classifier: DDG HTML failed for', query, e.message);
+      return null;
+    }
+  }
+
+  /**
+   * OpenStreetMap Nominatim geocoding — good for known places.
+   */
+  async function openStreetMapLookup(query) {
+    try {
+      const osmUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=3&addressdetails=1&extratags=1&q=${encodeURIComponent(query)}`;
+      const result = await proxyFetch(osmUrl, 7000);
+      if (!result || !result.text) return null;
+
+      const data = JSON.parse(result.text);
+      if (!Array.isArray(data) || data.length === 0) return null;
+
+      const top = data[0];
+      const tags = top.extratags || {};
+      const textParts = [
+        top.display_name, top.type, top.class, top.category,
+        tags.cuisine, tags.shop, tags.amenity, tags.tourism,
+        tags.healthcare, tags.office, tags.leisure, tags.craft,
+        tags.brand, tags.operator, tags.description
+      ].filter(Boolean);
+      const textForInference = textParts.join(' ');
+      const inferred = inferCategoryFromText(textForInference);
+
+      return {
+        summary: `OpenStreetMap: ${top.display_name || query}${tags.cuisine ? ' (cuisine: ' + tags.cuisine + ')' : ''}${tags.shop ? ' (shop: ' + tags.shop + ')' : ''}`,
+        businessType: [top.type, top.class, tags.cuisine, tags.shop].filter(Boolean).join(' / '),
+        suggestedCategory: inferred,
+        results: [textForInference].filter(Boolean)
+      };
+    } catch (e) {
+      console.log('Classifier: OSM failed for', query, e.message);
       return null;
     }
   }
@@ -826,66 +1016,101 @@ const Classifier = (() => {
 
   /**
    * Search for a transaction description online to get more context.
-   * Uses DuckDuckGo Instant Answer API via a CORS proxy, or falls back
-   * to returning a search URL the user can open manually.
+   * Uses multiple real search engines (Google scrape, DDG Lite, DDG HTML,
+   * OpenStreetMap) via multi-proxy fallback, then DDG Instant Answer and
+   * Wikipedia as last resorts.
    */
   async function searchForContext(tx) {
-    const desc = tx.description || tx._originalDesc || '';
-    const cacheKey = normForComparison(desc);
+    const rawDesc = tx._originalDesc || tx.description || '';
+    const cacheKey = 'ctx_v3_' + normForComparison(rawDesc);
 
     // Check cache first
     const cache = getSearchCache();
     if (cache[cacheKey]) return cache[cacheKey];
 
-    const query = desc.replace(/[^a-zA-Z0-9\s&'-]/g, '').trim();
+    const query = rawDesc.replace(/[^a-zA-Z0-9\s&'#.,/-]/g, '').trim();
     if (!query) return { summary: 'No searchable description', results: [], searchUrl: '' };
 
     const searchUrl = `https://duckduckgo.com/?q=${encodeURIComponent(query + ' business')}`;
-
-    // Try DuckDuckGo Instant Answer API via allorigins proxy
-    const apiUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1&skip_disambig=1`;
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
 
     let summary = '';
     let businessType = '';
     let suggestedCategory = null;
     let results = [];
 
-    try {
-      const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
-      if (resp.ok) {
-        const proxyData = await resp.json();
-        const data = JSON.parse(proxyData.contents);
-
-        // Extract useful info
-        if (data.Abstract) {
-          summary = data.Abstract;
-        } else if (data.AbstractText) {
-          summary = data.AbstractText;
+    // Helper: try a search engine and collect text
+    async function tryEngine(label, fn) {
+      try {
+        const r = await fn();
+        if (r && r.snippets && r.snippets.length > 0) {
+          const allText = r.snippets.join(' ');
+          const cat = inferCategoryFromText(allText);
+          if (cat) {
+            suggestedCategory = suggestedCategory || cat;
+          }
+          if (!summary && allText.length > 20) {
+            summary = allText.substring(0, 500);
+          }
+          if (r.titles) {
+            results = results.concat(r.titles.slice(0, 3));
+          }
+          if (r.businessType) businessType = businessType || r.businessType;
+          console.log(`Classifier: ${label} returned ${r.snippets.length} snippets`);
+          return true;
         }
-
-        if (data.Heading) {
-          businessType = data.Heading;
-        }
-
-        // Check related topics for clues
-        if (data.RelatedTopics && data.RelatedTopics.length > 0) {
-          results = data.RelatedTopics
-            .filter(t => t.Text)
-            .slice(0, 5)
-            .map(t => t.Text);
-        }
-
-        // Try to infer category from the summary
-        if (summary) {
-          suggestedCategory = inferCategoryFromText(summary);
-        }
+      } catch (e) {
+        console.log(`Classifier: ${label} failed:`, e.message);
       }
-    } catch (e) {
-      console.log('Classifier: search API unavailable, providing search link', e.message);
+      return false;
     }
 
-    // If API didn't give us much, try a Wikipedia-style lookup
+    // --- Step 1: Real search engines with full description ---
+    await tryEngine('Google', () => googleSearchScrape(query));
+
+    if (!suggestedCategory) {
+      await tryEngine('DDG-Lite', () => duckDuckGoLiteSearch(query));
+    }
+
+    if (!suggestedCategory) {
+      await tryEngine('DDG-HTML', () => duckDuckGoHtmlSearch(query));
+    }
+
+    // --- Step 2: OpenStreetMap for address-bearing descriptions ---
+    if (!suggestedCategory) {
+      const osmResult = await openStreetMapLookup(query);
+      if (osmResult && osmResult.summary) {
+        summary = summary || osmResult.summary;
+        businessType = businessType || osmResult.businessType || '';
+        suggestedCategory = suggestedCategory || osmResult.suggestedCategory;
+        if (osmResult.results) results = results.concat(osmResult.results);
+      }
+    }
+
+    // --- Step 3: DDG Instant Answer API (Wikipedia-style) ---
+    if (!suggestedCategory) {
+      try {
+        const apiUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1&skip_disambig=1`;
+        const html = await proxyFetch(apiUrl, 8000);
+        if (html) {
+          const data = JSON.parse(html);
+          if (data.Abstract || data.AbstractText) {
+            const abs = data.Abstract || data.AbstractText;
+            summary = summary || abs;
+            businessType = businessType || data.Heading || '';
+            suggestedCategory = suggestedCategory || inferCategoryFromText(abs);
+          }
+          if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+            results = results.concat(
+              data.RelatedTopics.filter(t => t.Text).slice(0, 3).map(t => t.Text)
+            );
+          }
+        }
+      } catch (e) {
+        console.log('Classifier: DDG Instant Answer failed', e.message);
+      }
+    }
+
+    // --- Step 4: Wikipedia direct API ---
     if (!summary) {
       try {
         const wikiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
@@ -894,8 +1119,8 @@ const Classifier = (() => {
           const wikiData = await wikiResp.json();
           if (wikiData.extract) {
             summary = wikiData.extract;
-            businessType = wikiData.title || '';
-            suggestedCategory = inferCategoryFromText(summary);
+            businessType = businessType || wikiData.title || '';
+            suggestedCategory = suggestedCategory || inferCategoryFromText(summary);
           }
         }
       } catch (e) {
@@ -903,27 +1128,23 @@ const Classifier = (() => {
       }
     }
 
-    // TransactionLookup.com fallback (HTML scrape via CORS proxy)
+    // --- Step 5: TransactionLookup.com ---
     if (!suggestedCategory) {
       try {
         const lookupUrl = `https://www.transactionlookup.com/search?q=${encodeURIComponent(query)}`;
-        const corsUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(lookupUrl)}`;
-        const resp = await fetch(corsUrl, { signal: AbortSignal.timeout(8000) });
-        if (resp.ok) {
-          const data = await resp.json();
-          const html = data.contents;
-          // Try to extract merchant and category from HTML (look for result table)
+        const html = await proxyFetch(lookupUrl, 8000);
+        if (html) {
           const rowMatch = html.match(/<tr[^>]*>\s*<td[^>]*>(.*?)<\/td>\s*<td[^>]*>(.*?)<\/td>\s*<td[^>]*>(.*?)<\/td>/i);
           if (rowMatch) {
             const merchant = rowMatch[2].replace(/<[^>]+>/g, '').trim();
             const category = rowMatch[3].replace(/<[^>]+>/g, '').trim();
             if (category && category.length > 2 && category.toLowerCase() !== 'unknown') {
-              suggestedCategory = category;
-              summary = `TransactionLookup.com: ${merchant} → ${category}`;
+              suggestedCategory = suggestedCategory || category;
+              summary = summary || `TransactionLookup.com: ${merchant} → ${category}`;
             }
           }
         }
-      } catch (e) { console.log('Classifier: TransactionLookup.com failed for', query, e.message); }
+      } catch (e) { console.log('Classifier: TransactionLookup.com failed', e.message); }
     }
 
     const result = {
@@ -931,7 +1152,7 @@ const Classifier = (() => {
       summary: summary || 'No instant answer found. Click "Search Web" for full results.',
       businessType,
       suggestedCategory,
-      results,
+      results: [...new Set(results)].slice(0, 8),
       searchUrl
     };
 
@@ -949,20 +1170,20 @@ const Classifier = (() => {
     const t = text.toLowerCase();
 
     const textSignals = [
-      { words: ['restaurant', 'food', 'dining', 'cuisine', 'eatery', 'chef', 'menu', 'meal', 'brunch', 'breakfast', 'lunch', 'dinner', 'fast food', 'pizza', 'burger', 'sushi', 'wine bar', 'cocktail', 'pub', 'tavern', 'café', 'cafe', 'coffee shop', 'bakery', 'ice cream', 'barbecue', 'bbq', 'deli', 'catering', 'bistro'], category: 'Dining' },
-      { words: ['grocery', 'supermarket', 'food store', 'produce', 'meat market'], category: 'Groceries' },
-      { words: ['gasoline', 'fuel', 'gas station', 'petroleum', 'car wash', 'auto repair', 'mechanic', 'tire', 'automotive', 'parking', 'ride-hailing', 'rideshare', 'taxi', 'cab'], category: 'Transportation' },
-      { words: ['hotel', 'motel', 'resort', 'airline', 'travel', 'tourism', 'flight', 'cruise', 'vacation', 'lodging', 'accommodation'], category: 'Travel' },
-      { words: ['retail', 'clothing', 'apparel', 'fashion', 'shoes', 'electronics', 'hardware', 'home improvement', 'department store', 'discount store', 'furniture', 'jewelry', 'eyewear', 'optical'], category: 'Shopping' },
-      { words: ['entertainment', 'cinema', 'movie', 'theater', 'concert', 'music', 'gaming', 'amusement', 'theme park', 'streaming', 'sports'], category: 'Entertainment' },
-      { words: ['medical', 'health', 'hospital', 'doctor', 'pharmacy', 'dental', 'clinic', 'healthcare', 'wellness', 'therapeutic', 'pharmaceutical'], category: 'Healthcare' },
-      { words: ['subscription', 'software', 'saas', 'platform', 'digital service', 'cloud', 'streaming service', 'membership'], category: 'Subscriptions' },
-      { words: ['insurance', 'insurer', 'coverage', 'policy', 'underwriting'], category: 'Insurance' },
-      { words: ['school', 'college', 'university', 'education', 'learning', 'tuition', 'academic', 'training'], category: 'Education' },
-      { words: ['salon', 'barber', 'beauty', 'spa', 'wellness', 'grooming', 'cosmetic', 'skincare', 'nail'], category: 'Personal Care' },
-      { words: ['charity', 'nonprofit', 'donation', 'foundation', 'church', 'religious'], category: 'Gifts & Donations' },
-      { words: ['rent', 'mortgage', 'property', 'real estate', 'leasing', 'landlord'], category: 'Housing' },
-      { words: ['utility', 'electric', 'water', 'gas ', 'internet', 'telecommunications', 'telecom', 'phone', 'wireless', 'broadband', 'cable'], category: 'Utilities' },
+      { words: ['restaurant', 'food', 'dining', 'cuisine', 'eatery', 'chef', 'menu', 'meal', 'brunch', 'breakfast', 'lunch', 'dinner', 'fast food', 'pizza', 'burger', 'sushi', 'wine bar', 'cocktail', 'pub', 'tavern', 'café', 'cafe', 'coffee shop', 'bakery', 'ice cream', 'barbecue', 'bbq', 'deli', 'catering', 'bistro', 'grill', 'wings', 'steak', 'seafood', 'noodle', 'ramen', 'taco', 'burrito', 'sandwich', 'donut', 'doughnut', 'bagel', 'waffle', 'pancake', 'buffet', 'bar and grill', 'tapas', 'hibachi', 'teriyaki', 'poke', 'gelato', 'frozen yogurt', 'smoothie', 'juice bar', 'food truck', 'carry out', 'takeout', 'delivery', 'order online', 'drive thru', 'dine in'], category: 'Dining' },
+      { words: ['grocery', 'supermarket', 'food store', 'produce', 'meat market', 'farmer market', 'organic', 'health food', 'bulk food', 'wholesale club'], category: 'Groceries' },
+      { words: ['gasoline', 'fuel', 'gas station', 'petroleum', 'car wash', 'auto repair', 'mechanic', 'tire', 'automotive', 'parking', 'ride-hailing', 'rideshare', 'taxi', 'cab', 'oil change', 'auto parts', 'car rental', 'car service', 'body shop', 'transmission', 'brake', 'muffler', 'garage', 'towing'], category: 'Transportation' },
+      { words: ['hotel', 'motel', 'resort', 'airline', 'travel', 'tourism', 'flight', 'cruise', 'vacation', 'lodging', 'accommodation', 'bed and breakfast', 'inn', 'hostel', 'airbnb', 'booking', 'check-in'], category: 'Travel' },
+      { words: ['retail', 'clothing', 'apparel', 'fashion', 'shoes', 'electronics', 'hardware', 'home improvement', 'department store', 'discount store', 'furniture', 'jewelry', 'eyewear', 'optical', 'thrift', 'consignment', 'boutique', 'gift shop', 'souvenir', 'toy', 'pet store', 'pet supply', 'craft store', 'hobby', 'sporting goods', 'outdoor', 'garden center', 'nursery', 'florist', 'flower shop', 'mattress', 'appliance', 'smoke shop', 'vape', 'liquor store', 'wine shop', 'beer store', 'convenience store', 'dollar store', 'variety store'], category: 'Shopping' },
+      { words: ['entertainment', 'cinema', 'movie', 'theater', 'concert', 'music', 'gaming', 'amusement', 'theme park', 'streaming', 'sports', 'bowling', 'arcade', 'mini golf', 'go kart', 'escape room', 'trampoline', 'laser tag', 'karaoke', 'billiard', 'pool hall', 'comedy club', 'nightclub', 'lounge', 'club'], category: 'Entertainment' },
+      { words: ['medical', 'health', 'hospital', 'doctor', 'pharmacy', 'dental', 'clinic', 'healthcare', 'wellness', 'therapeutic', 'pharmaceutical', 'urgent care', 'optometrist', 'chiropract', 'physical therapy', 'lab ', 'imaging', 'radiology', 'dermatol', 'pediatr', 'veterinar', 'vet clinic', 'animal hospital', 'mental health', 'counseling', 'therapy'], category: 'Healthcare' },
+      { words: ['subscription', 'software', 'saas', 'platform', 'digital service', 'cloud', 'streaming service', 'membership', 'monthly plan', 'annual plan'], category: 'Subscriptions' },
+      { words: ['insurance', 'insurer', 'coverage', 'policy', 'underwriting', 'premium', 'deductible'], category: 'Insurance' },
+      { words: ['school', 'college', 'university', 'education', 'learning', 'tuition', 'academic', 'training', 'daycare', 'preschool', 'childcare', 'tutoring', 'lesson'], category: 'Education' },
+      { words: ['salon', 'barber', 'beauty', 'spa', 'wellness', 'grooming', 'cosmetic', 'skincare', 'nail', 'hair', 'waxing', 'threading', 'facial', 'massage', 'tanning', 'tattoo', 'piercing', 'lash', 'brow'], category: 'Personal Care' },
+      { words: ['charity', 'nonprofit', 'donation', 'foundation', 'church', 'religious', 'temple', 'mosque', 'synagogue', 'ministry', 'tithe', 'offering'], category: 'Gifts & Donations' },
+      { words: ['rent', 'mortgage', 'property', 'real estate', 'leasing', 'landlord', 'hoa', 'condo', 'apartment', 'townhouse'], category: 'Housing' },
+      { words: ['utility', 'electric', 'water', 'gas ', 'internet', 'telecommunications', 'telecom', 'phone', 'wireless', 'broadband', 'cable', 'power', 'sewer', 'trash', 'waste management'], category: 'Utilities' },
     ];
 
     let bestCat = null;
