@@ -85,6 +85,14 @@ const DataManager = (() => {
   function clearAll() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(BUDGET_KEY);
+
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('finance_dashboard_')) {
+        localStorage.removeItem(key);
+      }
+    }
+
+    window.dispatchEvent(new CustomEvent('data-cleared'));
     window.dispatchEvent(new CustomEvent('transactions-updated'));
   }
 

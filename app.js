@@ -233,6 +233,37 @@
     if (activeTab) refreshTab(activeTab.dataset.tab);
   });
 
+  /* ---- Full reset listener ---- */
+  window.addEventListener('data-cleared', () => {
+    currentPage = 1;
+    sortField = 'date';
+    sortDir = -1;
+    filteredTransactions = [];
+    detectedPairs = [];
+    classifyAnalysis = [];
+
+    renderDetectedPairs();
+    renderConfirmedTransfers();
+    refreshClassify();
+
+    const reclassifyStatus = document.getElementById('reclassify-status');
+    if (reclassifyStatus) {
+      reclassifyStatus.textContent = '';
+      reclassifyStatus.className = 'status-text';
+    }
+
+    const vendorMatchStatus = document.getElementById('vendor-match-status');
+    if (vendorMatchStatus) {
+      vendorMatchStatus.textContent = '';
+      vendorMatchStatus.className = 'status-text';
+    }
+
+    const contextPanel = document.getElementById('context-panel');
+    if (contextPanel) {
+      contextPanel.classList.add('hidden');
+    }
+  });
+
   /* ---- Refresh Filters ---- */
   function refreshFilters() {
     const accounts = DataManager.getAccounts();
