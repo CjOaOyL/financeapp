@@ -775,8 +775,11 @@ const Classifier = (() => {
   /**
    * Fetch a URL through multiple CORS proxies until one works.
    * Returns { text, json?, ok } or null.
+   * @param {string} url — target URL
+   * @param {number} timeoutMs — per-proxy timeout
+   * @param {function} [validator] — optional fn(textContent) => bool; if it returns false the proxy is skipped
    */
-  async function proxyFetch(url, timeoutMs = 8000) {
+  async function proxyFetch(url, timeoutMs = 8000, validator = null) {
     for (const makeProxy of CORS_PROXIES) {
       try {
         const proxyUrl = makeProxy(url);
@@ -787,18 +790,29 @@ const Classifier = (() => {
         const text = await resp.text();
         if (!text || text.length < 5) continue;
 
+        let body = text;
+        let jsonData = undefined;
         // allorigins returns JSON wrapper; codetabs/corsproxy return raw
         if (contentType.includes('application/json') || text.startsWith('{')) {
           try {
             const json = JSON.parse(text);
             // allorigins wraps: { contents: "...", status: {...} }
             if (json.contents !== undefined) {
-              return { text: json.contents, ok: true };
+              body = json.contents;
+            } else {
+              body = JSON.stringify(json);
+              jsonData = json;
             }
-            return { text: JSON.stringify(json), json, ok: true };
           } catch { /* not JSON, treat as raw */ }
         }
-        return { text, ok: true };
+
+        // If caller gave a validator, check the unwrapped body
+        if (validator && !validator(body)) {
+          console.log(`Classifier: proxy content rejected by validator for ${url}`);
+          continue;
+        }
+
+        return { text: body, json: jsonData, ok: true };
       } catch (e) {
         console.log(`Classifier: proxy failed for ${url}:`, e.message);
       }
@@ -823,7 +837,9 @@ const Classifier = (() => {
   async function googleSearchScrape(query) {
     try {
       const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}&num=5&hl=en`;
-      const result = await proxyFetch(googleUrl, 10000);
+      // Validator: Google must return real results (h3 tags or BNeawe blocks), not a CAPTCHA
+      const validator = html => /<h3[^>]*>/i.test(html) || /BNeawe/i.test(html) || /result__a/i.test(html);
+      const result = await proxyFetch(googleUrl, 10000, validator);
       if (!result || !result.text) return null;
 
       const html = result.text;
@@ -873,7 +889,9 @@ const Classifier = (() => {
   async function duckDuckGoLiteSearch(query) {
     try {
       const ddgUrl = `https://lite.duckduckgo.com/lite/?q=${encodeURIComponent(query)}`;
-      const result = await proxyFetch(ddgUrl, 8000);
+      // Validator: DDG Lite must have result links or snippet cells
+      const validator = html => /result-link|result-snippet|class="result"/i.test(html);
+      const result = await proxyFetch(ddgUrl, 8000, validator);
       if (!result || !result.text) return null;
 
       const html = result.text;
@@ -881,7 +899,8 @@ const Classifier = (() => {
       const titles = [];
 
       // DDG Lite uses <a> for titles and <td> for snippets in a table layout
-      for (const m of html.matchAll(/<a[^>]+class="result-link"[^>]*>([\s\S]*?)<\/a>/gi)) {
+      // Handle single-quote, double-quote, or no-quote HTML attributes
+      for (const m of html.matchAll(/<a[^>]+class=["']?result-link["']?[^>]*>([\s\S]*?)<\/a>/gi)) {
         const t = stripHtml(m[1]);
         if (t.length > 3) titles.push(t);
         if (titles.length >= 5) break;
@@ -889,7 +908,7 @@ const Classifier = (() => {
 
       // Also try generic <a rel="nofollow"> links (DDG lite result format)
       if (titles.length === 0) {
-        for (const m of html.matchAll(/<a[^>]+rel="nofollow"[^>]*>([\s\S]*?)<\/a>/gi)) {
+        for (const m of html.matchAll(/<a[^>]+rel=["']?nofollow["']?[^>]*>([\s\S]*?)<\/a>/gi)) {
           const t = stripHtml(m[1]);
           if (t.length > 5 && !t.startsWith('http')) titles.push(t);
           if (titles.length >= 5) break;
@@ -897,7 +916,7 @@ const Classifier = (() => {
       }
 
       // Snippet text is in <td> cells with class "result-snippet"
-      for (const m of html.matchAll(/class="result-snippet"[^>]*>([\s\S]*?)<\/td>/gi)) {
+      for (const m of html.matchAll(/class=["']?result-snippet["']?[^>]*>([\s\S]*?)<\/td>/gi)) {
         const t = stripHtml(m[1]);
         if (t.length > 10) snippets.push(t);
         if (snippets.length >= 5) break;
@@ -931,7 +950,9 @@ const Classifier = (() => {
   async function duckDuckGoHtmlSearch(query) {
     try {
       const ddgHtmlUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
-      const result = await proxyFetch(ddgHtmlUrl, 8000);
+      // Validator: DDG HTML must have result links or snippet blocks
+      const validator = html => /result__a|result__snippet|result-link/i.test(html);
+      const result = await proxyFetch(ddgHtmlUrl, 8000, validator);
       if (!result || !result.text) return null;
 
       const html = result.text;
@@ -1039,25 +1060,30 @@ const Classifier = (() => {
     let results = [];
 
     // Helper: try a search engine and collect text
+    // Search functions return { summary, results, businessType?, suggestedCategory? }
     async function tryEngine(label, fn) {
       try {
         const r = await fn();
-        if (r && r.snippets && r.snippets.length > 0) {
-          const allText = r.snippets.join(' ');
-          const cat = inferCategoryFromText(allText);
-          if (cat) {
-            suggestedCategory = suggestedCategory || cat;
-          }
-          if (!summary && allText.length > 20) {
-            summary = allText.substring(0, 500);
-          }
-          if (r.titles) {
-            results = results.concat(r.titles.slice(0, 3));
-          }
-          if (r.businessType) businessType = businessType || r.businessType;
-          console.log(`Classifier: ${label} returned ${r.snippets.length} snippets`);
-          return true;
+        if (!r) return false;
+        // Collect results from { summary, results } format
+        const items = r.results || r.snippets || [];
+        const allText = [r.summary || '', ...items].join(' ').trim();
+        if (allText.length < 5) return false;
+
+        if (!summary && allText.length > 20) {
+          summary = allText.substring(0, 500);
         }
+        if (items.length > 0) {
+          results = results.concat(items.slice(0, 5));
+        }
+        if (r.businessType) businessType = businessType || r.businessType;
+        if (r.suggestedCategory) suggestedCategory = suggestedCategory || r.suggestedCategory;
+        if (!suggestedCategory) {
+          const cat = inferCategoryFromText(allText);
+          if (cat) suggestedCategory = cat;
+        }
+        console.log(`Classifier: ${label} returned ${items.length} items, cat=${suggestedCategory||'none'}`);
+        return true;
       } catch (e) {
         console.log(`Classifier: ${label} failed:`, e.message);
       }
@@ -1090,9 +1116,9 @@ const Classifier = (() => {
     if (!suggestedCategory) {
       try {
         const apiUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1&skip_disambig=1`;
-        const html = await proxyFetch(apiUrl, 8000);
-        if (html) {
-          const data = JSON.parse(html);
+        const proxyResult = await proxyFetch(apiUrl, 8000);
+        if (proxyResult && proxyResult.text) {
+          const data = JSON.parse(proxyResult.text);
           if (data.Abstract || data.AbstractText) {
             const abs = data.Abstract || data.AbstractText;
             summary = summary || abs;
