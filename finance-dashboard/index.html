@@ -218,6 +218,16 @@
         <p id="transfer-none-msg" class="info-text" style="color:var(--clr-text-muted)">No confirmed transfers yet. Click "Scan for Transfers" to detect matching pairs.</p>
       </div>
     </div>
+
+    <!-- Duplicate Detection -->
+    <div class="card" id="duplicate-detection-card">
+      <div class="card-header-row">
+        <h2>🔍 Duplicate Detection</h2>
+        <button id="btn-scan-duplicates" class="btn btn-primary">Scan for Duplicates</button>
+      </div>
+      <p class="info-text">Scans all stored transactions for duplicates (same date, amount, and similar description). Lets you review and remove them.</p>
+      <div id="duplicate-scan-status" class="status-text"></div>
+    </div>
   </section>
 
   <!-- ========== TAB: OVERVIEW ========== -->

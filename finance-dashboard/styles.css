@@ -3,12 +3,12 @@
    ============================================ */
 
 :root {
-  --clr-bg: #0f1117;
-  --clr-surface: #1a1d27;
-  --clr-surface-hover: #242836;
-  --clr-border: #2d3244;
-  --clr-text: #e4e6ef;
-  --clr-text-muted: #8b8fa3;
+  --clr-bg: #1e1e1e;
+  --clr-surface: #2a2a2a;
+  --clr-surface-hover: #353535;
+  --clr-border: #444444;
+  --clr-text: #e0e0e0;
+  --clr-text-muted: #999999;
   --clr-primary: #6366f1;
   --clr-primary-hover: #818cf8;
   --clr-accent: #10b981;
@@ -19,7 +19,7 @@
   --clr-income: #10b981;
   --clr-expense: #ef4444;
   --radius: 10px;
-  --shadow: 0 2px 12px rgba(0,0,0,.3);
+  --shadow: 0 2px 12px rgba(0,0,0,.25);
   --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 

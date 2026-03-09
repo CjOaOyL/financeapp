@@ -277,36 +277,6 @@
     pendingDuplicateData = null;
   }
 
-  // "Remove Duplicates & Import New" — import only non-duplicates, update categories where incoming was better
-  document.getElementById('btn-dup-remove').addEventListener('click', () => {
-    if (!pendingDuplicateData) return;
-    const { duplicates, nonDuplicates, source } = pendingDuplicateData;
-
-    DataManager.addWithDuplicateResolution(duplicates, nonDuplicates);
-
-    const upgrades = duplicates.filter(d => !d.keepExisting).length;
-    let msg = `✓ Imported ${nonDuplicates.length} new transaction${nonDuplicates.length !== 1 ? 's' : ''}. Skipped ${duplicates.length} duplicate${duplicates.length > 1 ? 's' : ''}.`;
-    if (upgrades > 0) {
-      msg += ` Updated ${upgrades} existing categor${upgrades > 1 ? 'ies' : 'y'}.`;
-    }
-
-    Importer.finishImport(source, msg);
-    hideDuplicateModal();
-  });
-
-  // "Import All Anyway" — import everything including duplicates
-  document.getElementById('btn-dup-import-all').addEventListener('click', () => {
-    if (!pendingDuplicateData) return;
-    const { duplicates, nonDuplicates, source, totalIncoming } = pendingDuplicateData;
-
-    // Combine all incoming transactions (duplicates' incoming + non-duplicates)
-    const allIncoming = [...duplicates.map(d => d.incoming), ...nonDuplicates];
-    DataManager.add(allIncoming);
-
-    Importer.finishImport(source, `✓ Imported all ${allIncoming.length} transactions (including ${duplicates.length} duplicate${duplicates.length > 1 ? 's' : ''}).`);
-    hideDuplicateModal();
-  });
-
   // "Cancel Import"
   document.getElementById('btn-dup-cancel').addEventListener('click', () => {
     if (pendingDuplicateData) {
@@ -324,6 +294,185 @@
   // Close on overlay click
   document.getElementById('duplicate-modal').addEventListener('click', (e) => {
     if (e.target === e.currentTarget) hideDuplicateModal();
+  });
+
+  /* ---- Manual Duplicate Scan (existing stored transactions) ---- */
+  document.getElementById('btn-scan-duplicates').addEventListener('click', () => {
+    const all = DataManager.getAll();
+    const statusEl = document.getElementById('duplicate-scan-status');
+
+    if (all.length < 2) {
+      statusEl.textContent = 'Not enough transactions to scan. Import some data first.';
+      statusEl.className = 'status-text';
+      return;
+    }
+
+    statusEl.textContent = 'Scanning...';
+    statusEl.className = 'status-text';
+
+    // Compare every transaction against every other to find duplicate groups
+    const duplicateGroups = []; // [ [tx1, tx2, ...], ... ]
+    const matched = new Set();
+
+    for (let i = 0; i < all.length; i++) {
+      if (matched.has(all[i].id)) continue;
+      const group = [all[i]];
+
+      for (let j = i + 1; j < all.length; j++) {
+        if (matched.has(all[j].id)) continue;
+        if (all[i].date !== all[j].date) continue;
+        if (Math.abs(Math.abs(all[i].amount) - Math.abs(all[j].amount)) >= 0.015) continue;
+
+        // Description similarity check
+        const aNorm = normalizeDesc(all[i].description);
+        const bNorm = normalizeDesc(all[j].description);
+        if (aNorm === bNorm || descSimilar(aNorm, bNorm)) {
+          group.push(all[j]);
+          matched.add(all[j].id);
+        }
+      }
+
+      if (group.length > 1) {
+        matched.add(all[i].id);
+        duplicateGroups.push(group);
+      }
+    }
+
+    if (duplicateGroups.length === 0) {
+      statusEl.textContent = `✓ No duplicates found among ${all.length} transactions.`;
+      statusEl.className = 'status-text success';
+      return;
+    }
+
+    // Show results in the duplicate modal
+    const totalDups = duplicateGroups.reduce((s, g) => s + g.length - 1, 0);
+    statusEl.textContent = `Found ${duplicateGroups.length} group${duplicateGroups.length > 1 ? 's' : ''} with ${totalDups} duplicate${totalDups > 1 ? 's' : ''}.`;
+    statusEl.className = 'status-text';
+
+    showManualDuplicateModal(duplicateGroups);
+  });
+
+  /** Normalize description for manual scan comparison */
+  function normalizeDesc(desc) {
+    return (desc || '').toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+  }
+
+  /** Fuzzy description similarity check */
+  function descSimilar(a, b) {
+    if (a.includes(b) || b.includes(a)) return true;
+    const aWords = new Set(a.split(' ').filter(w => w.length > 2));
+    const bWords = new Set(b.split(' ').filter(w => w.length > 2));
+    if (aWords.size === 0 && bWords.size === 0) return true;
+    const intersection = [...aWords].filter(w => bWords.has(w));
+    const union = new Set([...aWords, ...bWords]);
+    return union.size > 0 ? (intersection.length / union.size) >= 0.5 : false;
+  }
+
+  /** Show modal for manual duplicate scan results */
+  function showManualDuplicateModal(groups) {
+    const modal = document.getElementById('duplicate-modal');
+    const summary = document.getElementById('duplicate-summary');
+    const listWrap = document.getElementById('duplicate-list-wrap');
+
+    const totalDups = groups.reduce((s, g) => s + g.length - 1, 0);
+    summary.innerHTML = `Found <strong>${groups.length}</strong> duplicate group${groups.length > 1 ? 's' : ''} with <strong>${totalDups}</strong> extra transaction${totalDups > 1 ? 's' : ''}.<br><span style="color:var(--clr-text-muted)">For each group, the version with a user-assigned category (non-"Other") is kept. Duplicates are marked for removal.</span>`;
+
+    let html = '<table><thead><tr><th>Group</th><th>Date</th><th>Description</th><th>Amount</th><th>Category</th><th>Account</th><th>Status</th></tr></thead><tbody>';
+
+    const idsToRemove = [];
+
+    for (let g = 0; g < groups.length; g++) {
+      const group = groups[g];
+      // Pick the best one to keep: prefer one with a real category
+      const keepIdx = group.findIndex(t => t.category && t.category !== 'Other');
+      const keepId = keepIdx >= 0 ? group[keepIdx].id : group[0].id;
+
+      for (const tx of group) {
+        const isKeep = tx.id === keepId;
+        if (!isKeep) idsToRemove.push(tx.id);
+        html += `<tr class="${isKeep ? 'dup-row-existing' : 'dup-row-incoming'}">
+          <td>#${g + 1}</td>
+          <td>${tx.date}</td>
+          <td>${escHtml(tx.description)}</td>
+          <td>$${Math.abs(tx.amount).toFixed(2)}</td>
+          <td>${tx.category}</td>
+          <td>${escHtml(tx.account)}</td>
+          <td>${isKeep ? '<span class="dup-keep-badge keep">✓ Keep</span>' : '<span class="dup-keep-badge discard">✕ Remove</span>'}</td>
+        </tr>`;
+      }
+    }
+    html += '</tbody></table>';
+    listWrap.innerHTML = html;
+
+    // Store IDs to remove for the action buttons
+    pendingDuplicateData = { _manualScan: true, idsToRemove, groups };
+
+    // Update button labels for manual scan context
+    document.getElementById('btn-dup-remove').textContent = `✓ Remove ${idsToRemove.length} Duplicate${idsToRemove.length > 1 ? 's' : ''}`;
+    document.getElementById('btn-dup-import-all').textContent = 'Keep All (No Changes)';
+
+    modal.classList.remove('hidden');
+  }
+
+  // Override the remove button to also handle manual scan
+  const origRemoveHandler = document.getElementById('btn-dup-remove');
+  const origImportHandler = document.getElementById('btn-dup-import-all');
+
+  // Replace the event listeners — remove old, add unified ones
+  const newRemoveBtn = origRemoveHandler.cloneNode(true);
+  origRemoveHandler.parentNode.replaceChild(newRemoveBtn, origRemoveHandler);
+
+  const newImportBtn = origImportHandler.cloneNode(true);
+  origImportHandler.parentNode.replaceChild(newImportBtn, origImportHandler);
+
+  newRemoveBtn.addEventListener('click', () => {
+    if (!pendingDuplicateData) return;
+
+    if (pendingDuplicateData._manualScan) {
+      // Manual scan: remove duplicate IDs from storage
+      const { idsToRemove } = pendingDuplicateData;
+      for (const id of idsToRemove) {
+        DataManager.remove(id);
+      }
+      const statusEl = document.getElementById('duplicate-scan-status');
+      statusEl.textContent = `✓ Removed ${idsToRemove.length} duplicate${idsToRemove.length > 1 ? 's' : ''}.`;
+      statusEl.className = 'status-text success';
+      // Reset button labels
+      newRemoveBtn.textContent = '✓ Remove Duplicates & Import New';
+      newImportBtn.textContent = 'Import All Anyway';
+      hideDuplicateModal();
+      return;
+    }
+
+    // Original import flow
+    const { duplicates, nonDuplicates, source } = pendingDuplicateData;
+    DataManager.addWithDuplicateResolution(duplicates, nonDuplicates);
+    const upgrades = duplicates.filter(d => !d.keepExisting).length;
+    let msg = `✓ Imported ${nonDuplicates.length} new transaction${nonDuplicates.length !== 1 ? 's' : ''}. Skipped ${duplicates.length} duplicate${duplicates.length > 1 ? 's' : ''}.`;
+    if (upgrades > 0) {
+      msg += ` Updated ${upgrades} existing categor${upgrades > 1 ? 'ies' : 'y'}.`;
+    }
+    Importer.finishImport(source, msg);
+    hideDuplicateModal();
+  });
+
+  newImportBtn.addEventListener('click', () => {
+    if (!pendingDuplicateData) return;
+
+    if (pendingDuplicateData._manualScan) {
+      // Manual scan: keep all — just close
+      newRemoveBtn.textContent = '✓ Remove Duplicates & Import New';
+      newImportBtn.textContent = 'Import All Anyway';
+      hideDuplicateModal();
+      return;
+    }
+
+    // Original import flow
+    const { duplicates, nonDuplicates, source } = pendingDuplicateData;
+    const allIncoming = [...duplicates.map(d => d.incoming), ...nonDuplicates];
+    DataManager.add(allIncoming);
+    Importer.finishImport(source, `✓ Imported all ${allIncoming.length} transactions (including ${duplicates.length} duplicate${duplicates.length > 1 ? 's' : ''}).`);
+    hideDuplicateModal();
   });
 
   /* ---- Filters ---- */
