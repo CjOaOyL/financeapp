@@ -44,7 +44,7 @@ const Budget = (() => {
       totalDiff += diff;
 
       html += `<tr>
-        <td>${cat.category}</td>
+        <td><a href="#" class="budget-category-link" data-category="${cat.category}" style="color:var(--clr-primary);text-decoration:none;cursor:pointer;font-weight:500">${cat.category}</a></td>
         <td>$${cat.avgPerMonth.toFixed(2)}</td>
         <td><input type="number" step="0.01" min="0" class="budget-input" data-category="${cat.category}" value="${target.toFixed(2)}" /></td>
         <td class="${statusClass}">$${diff.toFixed(2)}</td>
@@ -70,6 +70,15 @@ const Budget = (() => {
         currentBudget[cat] = { ...existing, target: val };
         DataManager.saveBudget(currentBudget);
         renderBudgetTable(); // Re-render to update diffs
+      });
+    });
+
+    // Add category link click handlers — navigate to import tab filtered by category
+    tbody.querySelectorAll('.budget-category-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const cat = link.dataset.category;
+        window.dispatchEvent(new CustomEvent('navigate-to-category', { detail: { category: cat } }));
       });
     });
   }

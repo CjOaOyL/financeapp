@@ -484,6 +484,34 @@
     });
   });
 
+  /* ---- Navigate to Category (from Budget tab) ---- */
+  window.addEventListener('navigate-to-category', (e) => {
+    const category = e.detail.category;
+
+    // Switch to Import tab (which has the transaction table)
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    const importBtn = document.querySelector('.nav-btn[data-tab="import"]');
+    importBtn.classList.add('active');
+    document.getElementById('tab-import').classList.add('active');
+
+    // Set category filter and sort by category
+    refreshFilters(); // ensure filter options are populated
+    document.getElementById('filter-category').value = category;
+    document.getElementById('filter-account').value = 'all';
+    document.getElementById('filter-cardholder').value = 'all';
+    document.getElementById('filter-month').value = 'all';
+    document.getElementById('filter-search').value = '';
+
+    sortField = 'date';
+    sortDir = -1;
+    currentPage = 1;
+    refreshTransactionTable();
+
+    // Scroll to the transaction table
+    document.getElementById('tx-table').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
   /* ---- Sorting ---- */
   document.querySelectorAll('#tx-table th[data-sort]').forEach(th => {
     th.addEventListener('click', () => {
