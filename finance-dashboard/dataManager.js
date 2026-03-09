@@ -353,56 +353,110 @@ const DataManager = (() => {
 
     console.log(`[DuplicateCheck] Comparing ${newTransactions.length} incoming against ${existing.length} existing transactions`);
 
+    // Also detect duplicates WITHIN the incoming batch itself
+    const seenInBatch = []; // track non-duplicate incoming txs we've already accepted
+
     for (const newTx of newTransactions) {
       const newNorm = normalizeForComparison(newTx.description);
       const newAmt = Math.abs(parseFloat(newTx.amount) || 0);
 
-      const match = existing.find(ex => {
+      // 1) Check against existing stored transactions
+      const existingMatch = existing.find(ex => {
         if (usedExistingIds.has(ex.id)) return false;
-
-        // Must match on date
-        if (ex.date !== newTx.date) return false;
-
-        // Must match on amount (within 1.5 cents)
-        if (Math.abs(Math.abs(parseFloat(ex.amount) || 0) - newAmt) >= 0.015) return false;
-
-        // Description check: exact normalized match, OR significant word overlap
-        const exNorm = normalizeForComparison(ex.description);
-        if (exNorm === newNorm) return true;
-
-        // Fuzzy: check if descriptions share enough words
-        const exWords = new Set(exNorm.split(' ').filter(w => w.length > 2));
-        const newWords = new Set(newNorm.split(' ').filter(w => w.length > 2));
-        if (exWords.size === 0 && newWords.size === 0) return true; // both empty/short
-
-        const intersection = [...exWords].filter(w => newWords.has(w));
-        const union = new Set([...exWords, ...newWords]);
-        const similarity = union.size > 0 ? intersection.length / union.size : 0;
-
-        // Also check if one description contains the other
-        const containsMatch = exNorm.includes(newNorm) || newNorm.includes(exNorm);
-
-        return similarity >= 0.5 || containsMatch;
+        return isDuplicate(ex, newTx, newNorm, newAmt);
       });
 
-      if (match) {
-        usedExistingIds.add(match.id);
-        const existingHasCategory = match.category && match.category !== 'Other';
+      if (existingMatch) {
+        usedExistingIds.add(existingMatch.id);
+        const existingHasCategory = existingMatch.category && existingMatch.category !== 'Other';
         const incomingHasCategory = newTx.category && newTx.category !== 'Other';
 
+        console.log(`[DuplicateCheck] DUPLICATE (vs existing): "${newTx.description}" ${newTx.date} $${newAmt} ↔ "${existingMatch.description}" ${existingMatch.date} $${Math.abs(existingMatch.amount)}`);
+
         duplicates.push({
-          existing: match,
+          existing: existingMatch,
           incoming: newTx,
-          // Keep existing if it has a real category, OR if incoming also doesn't have one
           keepExisting: existingHasCategory || !incomingHasCategory
         });
-      } else {
-        nonDuplicates.push(newTx);
+        continue;
       }
+
+      // 2) Check against other transactions within THIS incoming batch
+      const batchMatch = seenInBatch.find(seen => {
+        return isDuplicate(seen, newTx, newNorm, newAmt);
+      });
+
+      if (batchMatch) {
+        console.log(`[DuplicateCheck] DUPLICATE (within batch): "${newTx.description}" ${newTx.date} $${newAmt} ↔ "${batchMatch.description}" ${batchMatch.date} $${Math.abs(batchMatch.amount)}`);
+        // Treat the first one seen as "existing" and this one as the duplicate incoming
+        const batchHasCategory = batchMatch.category && batchMatch.category !== 'Other';
+        const incomingHasCategory = newTx.category && newTx.category !== 'Other';
+        duplicates.push({
+          existing: batchMatch,
+          incoming: newTx,
+          keepExisting: batchHasCategory || !incomingHasCategory,
+          _intraBatch: true
+        });
+        continue;
+      }
+
+      // No match — it's new
+      seenInBatch.push(newTx);
+      nonDuplicates.push(newTx);
     }
 
     console.log(`[DuplicateCheck] Result: ${duplicates.length} duplicates, ${nonDuplicates.length} new`);
+    if (duplicates.length === 0 && existing.length > 0) {
+      // Log some samples for debugging why nothing matched
+      const sample = newTransactions.slice(0, 3);
+      for (const s of sample) {
+        const sNorm = normalizeForComparison(s.description);
+        const sAmt = Math.abs(parseFloat(s.amount) || 0);
+        const candidates = existing.filter(e => e.date === s.date);
+        console.log(`[DuplicateCheck] Sample incoming: date="${s.date}" amt=${sAmt} desc="${sNorm}"`);
+        console.log(`[DuplicateCheck]   ${candidates.length} existing with same date`);
+        for (const c of candidates.slice(0, 3)) {
+          const cAmt = Math.abs(parseFloat(c.amount) || 0);
+          const cNorm = normalizeForComparison(c.description);
+          console.log(`[DuplicateCheck]   candidate: amt=${cAmt} desc="${cNorm}" amtMatch=${Math.abs(cAmt - sAmt) < 0.015} descMatch=${cNorm === sNorm}`);
+        }
+      }
+    }
     return { duplicates, nonDuplicates };
+  }
+
+  /**
+   * Check if two transactions are duplicates.
+   * Matches on: same date + same amount + similar description.
+   */
+  function isDuplicate(txA, txB, bNorm, bAmt) {
+    // Must match on date
+    if (txA.date !== txB.date) return false;
+
+    // Must match on amount (within 1.5 cents)
+    const aAmt = Math.abs(parseFloat(txA.amount) || 0);
+    if (typeof bAmt === 'undefined') bAmt = Math.abs(parseFloat(txB.amount) || 0);
+    if (Math.abs(aAmt - bAmt) >= 0.015) return false;
+
+    // Description check: exact normalized match, OR significant word overlap
+    const aNorm = normalizeForComparison(txA.description);
+    if (typeof bNorm === 'undefined') bNorm = normalizeForComparison(txB.description);
+    if (aNorm === bNorm) return true;
+
+    // Fuzzy: check if descriptions share enough words
+    const aWords = new Set(aNorm.split(' ').filter(w => w.length > 2));
+    const bWords = new Set(bNorm.split(' ').filter(w => w.length > 2));
+    if (aWords.size === 0 && bWords.size === 0) return true;
+
+    const intersection = [...aWords].filter(w => bWords.has(w));
+    const union = new Set([...aWords, ...bWords]);
+    const similarity = union.size > 0 ? intersection.length / union.size : 0;
+
+    // Also check if one description contains the other
+    const containsMatch = (aNorm.length > 3 && bNorm.length > 3) &&
+      (aNorm.includes(bNorm) || bNorm.includes(aNorm));
+
+    return similarity >= 0.5 || containsMatch;
   }
 
   /**
