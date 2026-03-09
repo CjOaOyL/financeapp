@@ -1,0 +1,692 @@
+[
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-15-25 Walgreens #17722 Saratoga Spri Ny",
+    "amount": 3.73,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-16-25 Sq *qwirky Snakes Saratoga Spri Ny",
+    "amount": 4.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-14-25 Sq *broadway Coffe Saratoga Spri Ny",
+    "amount": 7.35,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-16-25 Stewarts Shop 390 Corinth Ny",
+    "amount": 8.11,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-16-25 Sq *broadway Coffe Saratoga Spri Ny",
+    "amount": 8.35,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-14-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 9.7,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-16-25 Axolotl Galaxy 151-82501300 Ny",
+    "amount": 10.69,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-16-25 Sq *weird Horse OD Saratoga Spri Ny",
+    "amount": 15.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-14-25 Sq *the Nook Cafe Saratoga Spri Ny",
+    "amount": 15.18,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-14-25 Scholastic, Inc. 800-724-6527 Ny",
+    "amount": 17.11,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-13-25 Corinth Wine & Liq Corinth Ny",
+    "amount": 18.18,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-14-25 Scholastic, Inc. 800-724-6527 Ny",
+    "amount": 19.77,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-14-25 Stewarts Shop 390 Corinth Ny",
+    "amount": 20.01,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-16-25 Stewarts Shop 390 Corinth Ny",
+    "amount": 20.17,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-17-25 Janiahdidit Instagram.Com Ny",
+    "amount": 26.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-17",
+    "description": "POS Debit- Debit Card 6105 11-14-25 Vans Denver CO",
+    "amount": 87.55,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-18",
+    "description": "Deposit - ACH Paid From Currency Cloud Sent from 01Afd0",
+    "amount": 600.0,
+    "is_income": true
+  },
+  {
+    "date": "2025-11-18",
+    "description": "POS Debit- Debit Card 6105 11-17-25 Prime Video Channe Amzn.Com/Bill WA",
+    "amount": 12.99,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-18",
+    "description": "POS Debit- Debit Card 6105 11-15-25 Corinth Wine & Liq Corinth Ny",
+    "amount": 18.18,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-18",
+    "description": "POS Debit- Debit Card 6105 11-17-25 Stewarts Shop 310 Greenfield Ce Ny",
+    "amount": 20.07,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-18",
+    "description": "POS Debit- Debit Card 6105 11-17-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 21.83,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-18",
+    "description": "POS Debit- Debit Card 6105 11-16-25 Corinth Wine & Liq Corinth Ny",
+    "amount": 22.46,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-19",
+    "description": "POS Debit- Debit Card 6105 11-18-25 Tst*taquero Saratoga Spri Ny",
+    "amount": 15.42,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-19",
+    "description": "POS Debit- Debit Card 6105 11-18-25 Sq *broadway Coffe Saratoga Spri Ny",
+    "amount": 16.8,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-19",
+    "description": "POS Debit- Debit Card 6105 11-18-25 Market32 Pchopper Saratoga Spri Ny",
+    "amount": 27.39,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-20",
+    "description": "Deposit - ACH Paid From Elizabeth A Harr Payroll 01Afd9",
+    "amount": 669.61,
+    "is_income": true
+  },
+  {
+    "date": "2025-11-20",
+    "description": "POS Debit- Debit Card 6105 11-19-25 Stewarts Shop 310 Greenfield Ce Ny",
+    "amount": 1.7,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-20",
+    "description": "POS Debit- Debit Card 6105 11-19-25 Sq *the Nook Cafe Saratoga Spri Ny",
+    "amount": 3.09,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-20",
+    "description": "POS Debit- Debit Card 6105 11-19-25 Stewarts Shop 390 Corinth Ny",
+    "amount": 15.16,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-20",
+    "description": "POS Debit- Debit Card 6105 11-19-25 Stewarts Shop 390 Corinth Ny",
+    "amount": 20.02,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-20",
+    "description": "Paid To - The King's Schoo Facts Chk 9100001",
+    "amount": 869.45,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-21",
+    "description": "POS Debit- Debit Card 6105 11-20-25 Tst*taquero Saratoga Spri Ny",
+    "amount": 4.82,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-21",
+    "description": "POS Debit- Debit Card 6105 11-20-25 Prime Video Channe Amzn.Com/Bill WA",
+    "amount": 12.99,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-24",
+    "description": "ATM Fee - Withdrawal 11-21-25 Lk515239 Corinth Ny",
+    "amount": 1.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-24",
+    "description": "ATM Withdrawal 11-21-25 Lk515239 Corinth Ny",
+    "amount": 22.95,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-24",
+    "description": "POS Debit- Debit Card 6105 11-21-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 4.28,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-24",
+    "description": "POS Debit- Debit Card 6105 11-21-25 Sq *broadway Coffe Saratoga Spri Ny",
+    "amount": 11.35,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-24",
+    "description": "POS Debit - Debit Card 6105 Transaction 11-21-25 Corinth Wine & Liquor Corinth Ny",
+    "amount": 18.18,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-24",
+    "description": "POS Debit- Debit Card 6105 11-21-25 Stewarts Shop 104 Saratoga Spri Ny",
+    "amount": 19.97,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-24",
+    "description": "POS Debit- Debit Card 6105 11-21-25 Walgreens #19911 Corinth Ny",
+    "amount": 43.82,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-24",
+    "description": "POS Debit- Debit Card 6105 11-23-25 Apple Cash Sent MO 1Infiniteloop CA",
+    "amount": 46.43,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-25",
+    "description": "POS Debit- Debit Card 6105 11-24-25 Putnam Market Inc Saratoga Spri Ny",
+    "amount": 12.14,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-25",
+    "description": "POS Debit- Debit Card 6105 11-23-25 Cumberland Farms 1 Corinth Ny",
+    "amount": 20.14,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-26",
+    "description": "Deposit - ACH Paid From Elizabeth A Harr Payroll 01Afd9",
+    "amount": 661.41,
+    "is_income": true
+  },
+  {
+    "date": "2025-11-26",
+    "description": "Deposit",
+    "amount": 200.0,
+    "is_income": true
+  },
+  {
+    "date": "2025-11-26",
+    "description": "POS Debit- Debit Card 6105 11-25-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 1.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-26",
+    "description": "POS Debit- Debit Card 6105 11-25-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 5.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-26",
+    "description": "POS Debit- Debit Card 6105 11-25-25 Sq *broadway Coffe Saratoga Spri Ny",
+    "amount": 7.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-26",
+    "description": "POS Debit- Debit Card 6105 11-25-25 Sq *broadway Coffe Saratoga Spri Ny",
+    "amount": 11.16,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-26",
+    "description": "POS Debit- Debit Card 6105 11-25-25 Mrs. London`s Sara Saratoga Spri Ny",
+    "amount": 17.7,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-26",
+    "description": "POS Debit- Debit Card 6105 11-25-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 20.7,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-26",
+    "description": "Paid To - Applecard Gsbank Payment Chk 12408508",
+    "amount": 200.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-28",
+    "description": "POS Debit- Debit Card 6105 11-26-25 Prime Video Channe Amzn.Com/Bill WA",
+    "amount": 4.99,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-28",
+    "description": "POS Debit- Debit Card 6105 11-26-25 Sq *broadway Coffe Saratoga Spri Ny",
+    "amount": 8.35,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-28",
+    "description": "POS Debit- Debit Card 6105 11-26-25 Tractor Supply CO Saratoga Spgs Ny",
+    "amount": 8.55,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-28",
+    "description": "POS Debit- Debit Card 6105 11-26-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 9.7,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-28",
+    "description": "POS Debit- Debit Card 6105 11-26-25 Sq *the Nook Cafe Saratoga Spri Ny",
+    "amount": 16.53,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-28",
+    "description": "POS Debit- Debit Card 6105 11-25-25 Corinth Wine & Liq Corinth Ny",
+    "amount": 18.18,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-28",
+    "description": "POS Debit- Debit Card 6105 11-26-25 Stewarts Shop 390 Corinth Ny",
+    "amount": 20.07,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-28",
+    "description": "POS Debit- Debit Card 6105 11-26-25 Barnes & Noble #20 Saratoga Spri Ny",
+    "amount": 22.41,
+    "is_income": false
+  },
+  {
+    "date": "2025-11-28",
+    "description": "Dividend",
+    "amount": 0.01,
+    "is_income": true
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-29-25 Prime Video Channe Amzn.Com/Bill WA",
+    "amount": 3.99,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-28-25 Prime Video Channe Amzn.Com/Bill WA",
+    "amount": 9.99,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-29-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 10.56,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-28-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 12.42,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-30-25 Walgreens #19911 Corinth Ny",
+    "amount": 13.9,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-28-25 Sq *the Nook Cafe Saratoga Spri Ny",
+    "amount": 14.46,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-29-25 Sq *the Nook Cafe Saratoga Spri Ny",
+    "amount": 14.46,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-30-25 Amazon Prime*t92G9 Amzn.Com/Bill WA",
+    "amount": 16.04,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-29-25 Tst* Franklin Squa Saratoga Spri Ny",
+    "amount": 16.42,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-28-25 Corinth Wine & Liq Corinth Ny",
+    "amount": 18.18,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit - Debit Card 6105 Transaction 11-30-25 Cumberland Farms 1578 Corinth",
+    "amount": 20.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit - Debit Card 6105 Transaction 11-28-25 Cumberland Farms 1578 Corinth",
+    "amount": 20.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-28-25 Franklin Square MA Saratoga Spri Ny",
+    "amount": 21.01,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-30-25 Yousician.Com 917-6073622 IN",
+    "amount": 21.59,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-30-25 Chianti IL Ristora Saratoga Spri Ny",
+    "amount": 129.84,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-01",
+    "description": "POS Debit- Debit Card 6105 11-28-25 Encounter Saratoga Spri Ny",
+    "amount": 212.93,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-02",
+    "description": "POS Debit- Debit Card 6105 12-01-25 Putnam Market Inc Saratoga Spri Ny",
+    "amount": 12.95,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-02",
+    "description": "POS Debit- Debit Card 6105 12-01-25 Saratoga Regional Www.Srymca.OR Ny",
+    "amount": 48.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-03",
+    "description": "POS Debit- Debit Card 6105 12-01-25 Greenfield Wine An Greenfield Ce GA",
+    "amount": 1.09,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-04",
+    "description": "Deposit - ACH Paid From Elizabeth A Harr Payroll 01Afd9",
+    "amount": 808.83,
+    "is_income": true
+  },
+  {
+    "date": "2025-12-04",
+    "description": "POS Debit- Debit Card 6105 12-03-25 Sq *broadway Coffe Saratoga Spri Ny",
+    "amount": 11.1,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-04",
+    "description": "POS Debit - Debit Card 6105 Transaction 12-03-25 Market32 Pchopper #158 Saratoga Spgs Ny",
+    "amount": 46.53,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-04",
+    "description": "Paid To - Applecard Gsbank Payment Chk 12408508",
+    "amount": 200.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-05",
+    "description": "POS Debit- Debit Card 6105 12-05-25 Venmo *haylee Cast Visa Direct Ny",
+    "amount": 1.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "Transfer From Checking Aubrey L Levons",
+    "amount": 100.0,
+    "is_income": true
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-05-25 Stewarts Shop 390 Corinth Ny",
+    "amount": 1.7,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-07-25 Prime Video *bi82Y 888-802-3080 WA",
+    "amount": 4.99,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-06-25 Sq *broadway Coffe Saratoga Spri Ny",
+    "amount": 10.55,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-06-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 10.7,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-06-25 Sq *the Nook Cafe Saratoga Spri Ny",
+    "amount": 11.72,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-06-25 Spotify P3D253A3D4 New York Ny",
+    "amount": 11.99,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-06-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 17.72,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-04-25 Corinth Wine & Liq Corinth Ny",
+    "amount": 18.18,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-04-25 Cumberland Farms 1 Corinth Ny",
+    "amount": 20.01,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-05-25 Stewarts Shop 416 Corinth Ny",
+    "amount": 20.02,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-05-25 Walgreens #19911 Corinth Ny",
+    "amount": 21.18,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-07-25 Walgreens #19911 Corinth Ny",
+    "amount": 22.44,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-06-25 McDonald's F10251 Saratoga Spri Ny",
+    "amount": 28.75,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-05-25 Sq *broadway Coffe Saratoga Spri Ny",
+    "amount": 36.92,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-05-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 42.12,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-07-25 Market32 Pchopper Saratoga Spri Ny",
+    "amount": 137.15,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-08",
+    "description": "POS Debit- Debit Card 6105 12-05-25 Venmo *haylee Cast New York Ny",
+    "amount": 240.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-09",
+    "description": "POS Debit- Debit Card 6105 12-08-25 Stewarts Shop 390 Corinth Ny",
+    "amount": 1.7,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-09",
+    "description": "POS Debit- Debit Card 6105 12-08-25 Sq *comfort Kitche Saratoga Spri Ny",
+    "amount": 11.85,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-09",
+    "description": "POS Debit- Debit Card 6105 12-08-25 Stewarts Shop 390 Corinth Ny",
+    "amount": 15.2,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-09",
+    "description": "POS Debit- Debit Card 6105 12-07-25 Corinth Wine & Liq Corinth Ny",
+    "amount": 18.18,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-09",
+    "description": "POS Debit- Debit Card 6105 12-05-25 Violets Of Saratog Saratoga Spri Ny",
+    "amount": 51.5,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-10",
+    "description": "POS Debit- Debit Card 6105 12-09-25 Sq *the Nook Cafe Saratoga Spri Ny",
+    "amount": 16.1,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-10",
+    "description": "POS Debit- Debit Card 6105 12-09-25 Stewarts Shop 104 Saratoga Spri Ny",
+    "amount": 20.22,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-11",
+    "description": "Deposit - ACH Paid From Elizabeth A Harr Payroll 01Afd9",
+    "amount": 776.07,
+    "is_income": true
+  },
+  {
+    "date": "2025-12-11",
+    "description": "POS Debit- Debit Card 6105 12-10-25 Sq *the Nook Cafe Saratoga Spri Ny",
+    "amount": 12.65,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-11",
+    "description": "POS Debit- Debit Card 6105 12-10-25 Venmo *haylee Cast Visa Direct Ny",
+    "amount": 30.0,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-12",
+    "description": "POS Debit- Debit Card 6105 12-11-25 Sq *broadway Coffe Saratoga Spri Ny",
+    "amount": 11.9,
+    "is_income": false
+  },
+  {
+    "date": "2025-12-12",
+    "description": "POS Debit- Debit Card 6105 12-11-25 Cantina Saratoga Spri Ny",
+    "amount": 37.0,
+    "is_income": false
+  }
+]

@@ -1,0 +1,341 @@
+
+================================================================================
+FILE: Levons_EB_2023_final.docx
+================================================================================
+
+Jaquan K. levons
+142 Pleasant Valley Road | Titusville, NJ 08560 | 609.240.1241 | jaquan.levons@gmail.com 
+ 
+Experienced product development scientist, technologist and organizational leader, passionate about the role of drug product development in impacting the patient experience through organizational dynamics, leader development, simplification, practical innovation and change management.  
+ 
+Engineering Technologies, Leadership Team
+Engineering Technologies | Drug Product Development 	Dec 2015 - Current
+•Collaboratively designed and built a new Engineering Technologies function enabling the near-term portfolio, and advancing the science of the future portfolio, as part of the leadership team.  Designed and implemented mechanisms for cultural engagement and organizational dynamics, dynamic resource allocation, operational project management, strategic assessment, and managing organizational planning.
+•Managed a direct reporting team of up to 9 scientists, and 3 concurrent people managers.  Developed a ‘Manager Readiness’ evaluation based on training and leadership books to help aspiring managers identify key areas to develop, enabling specific, direct feedback.
+•Introduced 3D printing for custom parts into the organization, avoiding OpEx cost of >$30k (the cost of the printer) during the first year of use.
+•Initiated the Personalized Medicine through 3D printing (PM3D Printing) drug product team, exploring and developing technology to leverage additive manufacturing on a bench top to produce tablets, and dosing the first printed tablets into animal models to demonstrate dynamic tunability.
+
+Digitalization and Automation
+Engineering Technologies | Drug Product Development	2010 - Current
+•Drove divisional (Product Development) digital initiative, towards a vision of Self-Documenting Labs, Seamless Knowledge Integration, and AI/ML Decision Making from Development to the Operations function.  Built cross-functional support and resources, engaged 100 leaders, scientists, and partners, to express value and define a combined book of work aligned across multiple functions to achieve the digital vision through over 5 years.
+•Leveraged digitalization to increase DPD scientist access to data, improving product robustness.  Developed a digital portfolio triaging projects managing resources against impact on cross modality priority projects, defined scope, developed timeline, managed stakeholders & customers, to deliver necessary functionality. Worked across an organizational interface with IT and produced several digital tools improving our digital data quality, and broadening access for decision making, as well as incorporating AI/ML technology (CIFER, MAST, Lumetics, THEIA).  
+•Demonstrated savings for an Automated Powder Excipient Compatibility System and led the acquisition, installation and validation of the system and has reported 1.0 FTE/year realized savings to management while continuing to improve the automated workflow. 
+•Initiated and managed the department Automation Matrix team.  Led the expansion of the small molecule automation lab to application of parallel experimentation technology to 1.) reactive excipient impurity screening for Excipient Compatibility, 2.) amorphous stabilizer screening via solvent casting, 3.) adsorbent/coprecipitate compatibility screening, and 4.) lipid phase diagram generation
+•Led a $3MM 2.5 year Biologics Automation Custom Workflow development, acquisition, testing, and deployment, based on previously calculated ROI, and previously developed novel automated Buffer Exchange Workflow.  The multidisciplinary team completed the project in two phases.
+
+Matrix Team Leads 
+Engineering Technologies/Exploratory Pharmaceutics | Drug Product Science & Technologies
+	2009 – Current
+•Led several Drug Product Teams for small molecule oral and aseptic programs (DPDTL: FXIa oral, FXIa IV, BTK, BET, MyBPC3; MSDT: Allergan, HCV NS3 b/u) of various complexity, leading the team to evaluate the risks of several formulation options, navigate development hurdles, communicate to senior leadership, and progress through CMC development to achieve filing milestones and clinical product deliveries.
+•Led the DPD Team for a small molecule aseptic program (FXIa IV) with low solubility, high doses, and long infusion time. Collaborated as a member of the integrated development team to achieve the common goal of providing clinical supplies under a compressed timeline by working with colleagues in various sectors of the business including chemistry, clinical supply operations and management, analytical development, project management and clinical research to optimize the clinical study design, secure commitments and reach compromise among the team that enabled our common goal.
+
+Preformulation Development
+Exploratory Pharmaceutics | Drug Product Science & Technologies
+	2003 – 2015
+•Developed a math model for assessing the impact of a polymorphic phase impurity on the fraction of dose absorbed, and ran simulations to apply to two projects.
+•Expanded several current simulation models for drug dissolution and absorption using Matlab by incorporating polydispersity and adding additional rigor to boundary layer terms. 
+•Developed and implemented an automated viscous liquid solubility study to support oral and parenteral liquid formulation development, utilizing existing Symyx Automation tools in collaboration with Chemistry R&D colleagues, reducing screening time by 75% while increasing the experimental space explored by four fold on average. 
+
+
+B.S.E., Chemical Engineering 
+Princeton University | Princeton, NJ
+	Jun 2003
+
+
+
+
+
+Publications
+Semi-Automated Sample Preparation for Protein Stability and Formulation Screening via Buffer Exchange; Ying, W.; Levons, J.; Carney, A.; Gandhi, R.; Vydra, V.; Rubin, E.; JALA (2015), 21(3), 378
+
+Formation of reactive impurities in aqueous and neat polyethylene glycol 400 and effects of antioxidants and oxidation inducers;  Hemenway, J.; Carvalho, T.; Rao, V.; Wu, Y; Levons, J.; Narang, A.; Paruchuri, S.; Stamato, H.; Varia, S. Journal of Pharmaceutical Sciences (2012), 101(9), 3305-3318.  
+
+Reactive Impurities in Excipients: Profiling, Identification and Mitigation of Drug-​Excipient Incompatibility; Wu, Yongmei; Levons, J.; Narang, A.; Raghavan, K.; Rao, V. AAPS PharmSciTech (2011), 12(4), 1248-1263
+  
+A high-​throughput spectrophotometric approach for evaluation of precipitation resistance; Chandran, S.; Gesenberg, C.; Levons, J.; Hubert, M.; Raghavan, K.; Journal of Pharmaceutical and Biomedical Analysis (2011), 56(4), 698-704.
+
+Phase behavior of TPGS-​PEG400​/1450 systems and their application to liquid formulation: A formulation platform approach; Li, J.; Yang, B.; Levons, J.; Pinnamaneni, S.; Raghavan, K., Journal of Pharmaceutical Sciences (2011), 100(11), 4907-4921.
+
+Predicting Effect of Food on Extent of Drug Absorption Based on Physicochemical Properties, Gu, C.; Li, H., Levons, J.; Lentz, K.; Gandhi, R.; Raghavan, K.; Smith, R; Pharmaceutical Research (2007), 24(6), 1118-1130 
+
+Patents
+Gu, Chong-Hui; Gao, Qi; Kuang, Shan-Ming; Lai, Chiajen; Levons, Jaquan Kalani; Qian, Feng.  Formulations of 1-(4-benzoylpiperazin-1-yl)-2-[4-methoxy-7-(3-methyl-[1,2,4]triazol-1-yl)-1H-pyrrolo[2,3-c]pyridin-3-yl]ethane-1,2-dione.    U.S. Pat. Appl. Publ.  (2006),     9 pp.  CODEN: USXXCO  US  2006100209  A1  20060511  CAN 144:474920  AN 2006:445854    
+  
+Chen, Chung-Pin H.; Digiugno, Dawn; Gao, Qi; Gu, Chong-Hui; Levons, Jaquan Kalani; Yang, Bing-Shiou.  Crystalline forms of 1-benzoyl-4-[2-[4-methoxy-7-(3-methyl-1H-1,2,4-triazol-1-yl)-1-[(phosphonooxy)methyl]-1H-pyrrolo[2,3-c]pyridin-3-yl]-1,2-dioxoethyl]piperazine.    PCT Int. Appl.  (2007),     60pp.  CODEN: PIXXD2  WO  2007070589  A2  20070621  CAN 147:102159  AN 2007:673417    
+
+Bioavailable capsule compositions of amorphous α-​(N-​sulfonamido)​acetamide compound for treatment of CNS disorders; Chandran, Sachin; Gandhi, Rajesh Babulal; Levons, Jaquan Kalani; Perrone, Robert Kevin; Price, Christopher P.; Raghavan, Krishnaswamy Srinivas; Ullah, Ismat 
+U.S. Pat. Appl. Publ. (2010), US 20100260837 A1 20101014.
+
+
+================================================================================
+FILE: Levons_ITE_2023_final - Copy.docx
+================================================================================
+
+Jaquan K. levons
+142 Pleasant Valley Road | Titusville, NJ 08560 | 609.240.1241 | jaquan.levons@gmail.com 
+ 
+Experienced product development scientist, technologist and organizational leader, passionate about the role of drug product development in impacting the patient experience through organizational dynamics, leader development, simplification, practical innovation and change management.  
+ 
+Engineering Technologies, Leadership Team
+Engineering Technologies | Drug Product Development 	Dec 2015 - Current
+•Collaboratively designed and built a new Engineering Technologies function enabling the near-term portfolio, and advancing the science of the future portfolio, as part of the leadership team.  Designed and implemented mechanisms for cultural engagement and organizational dynamics, dynamic resource allocation, operational project management, strategic assessment, and managing organizational planning.
+•Managed a direct reporting team of up to 9 scientists, and 3 concurrent people managers.  Developed a ‘Manager Readiness’ evaluation based on training and leadership books to help aspiring managers identify key areas to develop, enabling specific, direct feedback.
+•Introduced 3D printing for custom parts into the organization, avoiding OpEx cost of >$30k (the cost of the printer) during the first year of use.
+•Initiated the Personalized Medicine through 3D printing (PM3D Printing) drug product team, exploring and developing technology to leverage additive manufacturing on a bench top to produce tablets, and dosing the first printed tablets into animal models to demonstrate dynamic tunability.
+
+Digitalization and Automation
+Engineering Technologies | Drug Product Development	2010 - Current
+•Drove divisional (Product Development) digital initiative, towards a vision of Self-Documenting Labs, Seamless Knowledge Integration, and AI/ML Decision Making from Development to the Operations function.  Built cross-functional support and resources, engaged 100 leaders, scientists, and partners, to express value and define a combined book of work aligned across multiple functions to achieve the digital vision through over 5 years.
+•Leveraged digitalization to increase DPD scientist access to data, improving product robustness.  Developed a digital portfolio triaging projects managing resources against impact on cross modality priority projects, defined scope, developed timeline, managed stakeholders & customers, to deliver necessary functionality. Worked across an organizational interface with IT and produced several digital tools improving our digital data quality, and broadening access for decision making, as well as incorporating AI/ML technology (CIFER, MAST, Lumetics, THEIA).  
+•Demonstrated savings for an Automated Powder Excipient Compatibility System and led the acquisition, installation and validation of the system and has reported 1.0 FTE/year realized savings to management while continuing to improve the automated workflow. 
+•Initiated and managed the department Automation Matrix team.  Led the expansion of the small molecule automation lab to application of parallel experimentation technology to 1.) reactive excipient impurity screening for Excipient Compatibility, 2.) amorphous stabilizer screening via solvent casting, 3.) adsorbent/coprecipitate compatibility screening, and 4.) lipid phase diagram generation
+•Led a $3MM 2.5 year Biologics Automation Custom Workflow development, acquisition, testing, and deployment, based on previously calculated ROI, and previously developed novel automated Buffer Exchange Workflow.  The multidisciplinary team completed the project in two phases.
+
+Matrix Team Leads 
+Engineering Technologies/Exploratory Pharmaceutics | Drug Product Science & Technologies
+	2009 – Current
+•Led several Drug Product Teams for small molecule oral and aseptic programs (DPDTL: FXIa oral, FXIa IV, BTK, BET, MyBPC3; MSDT: Allergan, HCV NS3 b/u) of various complexity, leading the team to evaluate the risks of several formulation options, navigate development hurdles, communicate to senior leadership, and progress through CMC development to achieve filing milestones and clinical product deliveries.
+•Led the DPD Team for a small molecule aseptic program (FXIa IV) with low solubility, high doses, and long infusion time. Collaborated as a member of the integrated development team to achieve the common goal of providing clinical supplies under a compressed timeline by working with colleagues in various sectors of the business including chemistry, clinical supply operations and management, analytical development, project management and clinical research to optimize the clinical study design, secure commitments and reach compromise among the team that enabled our common goal.
+
+Preformulation Development
+Exploratory Pharmaceutics | Drug Product Science & Technologies
+	2003 – 2015
+•Developed a math model for assessing the impact of a polymorphic phase impurity on the fraction of dose absorbed, and ran simulations to apply to two projects.
+•Expanded several current simulation models for drug dissolution and absorption using Matlab by incorporating polydispersity and adding additional rigor to boundary layer terms. 
+•Developed and implemented an automated viscous liquid solubility study to support oral and parenteral liquid formulation development, utilizing existing Symyx Automation tools in collaboration with Chemistry R&D colleagues, reducing screening time by 75% while increasing the experimental space explored by four fold on average. 
+
+
+B.S.E., Chemical Engineering 
+Princeton University | Princeton, NJ
+	Jun 2003
+
+
+
+
+
+Publications
+Semi-Automated Sample Preparation for Protein Stability and Formulation Screening via Buffer Exchange; Ying, W.; Levons, J.; Carney, A.; Gandhi, R.; Vydra, V.; Rubin, E.; JALA (2015), 21(3), 378
+
+Formation of reactive impurities in aqueous and neat polyethylene glycol 400 and effects of antioxidants and oxidation inducers;  Hemenway, J.; Carvalho, T.; Rao, V.; Wu, Y; Levons, J.; Narang, A.; Paruchuri, S.; Stamato, H.; Varia, S. Journal of Pharmaceutical Sciences (2012), 101(9), 3305-3318.  
+
+Reactive Impurities in Excipients: Profiling, Identification and Mitigation of Drug-​Excipient Incompatibility; Wu, Yongmei; Levons, J.; Narang, A.; Raghavan, K.; Rao, V. AAPS PharmSciTech (2011), 12(4), 1248-1263
+  
+A high-​throughput spectrophotometric approach for evaluation of precipitation resistance; Chandran, S.; Gesenberg, C.; Levons, J.; Hubert, M.; Raghavan, K.; Journal of Pharmaceutical and Biomedical Analysis (2011), 56(4), 698-704.
+
+Phase behavior of TPGS-​PEG400​/1450 systems and their application to liquid formulation: A formulation platform approach; Li, J.; Yang, B.; Levons, J.; Pinnamaneni, S.; Raghavan, K., Journal of Pharmaceutical Sciences (2011), 100(11), 4907-4921.
+
+Predicting Effect of Food on Extent of Drug Absorption Based on Physicochemical Properties, Gu, C.; Li, H., Levons, J.; Lentz, K.; Gandhi, R.; Raghavan, K.; Smith, R; Pharmaceutical Research (2007), 24(6), 1118-1130 
+
+Patents
+Gu, Chong-Hui; Gao, Qi; Kuang, Shan-Ming; Lai, Chiajen; Levons, Jaquan Kalani; Qian, Feng.  Formulations of 1-(4-benzoylpiperazin-1-yl)-2-[4-methoxy-7-(3-methyl-[1,2,4]triazol-1-yl)-1H-pyrrolo[2,3-c]pyridin-3-yl]ethane-1,2-dione.    U.S. Pat. Appl. Publ.  (2006),     9 pp.  CODEN: USXXCO  US  2006100209  A1  20060511  CAN 144:474920  AN 2006:445854    
+  
+Chen, Chung-Pin H.; Digiugno, Dawn; Gao, Qi; Gu, Chong-Hui; Levons, Jaquan Kalani; Yang, Bing-Shiou.  Crystalline forms of 1-benzoyl-4-[2-[4-methoxy-7-(3-methyl-1H-1,2,4-triazol-1-yl)-1-[(phosphonooxy)methyl]-1H-pyrrolo[2,3-c]pyridin-3-yl]-1,2-dioxoethyl]piperazine.    PCT Int. Appl.  (2007),     60pp.  CODEN: PIXXD2  WO  2007070589  A2  20070621  CAN 147:102159  AN 2007:673417    
+
+Bioavailable capsule compositions of amorphous α-​(N-​sulfonamido)​acetamide compound for treatment of CNS disorders; Chandran, Sachin; Gandhi, Rajesh Babulal; Levons, Jaquan Kalani; Perrone, Robert Kevin; Price, Christopher P.; Raghavan, Krishnaswamy Srinivas; Ullah, Ismat 
+U.S. Pat. Appl. Publ. (2010), US 20100260837 A1 20101014.
+
+
+================================================================================
+FILE: Levons_Lilly_AVP_Automation_Resume_2026_v4.docx
+================================================================================
+JAQUAN K. LEVONS
+Titusville, NJ  •  609.240.1241  •  jaquan.levons@gmail.com  •  linkedin.com/in/jaquan-levons
+
+PROFESSIONAL SUMMARY
+Automation and pharmaceutical technology leader with 22+ years of progressive experience at Bristol Myers Squibb — advancing from hands-on preformulation scientist and automation developer through matrix team leadership and digital strategy to Scientific Director overseeing enterprise automation, AI/ML, and data transformation programs. Envisioned, championed the business case for, built, and led a multimillion-dollar automation function impacting 80+ assets across modalities — growing capabilities from 1 to 13 workflows serving ~25 studies/year. Developed a three-tier automation value framework (productivity → data/predictive insight → new scientist-technology experimentation). Foundational workflows delivered ~5.05 FTE savings (excipient compatibility: 2.7; viscous solubility: 1.25; buffer exchange: 1.1). Automation leadership recognized externally through AAPS webinars, user-group presentations, and vendor co-development that led to commercially deployed platforms. Experienced across small-molecule, biologics, antibody-based therapeutics, and gene therapy.
+CORE STRENGTHS
+Laboratory automation strategy, operating model design, and portfolio governance
+Team enablement: resource planning, capability development, and stakeholder engagement
+Automation platforms: Tecan, Hamilton, Symyx/Freeslate/Unchained Labs
+Lab informatics: ELN/LIMS integration, metadata standards, data pipeline reliability
+AI/ML integration for experimentation and decision support
+Vendor partnerships, capital planning, and enterprise adoption/change management
+Cross-functional delivery across chemistry, biopharmaceutics, analytical, IT, and manufacturing
+People leadership, succession planning, and manager development
+PROFESSIONAL EXPERIENCE — BRISTOL MYERS SQUIBB (2003–PRESENT)
+Scientific Director, Automation, Digital & AI Transformation — DPD IT / PD DevEx (Jun 2022–Present)
+Enterprise-level accountability for automation strategy, digital platform delivery, AI/ML adoption, and portfolio governance across Drug Product Development. Multi-modality scope includes biologics, small molecule, and gene therapy (co-lead, MyBPC3 program).
+Lead a multidisciplinary organization of 7 direct reports (including 3 PhDs) plus 3 people managers across automation, data science, PAT, and modeling.
+Sponsor and govern ~20 automation initiatives delivered by team members — ensuring business-case rigor, resource alignment, stakeholder engagement, and sustained adoption.
+Co-lead Bio In Silico modeling and AI programs: predictive modeling portfolio, C3.ai document extraction pilot (>3,000 documents, >95% accuracy), and GenAI enablement for scientist workflows.
+Advanced automation strategy from resource savings toward digitization and knowledge generation, applying three-tier value framework to guide investment decisions.
+Direct enterprise software portfolio governance — prioritization, vendor negotiation, and rationalization of automation and digital tools across DPD.
+Team-Built Platforms Directed/Sponsored
+Tabula EBR, HIAC analytical automation, SciY automated tablet testing, ARGILE XR platform (28 projects, 17 sites), PM3D bespoke 3D-printing automation (concept to preclinical dosing feasibility).
+Representative Team-Delivered Outcomes
+Biologics automation enabled combinatorial stability studies at scale (180+ combinations, 1,000+ samples, 10,000+ data points).
+Designed kinetics-based excipient compatibility strategy for TYK2/BMS-986165 with team execution, informing composition decisions and avoiding unnecessary scale-up.
+Associate Director / Principal Scientist, Automation & Digital Strategy — Engineering Technologies (Mar 2019–Jun 2022)
+Created Digital Engineering as a new discipline within DPST; led its automation, digital, and additive manufacturing portfolio as a key member of the ET leadership team.
+Created the Digital Engineering function — defining roles, career paths, and a cohesive strategy to harness digital technology for drug product development and manufacturing.
+Developed and communicated the DE strategy: (1) push data into scalable platforms with UX focus, (2) information accessible through presentation technologies, (3) next-generation development and manufacture.
+Co-led the GPS Digital Moonshot initiative for seamless knowledge creation and consumption — spearheaded a PD/CTD effort engaging 100 leaders, scientists, and partners to produce a 5-year digital vision with 21+ minimum viable products for investment.
+Sponsored the $3M biologics automation program (vendor selection through deployment) and expanded parallel experimentation from small molecule to biologics.
+Drove innovation in additive manufacturing (PM3D) and emerging technologies including ARGILE augmented reality (instrumental during pandemic lockdown for cross-site troubleshooting), Lumetics data digitalization, and an Alexa-in-the-lab collaboration with Amazon.
+As DPD-IT Enterprise Team Co-Lead, established a strong working relationship with IT and PD partners, positioning DPD as a testing ground for new digital solutions.
+Developed Manager Readiness framework and role-competency models to grow next-generation automation leaders; co-led culture and talent development within ET.
+Senior Research Scientist I → II, Automation & Digitalization — Process Development (2013–Mar 2019)
+First formal technical leadership scope: managed 6 scientists (including PhDs) in the automation function, coordinated the department automation matrix team, expanded from small-molecule into biologics, and began driving digital strategy.
+(Senior Research Scientist I: 2013–2017 | Senior Research Scientist II: 2017–2019)
+Initiated and managed the department Automation Matrix team, coordinating cross-functional automation delivery and expanding from small-molecule to biologics work.
+Developed and deployed the automated buffer-exchange workflow for biologics formulation screening (1.1 FTE savings), which anchored the later $3M biologics platform investment. Work influenced vendors and peers through a published paper, external presentations, and direct conversations with Freeslate (now Unchained Labs) — the vendor chose to invest in a commercial platform based on BMS-developed technology.
+Extended small-molecule workflows to new capability tiers: excipient impurity spiking, coprocessed excipient screening, and phase diagram generation.
+Led automation-data connectivity across ELN/LIMS, Aveva PI, and analytics systems; deployed Nisaba dashboards for real-time equipment visibility across 14+ instruments.
+Drove continuous method evolution from routine Tier-1 productivity workflows to Tier-2/3 approaches improving insight quality and decision confidence.
+Recognized externally for automation leadership through AAPS webinars, user-group presentations, and co-authored publications on excipient impurity profiling that influenced vendor and peer organization practices.
+Partnered with discovery colleagues to extend automated screening tools upstream, building familiarity with discovery-stage data flows and scientific questions.
+Preformulation Scientist & Automation Developer (2003–2013)
+Individual contributor at the discovery-development interface, personally designing and building the foundational automation capabilities that seeded the entire function.
+Spent 6 months embedded with CSD automation to design and build an organic-solvent solubility instrument from scratch — defining requirements, procurement, factory/site acceptance testing, and internal deployment.
+Led end-to-end buildout of Automated Excipient Compatibility workflows (32 projects, 2.7 FTE savings) — from user requirements through vendor co-development with Symyx/Freeslate to production deployment.
+Developed and scaled automated viscous liquid solubility screening (30 projects, 1.25 FTE savings; 75% faster; ~4× experimental coverage).
+Served on multiple drug product teams across modalities (oral solid dosage, IV, biologics) — including Fostemsavir (HIV), Beclabuvir (HCV), and Factor XIa programs — supporting IND and IND-enabling milestones.
+Established the automation adoption patterns and ROI discipline that enabled all subsequent enterprise-scale investment decisions.
+EDUCATION
+B.S.E., Chemical Engineering — Princeton University, Princeton, NJ | 2003
+SELECTED PUBLICATIONS
+Ying, W.; Levons, J.; et al. "Semi-Automated Sample Preparation … Buffer Exchange." JALA (2015).
+Wu, Y.; Levons, J.; et al. "Reactive Impurities in Excipients …" AAPS PharmSciTech (2011).
+Chandran, S.; Gesenberg, C.; Levons, J.; et al. "High-Throughput … Precipitation Resistance." J. Pharm. Biomed. Anal. (2011).
+PATENTS
+Co-inventor on 3 patents related to solid-state forms and formulation technologies.
+EXTERNAL RECOGNITION & COMMUNITY
+AAPS webinar presenter and automation user-group speaker on laboratory automation strategy and implementation.
+Co-developed automation platform capabilities with Symyx/Freeslate (now Unchained Labs) that were subsequently commercialized industry-wide; buffer-exchange technology led vendor to invest in a standalone commercial unit.
+Active BOLD (Black Organization for Leadership and Development) member; D&I advocate across BMS forums.
+
+================================================================================
+FILE: Levons_MSE_2023.docx
+================================================================================
+
+Jaquan K. levons
+142 Pleasant Valley Road | Titusville, NJ 08560 | 609.240.1241 | jaquan.levons@gmail.com 
+ 
+Experienced product development scientist, technologist and organizational leader, passionate about the role of drug product development in impacting the patient experience through organizational dynamics, leader development, simplification, practical innovation and change management.  
+ 
+Engineering Technologies, Leadership Team
+Engineering Technologies | Drug Product Development 	Dec 2015 - Current
+•Collaboratively designed and built a new Engineering Technologies function enabling the near-term portfolio, and advancing the science of the future portfolio, as part of the leadership team.  Designed and implemented mechanisms for cultural engagement and organizational dynamics, dynamic resource allocation, operational project management, strategic assessment, and managing organizational planning.
+•Managed a direct reporting team of up to 9 scientists, and 3 concurrent people managers.  Developed a ‘Manager Readiness’ evaluation based on training and leadership books to help aspiring managers identify key areas to develop, enabling specific, direct feedback.
+•Introduced 3D printing for custom parts into the organization, avoiding OpEx cost of >$30k (the cost of the printer) during the first year of use.
+•Initiated the Personalized Medicine through 3D printing (PM3D Printing) drug product team, exploring and developing technology to leverage additive manufacturing on a bench top to produce tablets, and dosing the first printed tablets into animal models to demonstrate dynamic tunability.
+
+Digitalization and Automation
+Engineering Technologies | Drug Product Development	2010 - Current
+•Drove divisional (Product Development) digital initiative, towards a vision of Self-Documenting Labs, Seamless Knowledge Integration, and AI/ML Decision Making from Development to the Operations function.  Built cross-functional support and resources, engaged 100 leaders, scientists, and partners, to express value and define a combined book of work aligned across multiple functions to achieve the digital vision through over 5 years.
+•Leveraged digitalization to increase DPD scientist access to data, improving product robustness.  Developed a digital portfolio triaging projects managing resources against impact on cross modality priority projects, defined scope, developed timeline, managed stakeholders & customers, to deliver necessary functionality. Worked across an organizational interface with IT and produced several digital tools improving our digital data quality, and broadening access for decision making, as well as incorporating AI/ML technology (CIFER, MAST, Lumetics, THEIA).  
+•Demonstrated savings for an Automated Powder Excipient Compatibility System and led the acquisition, installation and validation of the system and has reported 1.0 FTE/year realized savings to management while continuing to improve the automated workflow. 
+•Initiated and managed the department Automation Matrix team.  Led the expansion of the small molecule automation lab to application of parallel experimentation technology to 1.) reactive excipient impurity screening for Excipient Compatibility, 2.) amorphous stabilizer screening via solvent casting, 3.) adsorbent/coprecipitate compatibility screening, and 4.) lipid phase diagram generation
+•Led a $3MM 2.5 year Biologics Automation Custom Workflow development, acquisition, testing, and deployment, based on previously calculated ROI, and previously developed novel automated Buffer Exchange Workflow.  The multidisciplinary team completed the project in two phases.
+
+Matrix Team Leads 
+Engineering Technologies/Exploratory Pharmaceutics | Drug Product Science & Technologies
+	2009 – Current
+•Led several Drug Product Teams for small molecule oral and aseptic programs (DPDTL: FXIa oral, FXIa IV, BTK, BET, MyBPC3; MSDT: Allergan, HCV NS3 b/u) of various complexity, leading the team to evaluate the risks of several formulation options, navigate development hurdles, communicate to senior leadership, and progress through CMC development to achieve filing milestones and clinical product deliveries.
+•Led the DPD Team for a small molecule aseptic program (FXIa IV) with low solubility, high doses, and long infusion time. Collaborated as a member of the integrated development team to achieve the common goal of providing clinical supplies under a compressed timeline by working with colleagues in various sectors of the business including chemistry, clinical supply operations and management, analytical development, project management and clinical research to optimize the clinical study design, secure commitments and reach compromise among the team that enabled our common goal.
+
+Preformulation Development
+Exploratory Pharmaceutics | Drug Product Science & Technologies
+	2003 – 2015
+•Developed a math model for assessing the impact of a polymorphic phase impurity on the fraction of dose absorbed, and ran simulations to apply to two projects.
+•Expanded several current simulation models for drug dissolution and absorption using Matlab by incorporating polydispersity and adding additional rigor to boundary layer terms. 
+•Developed and implemented an automated viscous liquid solubility study to support oral and parenteral liquid formulation development, utilizing existing Symyx Automation tools in collaboration with Chemistry R&D colleagues, reducing screening time by 75% while increasing the experimental space explored by four fold on average. 
+
+
+B.S.E., Chemical Engineering 
+Princeton University | Princeton, NJ
+	Jun 2003
+
+
+
+
+
+Publications
+Semi-Automated Sample Preparation for Protein Stability and Formulation Screening via Buffer Exchange; Ying, W.; Levons, J.; Carney, A.; Gandhi, R.; Vydra, V.; Rubin, E.; JALA (2015), 21(3), 378
+
+Formation of reactive impurities in aqueous and neat polyethylene glycol 400 and effects of antioxidants and oxidation inducers;  Hemenway, J.; Carvalho, T.; Rao, V.; Wu, Y; Levons, J.; Narang, A.; Paruchuri, S.; Stamato, H.; Varia, S. Journal of Pharmaceutical Sciences (2012), 101(9), 3305-3318.  
+
+Reactive Impurities in Excipients: Profiling, Identification and Mitigation of Drug-​Excipient Incompatibility; Wu, Yongmei; Levons, J.; Narang, A.; Raghavan, K.; Rao, V. AAPS PharmSciTech (2011), 12(4), 1248-1263
+  
+A high-​throughput spectrophotometric approach for evaluation of precipitation resistance; Chandran, S.; Gesenberg, C.; Levons, J.; Hubert, M.; Raghavan, K.; Journal of Pharmaceutical and Biomedical Analysis (2011), 56(4), 698-704.
+
+Phase behavior of TPGS-​PEG400​/1450 systems and their application to liquid formulation: A formulation platform approach; Li, J.; Yang, B.; Levons, J.; Pinnamaneni, S.; Raghavan, K., Journal of Pharmaceutical Sciences (2011), 100(11), 4907-4921.
+
+Predicting Effect of Food on Extent of Drug Absorption Based on Physicochemical Properties, Gu, C.; Li, H., Levons, J.; Lentz, K.; Gandhi, R.; Raghavan, K.; Smith, R; Pharmaceutical Research (2007), 24(6), 1118-1130 
+
+Patents
+Gu, Chong-Hui; Gao, Qi; Kuang, Shan-Ming; Lai, Chiajen; Levons, Jaquan Kalani; Qian, Feng.  Formulations of 1-(4-benzoylpiperazin-1-yl)-2-[4-methoxy-7-(3-methyl-[1,2,4]triazol-1-yl)-1H-pyrrolo[2,3-c]pyridin-3-yl]ethane-1,2-dione.    U.S. Pat. Appl. Publ.  (2006),     9 pp.  CODEN: USXXCO  US  2006100209  A1  20060511  CAN 144:474920  AN 2006:445854    
+  
+Chen, Chung-Pin H.; Digiugno, Dawn; Gao, Qi; Gu, Chong-Hui; Levons, Jaquan Kalani; Yang, Bing-Shiou.  Crystalline forms of 1-benzoyl-4-[2-[4-methoxy-7-(3-methyl-1H-1,2,4-triazol-1-yl)-1-[(phosphonooxy)methyl]-1H-pyrrolo[2,3-c]pyridin-3-yl]-1,2-dioxoethyl]piperazine.    PCT Int. Appl.  (2007),     60pp.  CODEN: PIXXD2  WO  2007070589  A2  20070621  CAN 147:102159  AN 2007:673417    
+
+Bioavailable capsule compositions of amorphous α-​(N-​sulfonamido)​acetamide compound for treatment of CNS disorders; Chandran, Sachin; Gandhi, Rajesh Babulal; Levons, Jaquan Kalani; Perrone, Robert Kevin; Price, Christopher P.; Raghavan, Krishnaswamy Srinivas; Ullah, Ismat 
+U.S. Pat. Appl. Publ. (2010), US 20100260837 A1 20101014.
+
+
+================================================================================
+FILE: Levons_PDO_2023_final.docx
+================================================================================
+
+Jaquan K. levons
+142 Pleasant Valley Road | Titusville, NJ 08560 | 609.240.1241 | jaquan.levons@gmail.com 
+ 
+Experienced product development scientist, technologist and organizational leader, passionate about the role of drug product development in impacting the patient experience through organizational dynamics, leader development, simplification, practical innovation and change management.  
+ 
+Engineering Technologies, Leadership Team
+Engineering Technologies | Drug Product Development 	Dec 2015 - Current
+•Collaboratively designed and built a new Engineering Technologies function enabling the near-term portfolio, and advancing the science of the future portfolio, as part of the leadership team.  Designed and implemented mechanisms for cultural engagement and organizational dynamics, dynamic resource allocation, operational project management, strategic assessment, and managing organizational planning.
+•Managed a direct reporting team of up to 9 scientists, and 3 concurrent people managers.  Developed a ‘Manager Readiness’ evaluation based on training and leadership books to help aspiring managers identify key areas to develop, enabling specific, direct feedback.
+•Introduced 3D printing for custom parts into the organization, avoiding OpEx cost of >$30k (the cost of the printer) during the first year of use.
+•Initiated the Personalized Medicine through 3D printing (PM3D Printing) drug product team, exploring and developing technology to leverage additive manufacturing on a bench top to produce tablets, and dosing the first printed tablets into animal models to demonstrate dynamic tunability.
+
+Digitalization and Automation
+Engineering Technologies | Drug Product Development	2010 - Current
+•Drove divisional (Product Development) digital initiative, towards a vision of Self-Documenting Labs, Seamless Knowledge Integration, and AI/ML Decision Making from Development to the Operations function.  Built cross-functional support and resources, engaged 100 leaders, scientists, and partners, to express value and define a combined book of work aligned across multiple functions to achieve the digital vision through over 5 years.
+•Leveraged digitalization to increase DPD scientist access to data, improving product robustness.  Developed a digital portfolio triaging projects managing resources against impact on cross modality priority projects, defined scope, developed timeline, managed stakeholders & customers, to deliver necessary functionality. Worked across an organizational interface with IT and produced several digital tools improving our digital data quality, and broadening access for decision making, as well as incorporating AI/ML technology (Nisaba, CIFER, MAST, Lumetics, THEIA, ARGILE).  
+•Demonstrated savings for an Automated Powder Excipient Compatibility System and led the acquisition, installation and validation of the system and has reported 1.0 FTE/year realized savings to management while continuing to improve the automated workflow. 
+•Initiated and managed the department Automation Matrix team.  Led the expansion of the small molecule automation lab to application of parallel experimentation technology to 1.) reactive excipient impurity screening for Excipient Compatibility, 2.) amorphous stabilizer screening via solvent casting, 3.) adsorbent/coprecipitate compatibility screening, and 4.) lipid phase diagram generation
+•Led a $3MM 2.5 year Biologics Automation Custom Workflow development, acquisition, testing, and deployment, based on previously calculated ROI, and previously developed novel automated Buffer Exchange Workflow.  The multidisciplinary team completed the project in two phases.
+
+Matrix Team Leads 
+Engineering Technologies/Exploratory Pharmaceutics | Drug Product Science & Technologies
+	2009 – Current
+•Led several Drug Product Teams for small molecule oral and aseptic programs (DPDTL: FXIa oral, FXIa IV, BTK, BET, MyBPC3; MSDT: Allergan, HCV NS3 b/u) of various complexity, leading the team to evaluate the risks of several formulation options, navigate development hurdles, communicate to senior leadership, and progress through CMC development to achieve filing milestones and clinical product deliveries.
+•Led the DPD Team for a small molecule aseptic program (FXIa IV) with low solubility, high doses, and long infusion time. Collaborated as a member of the integrated development team to achieve the common goal of providing clinical supplies under a compressed timeline by working with colleagues in various sectors of the business including chemistry, clinical supply operations and management, analytical development, project management and clinical research to optimize the clinical study design, secure commitments and reach compromise among the team that enabled our common goal.
+
+Preformulation Development
+Exploratory Pharmaceutics | Drug Product Science & Technologies
+	2003 – 2015
+•Developed a math model for assessing the impact of a polymorphic phase impurity on the fraction of dose absorbed, and ran simulations to apply to two projects.
+•Expanded several current simulation models for drug dissolution and absorption using Matlab by incorporating polydispersity and adding additional rigor to boundary layer terms. 
+•Developed and implemented an automated viscous liquid solubility study to support oral and parenteral liquid formulation development, utilizing existing Symyx Automation tools in collaboration with Chemistry R&D colleagues, reducing screening time by 75% while increasing the experimental space explored by four fold on average. 
+
+
+B.S.E., Chemical Engineering 
+Princeton University | Princeton, NJ
+	Jun 2003
+
+
+
+
+
+Publications
+Semi-Automated Sample Preparation for Protein Stability and Formulation Screening via Buffer Exchange; Ying, W.; Levons, J.; Carney, A.; Gandhi, R.; Vydra, V.; Rubin, E.; JALA (2015), 21(3), 378
+
+Formation of reactive impurities in aqueous and neat polyethylene glycol 400 and effects of antioxidants and oxidation inducers;  Hemenway, J.; Carvalho, T.; Rao, V.; Wu, Y; Levons, J.; Narang, A.; Paruchuri, S.; Stamato, H.; Varia, S. Journal of Pharmaceutical Sciences (2012), 101(9), 3305-3318.  
+
+Reactive Impurities in Excipients: Profiling, Identification and Mitigation of Drug-​Excipient Incompatibility; Wu, Yongmei; Levons, J.; Narang, A.; Raghavan, K.; Rao, V. AAPS PharmSciTech (2011), 12(4), 1248-1263
+  
+A high-​throughput spectrophotometric approach for evaluation of precipitation resistance; Chandran, S.; Gesenberg, C.; Levons, J.; Hubert, M.; Raghavan, K.; Journal of Pharmaceutical and Biomedical Analysis (2011), 56(4), 698-704.
+
+Phase behavior of TPGS-​PEG400​/1450 systems and their application to liquid formulation: A formulation platform approach; Li, J.; Yang, B.; Levons, J.; Pinnamaneni, S.; Raghavan, K., Journal of Pharmaceutical Sciences (2011), 100(11), 4907-4921.
+
+Predicting Effect of Food on Extent of Drug Absorption Based on Physicochemical Properties, Gu, C.; Li, H., Levons, J.; Lentz, K.; Gandhi, R.; Raghavan, K.; Smith, R; Pharmaceutical Research (2007), 24(6), 1118-1130 
+
+Patents
+Gu, Chong-Hui; Gao, Qi; Kuang, Shan-Ming; Lai, Chiajen; Levons, Jaquan Kalani; Qian, Feng.  Formulations of 1-(4-benzoylpiperazin-1-yl)-2-[4-methoxy-7-(3-methyl-[1,2,4]triazol-1-yl)-1H-pyrrolo[2,3-c]pyridin-3-yl]ethane-1,2-dione.    U.S. Pat. Appl. Publ.  (2006),     9 pp.  CODEN: USXXCO  US  2006100209  A1  20060511  CAN 144:474920  AN 2006:445854    
+  
+Chen, Chung-Pin H.; Digiugno, Dawn; Gao, Qi; Gu, Chong-Hui; Levons, Jaquan Kalani; Yang, Bing-Shiou.  Crystalline forms of 1-benzoyl-4-[2-[4-methoxy-7-(3-methyl-1H-1,2,4-triazol-1-yl)-1-[(phosphonooxy)methyl]-1H-pyrrolo[2,3-c]pyridin-3-yl]-1,2-dioxoethyl]piperazine.    PCT Int. Appl.  (2007),     60pp.  CODEN: PIXXD2  WO  2007070589  A2  20070621  CAN 147:102159  AN 2007:673417    
+
+Bioavailable capsule compositions of amorphous α-​(N-​sulfonamido)​acetamide compound for treatment of CNS disorders; Chandran, Sachin; Gandhi, Rajesh Babulal; Levons, Jaquan Kalani; Perrone, Robert Kevin; Price, Christopher P.; Raghavan, Krishnaswamy Srinivas; Ullah, Ismat 
+U.S. Pat. Appl. Publ. (2010), US 20100260837 A1 20101014.
+

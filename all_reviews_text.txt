@@ -1,0 +1,2380 @@
+
+================================================================================
+FILE: Contributions.pdf
+================================================================================
+--- Page 1 ---
+Contributions
+BMS Confidential Information10:45 PM
+02/28/2026
+Page 1 of 10
+Contribution 2025 SPD & ITE Joint Objectives on Structured Data Management   
+ 
+ 
+Team Communication  
+SPD formulations user experience (UX) team will be invited to Sprint reviews every 3 weeks to observe  
+progress towards goals and provide feedback.  
+The team will have opportunities (target -4, minimum-3) for additional  user experience engagements 
+facilitated  by a DevEx  UX lead.   
+Develop (1Q) and implement (through Q4) a Change Management plan that includes: 1) Leadership 
+Alignment,2) Stakeholder Engagement, and 3) a Communication  strategy to achieve uptake goals listed 
+below.  
+ 
+User Experience and Continuous Improvement  
+2025-1Q/2Q: Identification and prioritization of pain points by SPD UX team (prioritization to be informed 
+by UX/urgency as well as complexity/resource needs)  
+2025-2Q onwards: bilateral agreement on prioritization and burndown rate of pain points.  
+End user commitment to attending >/=75% of feedback and CI sessions facilitated  by DevEx  UX lead.   
+ 
+Driving adoption of structured data systems (Short term focus: Lumetics , Spotfire): Teams to use at least 
+the following three templates: 1.) metadata, 2.) SSF and 3.) SEC for at least one (stability) study in 2025 
+(or retrospective study) .  Meeting this criteria  moves programs teams from “0” to “1”.  
+ 
+Goal  is to have 80% of active biologics portfolio in “1” state by EOY 2025.  
+ 
+Quarterly recognitions for “most improved teams” and “best sustained teams”  
+To be fleshed out, including recognition for the teams that go beyond “1”  
+Maintenance: No drop (per quarter) greater than 10%  
+Organization Alignment 2025 [GPS] Performance - Maximize revenue, productivity and process standardization through 
+consistent application of our COMPASS system while driving safety, quality and ESG commitments 
+(Public)
+Comment Count 0
+Manager
+Label Exceeding
+History
+History
+--- Page 2 ---
+Contributions
+BMS Confidential Information10:45 PM
+02/28/2026
+Page 2 of 10
+Field History
+Date Updated By Updated In
+Field Updated New ValuePrior 
+Value
+02/07/2025 05:24 PM Jaquan Levons 
+(00145659)Manage Contributions: 
+Jaquan Levons 
+(00145659)Contribution 2025 SPD & ITE Joint Objectives 
+on Structured Data Management  
+ 
+  
+Team Communication  
+SPD formulations user experience 
+(UX) team will be invited to Sprint 
+reviews every 3 weeks to observe 
+progress towards goals and 
+provide feedback.  
+The team will have opportunities 
+(target -4, minimum-3) for 
+additional user experience 
+engagements facilitated by a 
+DevEx UX lead.   
+Develop (1Q) and implement 
+(through Q4) a Change 
+Management plan that includes:1) 
+Leadership Alignment,2) 
+Stakeholder Engagement, and 3) 
+a Communication strategy to 
+achieve uptake goals listed below.  
+  
+User Experience and Continuous 
+Improvement  
+2025-1Q/2Q: Identification and 
+prioritization of pain points by SPD 
+UX team (prioritization to be 
+informed by UX/urgency as well as 
+complexity/resource needs)  
+2025-2Q onwards: bilateral 
+agreement on prioritization and 
+burndown rate of pain points.  
+End user commitment to attending 
+>/=75% of feedback and CI 
+sessions facilitated by DevEx UX 
+lead.   
+  
+Driving adoption of structured data 
+systems (Short term focus: 
+Lumetics, Spotfire): Teams to use 
+at least the following three 
+templates: 1.) metadata, 2.) SSF 
+and 3.) SEC for at least one 
+(stability) study in 2025 (or 
+retrospective study).  Meeting this 
+criteria moves programs teams 
+from “0” to “1”.  
+  
+Goal is to have 80% of active 
+biologics portfolio in “1” state by 
+EOY 2025.  
+  
+Quarterly recognitions for “most 
+improved teams” and “best 
+sustained teams”  
+To be fleshed out, including 
+recognition for the teams that go 
+beyond “1”  
+Maintenance: No drop (per 
+quarter) greater than 10%  
+--- Page 3 ---
+Contributions
+BMS Confidential Information10:45 PM
+02/28/2026
+Page 3 of 10
+Field History
+Date Updated By Updated In
+Field Updated New ValuePrior 
+Value
+Organization 
+Alignment2025 [GPS] Performance - 
+Maximize revenue, productivity 
+and process standardization 
+through consistent application of 
+our COMPASS system while 
+driving safety, quality and ESG 
+commitments
+Contribution
+Data Integration and Analytics:  
+ 
+Delivery, implementation for integrated workflows, best practice •
+Develop and implement a Change Management plan to support portfolio goals that 
+includes Leadership Alignment, Stakeholder Engagement, and a Communication strategy 
+to achieve >70% integration for all mature ITE tools and workflows to quantitatively impact 
+speed, productivity, robustness to drive decisions in partnership with PUC pillar .•
+Drive DPD data strategy within DPD through a DPD data map and assessment of digital 
+maturity of data sources exercise, and develop proposal for storage and visualization 
+strategies across DPD including plan for DevLIMS  and ELN templates for data capture 
+systematically across priority DPD datasets by end of 2025 •
+Develop plan in partnership with the modeling team to identify specific data needed and 
+instrument connectivity to assist formulation and process models in the OSD space in 
+early 2Q to be able to implement that into modeling effort through 2Q-4Q: FEM 
+Compaction Model [ DevEx ], Blending Model [ DevEx ], ROM for CM [ DevEx ], SDD, 
+integrated hardware for digital twins (e.g., Lyo, RC, CM ) •
+Support digital strategy for data capture for comprehensive workflows aligning on revised 
+PAT data management system strategy for development and considering P3. Build out key 
+requirements in partnership with IT by end of 2Q. Develop implementation plan through 
+rest of 2025.•
+Organization Alignment 2025 [GPS] Performance - Maximize revenue, productivity and process standardization through 
+consistent application of our COMPASS system while driving safety, quality and ESG commitments 
+(Public)
+Comment Count 0
+Manager
+Label Achieving
+History
+History
+--- Page 4 ---
+Contributions
+BMS Confidential Information10:45 PM
+02/28/2026
+Page 4 of 10
+Field History
+Date Updated By Updated In
+Field Updated New ValuePrior 
+Value
+02/07/2025 05:26 PM Jaquan Levons 
+(00145659)Manage Contributions: 
+Jaquan Levons 
+(00145659)Contribution Data Integration and Analytics: 
+ 
+Delivery, implementation for 
+integrated workflows, best practice 
+ 
+ 
+Develop and implement a Change 
+Management plan to support 
+portfolio goals that includes 
+Leadership Alignment, 
+Stakeholder Engagement, and a 
+Communication strategy to 
+achieve >70% integration for all 
+mature ITE tools and workflows to 
+quantitatively impact speed, 
+productivity, robustness to drive 
+decisions in partnership with PUC 
+pillar. 
+ 
+Drive DPD data strategy within 
+DPD through a DPD data map and 
+assessment of digital maturity of 
+data sources exercise, and 
+develop proposal for storage and 
+visualization strategies across 
+DPD including plan for DevLIMS 
+and ELN templates for data 
+capture systematically across 
+priority DPD datasets by end of 
+2025 
+ 
+Develop plan in partnership with 
+the modeling team to identify 
+specific data needed and 
+instrument connectivity to assist 
+formulation and process models in 
+the OSD space in early 2Q to be 
+able to implement that into 
+modeling effort through 2Q-4Q: 
+FEM Compaction Model [DevEx], 
+Blending Model [DevEx], ROM for 
+CM [ DevEx], SDD, integrated 
+hardware for digital twins (e.g., 
+Lyo, RC, CM)  
+ 
+Support digital strategy for data 
+capture for comprehensive 
+workflows aligning on revised PAT 
+data management system strategy 
+for development and considering 
+P3. Build out key requirements in 
+partnership with IT by end of 2Q. 
+Develop implementation plan 
+through rest of 2025.
+Organization 
+Alignment2025 [GPS] Performance - 
+Maximize revenue, productivity 
+and process standardization 
+through consistent application of 
+our COMPASS system while 
+driving safety, quality and ESG 
+commitments
+Digital Capability  Contribution
+--- Page 5 ---
+Contributions
+BMS Confidential Information10:45 PM
+02/28/2026
+Page 5 of 10
+ 
+ 
+•New capability builds to support Dev/ex or non- Devex  priority areas:
+•Drive DevEx  Modeling ongoing projects including Biopharm  Digital and capturing metrics for value 
+across biopharm  risk assessments disciplines, and developing plan and implementation of clinical data 
+extraction project (4Q ‘25)
+•Drive Dev-Ex SPD In Silico teams to evolve data aggregation tool, ingest data from partner 
+organizations, build initial models for viscosity and HMW, and deploy to SPD leveraging change 
+management principles (including strategic goals to integrate DS &/or R&ED data).    Complete build in 
+3Q, and initiate roll out by 4Q ‘25.
+•Enable SPD data aggregation supporting data management compliance, enable replatforming  for 
+DevLIMS  (3Q), leverage AI/ML for data extraction (2Q), and continuously improve visualizations while 
+implementing change management.
+•Leverage LLMs through partnership with Devex  to 1) pull unstructured data from our data repositories 
+(Empower data, 3Q ‘25) 2) Support documentation build using gen AI (ELN to source documents) to 
+support reg filings in 4Q ‘25.
+•E-batch record option analysis and selection of path forward by end of 1Q2025 on build out of chosen 
+option(s).
+•Drive operational efficiency across DPD through:
+•Leveraging digital interfaces to enable quick and universal information access across DPD through use 
+of scripting tools as part of digital strategy (e.g.,   Quickbase  )
+•Enable centralized process for managing the DPD IT budget and IT related escalations through IT 
+enterprise team through 4Q2025.
+•Capture Barriers to Execution for DPD through BETAR
+•Digitize and store OSD material characterization data from the NBR Powder Testing Lab, SMW Powder 
+Testing Lab, and SMW C3 ITE/OPD labs.   Complete phase 1 integrations in 2Q ’25, Ability to export data 
+and simple visualizations (2025).   Change management/training for scientists using the system (2025).
+•Develop process data integration plan for Nisaba  (1Q) to instantiate a system to integrate OSI Pi, eBatch  
+Record, DevLIMS , and PAT data (4Q ‘25)
+Organization Alignment 2025 [GPS] Performance - Maximize revenue, productivity and process standardization through 
+consistent application of our COMPASS system while driving safety, quality and ESG commitments 
+(Public)
+Comment Count 0
+Manager
+Label Exceeding
+History
+History
+--- Page 6 ---
+Contributions
+BMS Confidential Information10:45 PM
+02/28/2026
+Page 6 of 10
+Field History
+Date Updated By Updated In
+Field Updated New ValuePrior 
+Value
+Digital Capability 
+ 
+  
+•New capability builds to support 
+Dev/ex or non-Devex priority 
+areas:•Drive DevEx Modeling 
+ongoing projects including 
+Biopharm Digital and capturing 
+metrics for value across biopharm 
+risk assessments disciplines, and 
+developing plan and 
+implementation of clinical data 
+extraction project (4Q ‘25) •Drive 
+Dev-Ex SPD In Silico teams to 
+evolve data aggregation tool, 
+ingest data from partner 
+organizations, build initial models 
+for viscosity and HMW, and deploy 
+to SPD leveraging change 
+management principles (including 
+strategic goals to integrate DS 
+&/or R&ED data).   Complete build 
+in 3Q, and initiate roll out by 4Q 
+‘25.•Enable SPD data aggregation 
+supporting data management 
+compliance, enable replatforming 
+for DevLIMS (3Q), leverage AI/ML 
+for data extraction (2Q), and 
+continuously improve 
+visualizations while implementing 
+change management.•Leverage 
+LLMs through partnership with 
+Devex to 1) pull unstructured data 
+from our data repositories 
+(Empower data, 3Q ‘25) 2) 
+Support documentation build using 
+gen AI (ELN to source documents) 
+to support reg filings in 4Q ‘25.•E-
+batch record option analysis and 
+selection of path forward by end of 
+1Q2025 on build out of chosen 
+option(s).•Drive operational 
+efficiency across DPD 
+through:•Leveraging digital 
+interfaces to enable quick and 
+universal information access 
+across DPD through use of 
+scripting tools as part of digital 
+strategy (e.g.,  Quickbase )•Enable 
+centralized process for managing 
+the DPD IT budget and IT related 
+escalations through IT enterprise 
+team through 4Q2025. •Capture 
+Barriers to Execution for DPD 
+through BETAR•Digitize and store 
+OSD material characterization 
+data from the NBR Powder 
+Testing Lab, SMW Powder Testing 
+Lab, and SMW C3 ITE/OPD labs.  
+Complete phase 1 integrations in 
+2Q ’25, Ability to export data and 
+simple visualizations (2025).  
+Change management/training for 02/07/2025 05:28 PM Jaquan Levons 
+(00145659)Manage Contributions: 
+Jaquan Levons 
+(00145659)Contribution
+--- Page 7 ---
+Contributions
+BMS Confidential Information10:45 PM
+02/28/2026
+Page 7 of 10
+Field History
+Date Updated By Updated In
+Field Updated New ValuePrior 
+Value
+scientists using the system 
+(2025).•Develop process data 
+integration plan for Nisaba (1Q) to 
+instantiate a system to integrate 
+OSI Pi, eBatch Record, DevLIMS, 
+and PAT data (4Q ‘25)
+Organization 
+Alignment2025 [GPS] Performance - 
+Maximize revenue, productivity 
+and process standardization 
+through consistent application of 
+our COMPASS system while 
+driving safety, quality and ESG 
+commitments
+Contribution
+Drive DevEx goals for Drug Product Development as the DevEx Modeling Lead, and developing plans 
+and executing against each of the Modeling and Data strategy tactics below.  
+ 
+CHAMPIONING MODELING AND PROMOTING ACCOUNTABILITY  
+PDLT acts a role models for Model First -
+Appoint SLT members as modeling champions
+3. ACTIVE PARTICIPATION VIA MODEL FIRST MINDSET
+Provide risk tolerant environment to encourage usage
+2. Provide seamless integration of data into existing and future state data consumption tools
+Availability of access to data managed outside of PD e.g. data products (importing data)
+Organization Alignment 2025 [GPS] Performance - Maximize revenue, productivity and process standardization through 
+consistent application of our COMPASS system while driving safety, quality and ESG commitments 
+(Public)
+Comment Count 0
+Manager
+Label Achieving
+History
+History
+--- Page 8 ---
+Contributions
+BMS Confidential Information10:45 PM
+02/28/2026
+Page 8 of 10
+Field History
+Date Updated By Updated In
+Field Updated New ValuePrior 
+Value
+02/07/2025 06:18 PM Jaquan Levons 
+(00145659)Manage Contributions: 
+Jaquan Levons 
+(00145659)Contribution Drive DevEx goals for Drug 
+Product Development as the 
+DevEx Modeling Lead, and 
+developing plans and executing 
+against each of the Modeling and 
+Data strategy tactics below. 
+ 
+CHAMPIONING MODELING AND 
+PROMOTING ACCOUNTABILITY 
+PDLT acts a role models for Model 
+First - 
+Appoint SLT members as 
+modeling champions 
+ 
+3. ACTIVE PARTICIPATION VIA 
+MODEL FIRST MINDSET 
+Provide risk tolerant environment 
+to encourage usage 
+ 
+2. Provide seamless integration of 
+data into existing and future state 
+data consumption tools 
+Availability of access to data 
+managed outside of PD e.g. data 
+products (importing data)
+Organization 
+Alignment2025 [GPS] Performance - 
+Maximize revenue, productivity 
+and process standardization 
+through consistent application of 
+our COMPASS system while 
+driving safety, quality and ESG 
+commitments
+Contribution
+Foster innovation in Drug Product Development by sourcing innovation projects from every function, 
+including leveraging an innovation day to source new projects (>10), support value-based view of each 
+idea and present to the Innovation Council. Guide projects to execution, to capture value and impact from 
+DPD.
+Organization Alignment 2025 [GPS] Performance - Maximize revenue, productivity and process standardization through 
+consistent application of our COMPASS system while driving safety, quality and ESG commitments 
+(Public)
+Comment Count 0
+Manager
+Label Exceeding
+History
+History
+--- Page 9 ---
+Contributions
+BMS Confidential Information10:45 PM
+02/28/2026
+Page 9 of 10
+Field History
+Date Updated By Updated In
+Field Updated New ValuePrior 
+Value
+02/07/2025 06:13 PM Jaquan Levons 
+(00145659)Manage Contributions: 
+Jaquan Levons 
+(00145659)Contribution Foster innovation in Drug Product 
+Development by sourcing 
+innovation projects from every 
+function, including leveraging an 
+innovation day to source new 
+projects (>10), support value-
+based view of each idea and 
+present to the Innovation Council. 
+Guide projects to execution, to 
+capture value and impact from 
+DPD.
+Organization 
+Alignment2025 [GPS] Performance - 
+Maximize revenue, productivity 
+and process standardization 
+through consistent application of 
+our COMPASS system while 
+driving safety, quality and ESG 
+commitments
+Contribution
+People:
+Integrate the BMS People Manager curriculum and tools; deploy manager training that address specific 
+individual opportunities to further develop managerial skills and foster a positive work force.  
+Action development plans via individual based learning modules, on the job training, and/or rotations 
+to propel individual career growth and organizational needs and fungibility  
+The effectiveness of these efforts leading to higher job satisfaction will be measured by growth and 
+development categories in MyVoice . 
+Organization Alignment 2025 [GPS] People - Cultivate an empowered, performance driven,  resilient and inclusive workforce 
+(Public)
+Comment Count 0
+Manager
+Label Achieving
+History
+History
+--- Page 10 ---
+Contributions
+BMS Confidential Information10:45 PM
+02/28/2026
+Page 10 of 10
+Field History
+Date Updated By Updated In
+Field Updated New ValuePrior 
+Value
+02/07/2025 06:20 PM Jaquan Levons 
+(00145659)Manage Contributions: 
+Jaquan Levons 
+(00145659)Contribution People: 
+ 
+Integrate the BMS People 
+Manager curriculum and tools; 
+deploy manager training that 
+address specific individual 
+opportunities to further develop 
+managerial skills and foster a 
+positive work force.  
+ 
+ 
+Action development plans 
+via individual based learning 
+modules, on the job training, 
+and/or rotations to propel 
+individual career growth and 
+organizational needs and 
+fungibility  
+ 
+The effectiveness of these efforts 
+leading to higher job satisfaction 
+will be measured by growth and 
+development categories in 
+MyVoice. 
+Organization 
+Alignment2025 [GPS] People - Cultivate an 
+empowered, performance driven, 
+resilient and inclusive workforce
+
+================================================================================
+FILE: Levons, Jaquan Kalani  2016 PC #3 Performance Feedback and Development Coaching  10_19_2025.pdf
+================================================================================
+--- Page 1 ---
+BMS Confidential Information
+Levons, Jaquan Kalani 2016 PC #3 Performance Feedback 
+and Development Coaching
+Scientific Director Organization :Engineering Technologies (Madhushree 
+Gokhale (00179108))
+Manager :Madhushree Gokhale (00179108) Location :New Brunswick - NJ
+Evaluated by :Omar Sprockel (Retired) (00043121) 01/01/2016  - 12/31/2016
+Overall
+Manager Reflection
+Label : 7.7
+Comment : Jaquan requested and received additional resources in automation. His competency in managing 
+the additional resources and leading the automation group led to increased productivity and 
+impact; this was a real accomplishment.  
+Jaquan made a real positive start to distributed automation with the launch “Andy” for automated 
+pipetting. He is also active in the PD automation team. Feedback providers cited “Jaquan input 
+and contributions helped shape the team’s vision for what our focus will be on in 2017 and 
+beyond” to “help drive the “lab of the future” planning and implementation”. He is encouraged to 
+finalize his vision for the future of automation in DPST and building alignment around it.
+Jaquan was effective in modifying David Trinkle’s behavior and motivation. The outcome was 
+David’s development on the micro powder flow tool, a breakthrough in powder behavior testing. 
+The energy and dedication he brought to being the ET Culture Champion impacted how ET 
+manages ET talent as well as run calibration with honest and robust discussions with civility. His 
+proactive work on recognition within ET and between ET and our partners has kept this important 
+activity front and center for ET. He took his transition to the MSE interface with a real positive 
+outlook and energy. He showed a real desire to expand his competencies in other areas and is 
+proposing ideas for ET and MSE to collaborate; he is encouraged to continue this positive start.
+Jaquan has shown real growth in defining his leadership style and growing competencies in this 
+area. He should use his expanding competency to increase the eficiency of the automation 
+interface with our partners.
+Employee Reflection
+Comment : Individual Objectives
+ 
+Develop Self and Develop Others & ET Leadership
+Evolve our culture and execute our people strategy
+*Worked with direct report to develop from poor performance to a positive contributor on several 
+teams in ET.  I focused David's work on clear opportunities for ET recognition, with team leads 
+that had a vested interest in his success, and could help him develop.  I developed a more direct 
+approach, provided pointed feedback about behaviors, and provided space to enable his 
+technical competencies to shine.  I worked through resistance over his scores from last year, and 
+am showing how his behavior has improved his performance.  This lead to clear improvement 
+and progress in the effectiveness and behaviors of this employee, enabling his results to further 
+science and the portfolio in 2016.
+ 
+*Developed plan to provide Vish an opportunity to be a leader and interface in the EPS space to 
+--- Page 2 ---
+BMS Confidential Informationmoderate effect.  This led to enablement of tablet development in FIH, and application of RC 
+minipiloting in the early space.
+ 
+*Worked with Peter to develop skills for managing a team effort with the Biologics Automation 
+Lab.  Provided coaching, guidance, technical skill development, and formal training to enhance 
+personal skills development while learning on the job by mentoring John and Olu in automation.  
+Guided Peter through strategies for assigning tasks, and managing dynamic resource schedules, 
+and accepting feedback.  This lead to Peter's growth as a lab manager, and automation leader to 
+the PST world.
+ 
+*Developed self with Honest Conversations training, and has applied to facilitate conversations 
+through resistance with David, and providing constructive feedback with Peter, and development 
+conversations with other colleagues. Discussed learnings with other managers in DPST, and 
+provided tips in communication.
+ 
+*Personal development includes:  DiSC training (applied to my development conversations as an 
+Si leading a CS and recognized that I need to spend less time trying to win them through 
+personal connections, become more straightforward with feedback, and providing clear specific 
+plans for development), Honest Conversations training (applied to all my conversations with 
+direct reports and peers in the LT, minimizing Model I behavior that leads to communication 
+issues, and exercising Model II behavior, even under stress), conversations with HR about 
+resistance (Karen Martini), mentorship discussions with Mehrnaz to develop higher capability to 
+make quick decisions, and discussions with Rao to develop strategy (working currently, and 
+recognizing a need to apply greater speed rather than accuracy based on my current balance).
+ 
+*Developed ET through running talent discussions for ET, providing insight and fostering 
+conversation on DiSC for ET, promoting recognition in ET, and managing the calibrations 
+discussion for ET.
+ 
+*Promoted both Alex and Peter in 2016, and am preparing a promotion package for David in 
+early 2017.
+ 
+ 
+Develop and Apply Systems and Mathematical tools for Data Collection and Analysis
+(BMS objective: Win in I/O)
+ 
+Win in immuno-oncology
+Led the Automation labs to the accomplishments below.
+Stability Sample Prep 8
+Analysis Sample Prep 8
+Viscosity 7
+pH 14
+UV/Vis 15
+Vial Filling 3
+I motivated additional talent in automation, John and Olu, ensuring that they saw automation as a 
+--- Page 3 ---
+BMS Confidential Informationsignificant and impactful opportunity to contribute to progressing the portfolio, and that they can 
+better progress science with this kind of tool. I succeeded in motivating the team, to the extent 
+that they are excited about contributing in automation again with a greater level of contribution in 
+2017.  I worked with Peter to help hone in on prioritization decisions, how and when to say no, 
+and provide space for him to make decisions after providing perspective.  My efforts have grown 
+his leadership capabilities to be able to manage the team and the work coming into the lab, and 
+that the lab functions.  I also provided technical guidance and efforts, implementing and 
+validating screw capping for a key substrate to enable higher fidelity executions.  I painted a 
+picture of the future of automation, and opportunities for impact.  I've highlighted career paths in 
+automation, and demonstrated how efforts here can lead to scientific, technical, and managerial 
+leadership roles.  I kept a highly capable team motivated, which led to exceptional results with 
+respect to impacting project teams.
+ 
+Area for improvement:  did not succeed in executing a knowledge package strategy in the 
+biologics space.
+ 
+Fully Resource Automation (BMS Objective: Diversify For Long-Term Growth)
+ 
+Diversify for long-term growth
+ 
+13 small molecule automation studies were executed. 
+2 Knowledge packages were generated.
+ 
+I manage Alex's and David's workloads particularly through competing needs to allow Alex to 
+continue to manage the small molecule automation lab.  Alex has several objectives that he can 
+uniquely impact (e.g., process intelligence, knections DPST interface, SPO) and so no one else 
+could work in this area other than him.  I worked to shift resources, enabling that David could get 
+trained, up to speed, and support more automation activities and allow Alex more time to work in 
+areas that he can uniquely impact.
+ 
+I set priorities, and touched based with David and Alex, to ensure that David was trained on the 
+most relevant instrument and workflow (excipient compatibility on the ChemSpeed), and that he 
+had time available to learn those skills, and apply them to projects.  I balanced this against timing 
+needs for equipment mapping objectives, and flow objectives, to ensure David could execute on 
+all items.  When conflicts in project timing arose in the labs I weighed priorities and urgency to 
+determine which projects would get executed at which time, and worked with scientists to 
+understand their actual timing needs and to ensure delivery.
+ 
+Provide Engineering Support to EPS to increase Resource Efficiency and Enable High Project 
+Throughput
+ 
+Diversify for long-term growth
+EPS support conducted:
+ 
+Flexus IDO b/u, Tyk2 lead (vector to WP120 scale up), BTK lead (legacy polymer scale-up 
+issues)
+--- Page 4 ---
+BMS Confidential Information 
+TYK2 lead
+Results:
+*Custom EC
+*ET Technical Help with Disproportionation
+*Sticking Evaluation minipiloting
+*RC tech transfer support (vector to WP120)
+*SDD EC planned
+ 
+I generated a novel approach and design leveraging powder automation to study 
+disproportionation during storage concerns, using several drug loads and time points to tease out 
+impact of individual excipients.  Exhausted traditional approaches to mitigating 
+disproportionation, and demonstrated that formulating with the HCl salt would largely be 
+infeasible.  With Jasmine, extended a pilot sticking evaluation tool to evaluate the potential of 
+switching lubricants (as a potential mitigation strategy for disproportionation).  Use of this tool 
+provided an empirical assessment of the impact of the lubricants on sticking, and adds to the 
+data set for this tool that will facilitate further knowledge extraction in the future.   I championed 
+this evaluation on the project team, and coordinated getting the contract in place with the 
+outsourcing company, obtaining resources to generate the blends, and ship the blends to the 
+vendor.  Also coordinated some support in RC development with Vish.
+TYK2 b/u
+Results:
+*RC tech transfer support Scaling from various roller compactors w/VN's help
+BTK Max
+Results:
+*Custom Band 5 EC study initiated to inform risk
+*Solubilized formulation screening conducted to identify lower oxidation risk alternatives.  Some 
+potential pathways identified for formulator pursuit if necessary.
+Various formulation strategies underway.  Band 5, low dose compound, and either solubilized or 
+one-pot granulation are two most likely approaches.
+PAR4
+Results:
+*Succinic Acid form
+*Citric Acid Chemical Stability
+*Citric Acid Physical Stability
+*Citric Acid Final Blend
+*Excipient Stability Risk Knowledge Package to support composition selection for quotient 
+formulation development work.
+*RC parameter estimation modeling with Vish
+FXIa
+Results:
+Some RC work done by Vish.
+Flexus IDO b/u
+--- Page 5 ---
+BMS Confidential InformationResults:
+Engaged Vish and Preet on RC parameter estimation and coating training to enable FIH tablet 
+development for this asset!
+BMS IDO b/u #2
+Results:
+Risk assessment EC executed
+TLR7/8
+New ECN.
+FXIa b/u
+New ECN.
+S1P1
+Results: 
+*Custom Band 5 EC 
+*ET Technical Help with Stability Issues 
+ 
+Transitioning to MSE interfacing, I highlighted an opportunity to alleviate key stability issues with 
+S1P1 with MSE technology.  The S1P1  team is investigating CPT (coprecipitate technology) as a 
+potential option that could 1.) reducing processing safety concerns by generating band 4 
+intermediate for downstream processing, 2.) mitigate excipients relates stability issues, 3.) 
+mitigate compression related stability issues, 4.) mitigate wet processing related form concerns 
+by bulking up the intermediate and reducing the banding. The team is just wondering the 
+feasibility stage. 
+Research
+ 
+Evolve our culture and execute our people strategy
+On track to complete a first author manuscript (enter into PubD) on Assessing the Impact of a 
+Phase Impurity using a Comparative Fraction Dose Absorbed Model.
+ 
+Safety & Compliance
+ 
+Evolve our culture and execute our people strategy
+On-time with completion of eTime, although two instances of missed eTime in my group occurred 
+in 2016.  Trainings were largely on-time, but a few were late.  Compliant with ELN in 2016, with 
+some remediation for older entries conducted.  Achieved safety goals for 2016, and implemented 
+automation technologies to facilitate additional safety goals. 
+ 
+One direct report had a loss time accident associated with office ergonomics.  He had an 
+ergonomic evaluation, and other remediations to mitigate recurrence.
+ 
+Led the team, authorizing resources and providing technical ideas that led to a couple of the 
+current designs and guidance on implementation of automated PFS solutions for filling and 
+labelling.  These accomplishments mitigate risk from needle sticks during these unit operations, 
+as well as ergonomic risks from redundant pipetting into PFS. 
+ 
+--- Page 6 ---
+BMS Confidential Information 
+Behaviors
+ 
+Passion
+I set high standards for myself and others to win for our patients
+I energize others
+I strive to learn something new every day
+I treat my patients, customers and colleagues with compassion, empathy and respect
+I create an environment where employees from different backgrounds get to know each other 
+well at work in order to build trust and work better together
+ 
+ 
+  I've used the training to reach outside of my comfort zone as a DiSC Si style, and develop more 
+action- oriented capability, making decisions on limited information, improvement on working with 
+a sense of urgency, and working to exercise more influence.
+*I create energy around lab automation, casting exciting, cutting edge, impactful, and challenging 
+vision to the team.  I show them how automation fits in with the company priorities of  focus, 
+simplify, and integrate,  and how they fit within the framework of automation.  In the small 
+molecule lab and the large molecule lab, scientists have gone from hesitantly participating to 
+passionately innovating in their respective spaces due in no small part to the energy that I have 
+instilled.
+I demonstrate passion in developing others and myself. I continually seek out new manager 
+training, and work to extract the maximum learnings from these trainings to apply to difficult 
+conversations with my reports, peers, and management.  I was an active participator in the 
+Honest Conversations, and DiSC style trainings this year, and have gone beyond the training, 
+having conversations with colleagues about how to apply the techniques, comparing the 
+techniques to ones learned in Influencing Across the Matrix, and finding additional resources 
+online, such as DiSC styles for Managers and for Leaders.  I shared summarized learnings from 
+these other perspectives of DiSC to the ET team, helping them get the most out of the training 
+they obtained.  I spend significant time with my manager  for development, as well as with two 
+additional official mentors, seeking to learn more from them about making quick decisions on 
+limited information and developing a strategy.
+One of my direct reports has been a consistently low scorer and performer for several years, with 
+challenges in the behavior areas as well.  He spent significant energy apparently looking to find 
+someone who could reprimand me for the ratings I've given.  I employed significant empathy, 
+giving him the benefit of the doubt, and understanding that the system is not transparent to him.  
+I looked to find avenues not just to minimize risk of negative interactions, but to also provide 
+opportunity to show scientific growth and personal behavioral growth, and this year that has had 
+significant fruit.  A lot of progress has been made, although he is not yet risk-free, and I am 
+committed to continuing to work towards better trust in our relationship.
+ 
+ 
+ 
+ 
+Speed
+I work with a sense of urgency
+--- Page 7 ---
+BMS Confidential InformationI focus on what's important
+I consult with the right people to move quickly
+I seek efficient, effective solutions
+I quickly assess potential risks and rewards
+I break silos and eliminate unnecessary rules
+I make decisions with resolve and enable others to do the same
+I access the diverse buisness insights of our employees to put us in a stronger position to solve 
+problems more quickly and with greater accuracy than relying on only one way of thinking
+ 
+ 
+I'm setting up focus group meetings with various groups to ensure that as we conduct 
+brainstorming activities for new technology development, we are getting the voice of the 
+customer - consulting with the right people.  I've concluded the discussion with EPS-bio, EPS-
+oral, and EPS-biopharmaceutics individual contributors, learning there perspective of their 
+workflow processess, as well as the inputs and outputs to those processes, and the suppliers 
+and customers.  The team will use this data to move towards the next generation of lab 
+automation, lab of the future considerations, and ET technology investments.  Employed nominal 
+group theory techniques to ensure everyone present is able to provide some voice in the 
+discussions.  Discussions with other DPST groups, and various levels are being planned to 
+ensure a full picture.
+ 
+ 
+ 
+I put together a clear picture of what careers in automation look like, presented to the broader ET 
+team, and implemented quickly.  The Automation scientists have a clear idea of what careers in 
+automation could look like with respect to competencies.  I also put together plans for 
+responsibilites with the partial FTE model working in the automation lab, despite the limitations of 
+this model.  This model was executed and allowed all FTEs to contribute at the right level for 
+their experience.  I've developed a bold new model for responsibilities for 2017 given growing 
+interest, including potential inclusion of a new FTE in the automation space.  The new model 
+includes broader responsibility for individuals supporting the labs last year, spreading some into 
+new areas that they have not previously engaged in.  I've quickly moved towards implementing 
+this model, despite significant challenges, to yield the goals that the team is seeking to achieve.
+ 
+Innovation
+I challenge the status quo
+I seek and share bold ideas that help BMS win
+I pursue and understand diverse perspectives outside of BMS
+I encourage and have constructive debates
+I embrace change to drive innovative outcomes
+I rebound quickly and learn from my mistakes
+I seek out and use the different perspectives and talents of the whole team to accomplish 
+objectives
+ 
+*Setting up goals for the automation team to penetrate  Lab Automation into PST
+--- Page 8 ---
+BMS Confidential Information*Setting up goals for the automation team to penetrate  NAT involvement into PST designs
+*Lobbying for, and providing scale down resources to support tablet in FIH approach for IDO
+*Providing guidance, feedback, and motivation to my employees working in the digital future 
+presentations and motivating the employees to build buy-in, as well as working to that end 
+personally, across the department.
+Proposed a bold idea to mitigate a myriad of issues experienced by the S1P1 team.  The team is 
+contemplating CPT (co-precipitate technology) as a potential option that could: 1.) reduce 
+processing safety concerns by generating band 4 intermediate for downstream processing, 2.) 
+mitigate excipients related stability issues, 3.) mitigate compression related stability issues, 4.) 
+mitigate wet processing related form concerns by bulking up the intermediate and reducing the 
+banding.  Moving forward with this process could lead to a direct compression formulation .
+ 
+*Brenda and I consistently help to balance each other's natural perspectives with her as the 
+practical view of how to get things done, and myself as the idealistic view of how things should 
+be.  Together we are able to brainstorm, and move ET forward accomplishing what needs to be 
+done while incrementally trying to move management forward.
+*My direct and matrix reports are very open to debate and discussion about my chosen paths 
+forward for automation, and voice their perspectives freely when I have requested a path forward 
+that they do not understand or agree with.
+*I've embraced the new BMS strategy of Focus, Simplify, Integrate,  and have built an automation 
+strategy around the same.  I've motivated direct and matrix reports about the potential 
+opportunity that the new business strategy offers for the automation team and for ET, and how 
+we can help move BMS forward in such a dynamic environment.  
+ 
+ 
+ 
+Accountability
+I own BMS's success by holding myself and others accountable
+I share information in a transparent and honest way
+I celebrate my successes and the successes of others
+I coach and mentor others with good intent and purpose
+I am inclusive and bring out the best in others
+I understand what people do and the impact I have on them
+I provide timely and constructive feedback to all employees, while being thougtful about the way 
+they want to receive it.
+ 
+*I am the recognition champion for ET, and collect and evaluate Bravo data and present to ET at 
+monthlies, as well as periodically send notes through yammer to the ET team to encourage peer 
+recognition. 
+*I worked with my three direct reports, mentoring them for their success, promoting 2 of them and 
+working on a package for the third at an early point next year. 
+*I mentor one other ET scientist periodically on career aspirations, work satisfaction, and 
+manager relationships.
+ 
+ 
+--- Page 9 ---
+BMS Confidential Information 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Acknowledgment
+Employee Acknowledgement
+Entered by : Jaquan Levons (00145659) Date : 01/13/2017
+Status : By selecting this, you certify and sign the document. The employee signature is an acknowledgment of 
+receipt and does not indicate agreement. If you disagree with any information contained in this document 
+you may submit a written statement explaining your position within the Employee Final comments section. 
+(Inactive)
+Comment :
+Objectives
+Develop and Apply Systems and Mathematical tools for Data Collection and Analysis (BMS objective: Win 
+in I/O)
+Weight : 25
+Manager Reflection
+Label : 4 - Exceptional on Some Performance Expectations
+Develop Self and Develop Others & ET Leadership
+Weight : 20
+Manager Reflection
+Label : 4 - Exceptional on Some Performance Expectations
+--- Page 10 ---
+BMS Confidential InformationFully Resource Automation (BMS Objective: Diversify For Long-Term Growth)
+Weight : 15
+Manager Reflection
+Label :5 - Delivered Exceptional Performance on All 
+Expectations
+Provide Engineering Support to EPS to increase Resource Efficiency and Enable High Project Throughput
+Weight : 20
+Manager Reflection
+Label : 4 - Exceptional on Some Performance Expectations
+Research
+Weight : 10
+Manager Reflection
+Label : 3 - Delivered Strong Performance
+Safety & Compliance
+Weight : 10
+Manager Reflection
+Label : 3 - Delivered Strong Performance
+Section Summary
+Manager Reflection
+Calculated Label : 3.95
+Label : 4 - Exceptional on Some Performance 
+Expectations
+Behaviors
+Accountability
+We own our OUTCOMES and the OUTCOMES of OTHERS
+Label :4 - Exceptional on Some Performance Expectations
+Innovation
+We embrace NEW IDEAS
+--- Page 11 ---
+BMS Confidential InformationLabel :3 - Delivered Strong Performance
+Passion
+We pursue EXCELLENCE to help patients PREVAIL
+Label :3 - Delivered Strong Performance
+Speed
+We act with URGENCY and AGILITY
+Label :5 - Delivered Exceptional Performance on All 
+Expectations
+Section Summary
+Manager Reflection
+Calculated Label : 3.75
+Label : 4 - Exceptional on Some Performance 
+Expectations
+
+================================================================================
+FILE: Levons, Jaquan Kalani  2017 PC #3 Performance Feedback and Development Coaching  10_19_2025.pdf
+================================================================================
+--- Page 1 ---
+BMS Confidential Information
+Levons, Jaquan Kalani 2017 PC #3 Performance Feedback 
+and Development Coaching
+Scientific Director Organization :Engineering Technologies (Madhushree 
+Gokhale (00179108))
+Manager :Madhushree Gokhale (00179108) Location :New Brunswick - NJ
+Evaluated by :Omar Sprockel (Retired) (00043121) 01/01/2017  - 12/31/2017
+Overall
+Manager Reflection
+Label : 6.9
+Comment : Jaquan had deliverables in four areas: project support as operational manager of the automation 
+function; development of automation team members; expansion and penetration of automation 
+tools into product development; developing the vision and strategy for the future of automation.
+Jaquan delivered well on the output of the automation functions and diversifying automation. He 
+missed an opportunity to more broadly establish the DPST strategy for automation.
+Jaquan was effective in ensuring that the automation function delivers on its commitments to 
+project teams ( Speed ). Comments from feedback providers:  “...does an excellent job motivating 
+me to succeed within the automation group. His infectious positivity and encouragement really 
+drives myself and the team to do high-level/impact work”.
+He has been working to develop Peter’s competency in running the biologics automation. Jaquan 
+needs to accelerate Peter’s growth so that he can delegate more managing tasks to create 
+bandwidth for himself. ( Accountability ) Jaquan should more visibly articulate the connection 
+between automation generated knowledge and decisions made by teams.
+The Automation Strategy Team under Jaquan’s leadership created a vision for the future of 
+automation and drafted a strategy ( passion ). He needs to socialize the vision and strategy to get 
+buy-in. He has started well with implementation of distributed automation with the i-Andy 
+program, which created much excitement among scientists. The automated buffer system 
+provides another example of distributed automation that benefits DPST. ( Innovation ) Comments 
+from feedback providers : “....showed leadership in automation strategy team.....should ....actively 
+engaging team members and listen to input, opinions, feedback, and ideas.... think beyond 
+automating tasks... think transformational technologies.”
+One area of growth for Jaquan is to more assertively present his vision for Digital Engineering 
+and its benefits to DPST and BMS. As he does this he should solicit input broadly.
+Employee Reflection
+Comment : *Leading a team in organizing automation capital projects for DPST in 2018 and beyond.  Have 
+currently defined a strategy for collecting these projects, prioritizing them, and moving towards a 
+longer term 3 - 5 year automation capital strategy.
+*Oversaw the Biologics Automation Team led by Peter, primarily helping decide on roles and 
+responsibilities between the team, navigate conflicts and tension with stakeholders, and ensure 
+sufficient resources were available.  I established three separate areas for the three team 
+members to contribute and demonstrate leadership.  John led with EPS workflow development & 
+buffer exchange, establishing the automated FAST workflow, slated to execute on 4 EPS 
+projects by the end of 2017.  Olu lead the interface with the PST-Analytical group, and led a 
+comparison of pipetting tools, leading to the acquisition of a scaleable automated pipetting 
+solution that we can distribute throughout DPST labs - including 4 other functions.  Peter led the 
+--- Page 2 ---
+BMS Confidential InformationPST formulations work, as well as supporting John and Olu's roles, providing guidance and 
+ensuring alignment in Biologics Automation, expanding impact in the PST formulations space by 
+executing compounding and vialing on 5 ruggedness/robustness studies.  Designing these three 
+separate spaces to allow these scientists to bloom, demonstrate their individual values, and have 
+distinct impact, is my distinct contribution in this space.
+*I also mitigated severely long overtime hours in the automation group, increasing safety and 
+effectiveness of our scientists.
+ 
+-A key deficiency was in perpetuating the PD Automation community (MVLA).  Although, I did get 
+buy-in to refocus the community more broadly around digital technologies as well as automation, 
+no additional meetings or objectives for the team were set this year.
+ 
+*Worked with the MSE interface (Josh Engstrom) and organized and led an MSE-ET interface 
+meeting.  Key outcomes there included collaboration around automation in MSE, and an interest 
+to look at predicting sticking.
+*Mentoring John, Olu, Kristine, as part of the automation team, and my team as well.  Working to 
+instill culture change perspective in each of them.  I challenged each with feedback perspectives, 
+and recognition perspectives, moving them from specific feedback reception preferences and 
+absolute need for recognition, progressing to openness about other feedback reception modes 
+and questioning the need for recognition and how appreciation should be shown to them.
+*I solicited calendar data from all of ET and digested to understand the amount of meeting time 
+spent by ET in meetings.  This exercise brought awareness and opened up dialogue around 
+meetings - when are meetings beneficial and when are they not efficient.
+*Developed a Digital Engineering II blog based on reading and a vision for where the future of 
+technology will lead us.
+*Guided my team members on exploration of cutting edge digital technology such as speech 
+recognition software by David, and Vuzix (Google glass technology for the lab) by Alex, both 
+targeting alternate input mechanisms.  For both, this provided opportunity to develop technical 
+skills, and communication skills in elaborating on the technology.
+*Provided feedback to team members and mentorship relationships, facilitating development.  I 
+provided feedback to Peter on stress management, and provided stress management training 
+and resources to facilitate that development.  I also provided Peter with learning loop 
+opportunities for technical skill development.  I identified a mentor that can facilitate perspective 
+from a more task/action oriented view, and will help him learn to determine which approach is 
+most needed.
+ 
+•Could have reached a better resolution to culture change champion, total motivation 
+strategy, and recognition championship.  Effort was applied to these items, but results need 
+to be improved.
+ 
+*Supported the BET DPDT as interim leader during Jasmine's absence.  Ensured minimal 
+resources were applied to this project, only really proceeding with the risk assessment process.  
+Worked with OPDD management to align with the need and bring the IDT in alignment with what 
+we were able to target with respect to products.  Outlined several scenarios of how product 
+development could proceed depending on clinical results at various times, and amount of risk 
+that we're willing to carry.  A project review meeting aligning on risk is slated for early December.
+ 
+--- Page 3 ---
+BMS Confidential InformationAs a culture champion, I am pushing the development of a healthy feedback culture in ET, and 
+beyond.  I mentor several ET Individual Contributors, and have probed them with questions 
+about feedback, guaging their self-awareness, ability to be self-critical, awareness of how others 
+view their performance, and their perspective on how to give and receive feedback.  For 
+aspirational leaders, I have challenged them on their commitment to providing feedback to 
+colleagues on their teams, indicating that this type of commitment to development for others is 
+essential for leadership in this organization.  I am develop a personal presentation that makes 
+individuals comfortable with sharing feedback with me, or even if they're not comfortable, sharing 
+feedback with my manager - whatever makes them most comfortable with making me aware of 
+any blindspots.  Only my feedback providers can attest to whether or not this is successful.
+ 
+I've sought to stretch the boundaries of my expertise in lab automation, to other fields of 
+automation and more broadly to digital engineering to apply the priniciples that I have developed 
+so far.  This includes reading relevant books and other literature, with which I crafted an internal 
+article to the ET team on being prepared for these new technologies.  This also has fueled the 
+evolution of a new technology strategy, to ensure these new learnings are applied to ET and 
+DPST.
+ 
+I energize others.  I just do.
+ 
+This year I have taken a big role in being an empathetic ear to my colleagues around various 
+work situations.  My role has been largely to listen, and provide guidance only when prompted 
+where possible, largely focusing on helping my colleagues see other perspectives of their 
+situation.  Key discussion with an ET peer, an ET individual contributor, and a DPST new 
+manager have been productive for their organizational relationships and demonstrates  passion 
+for my colleagues.
+ 
+My natural posture is more contemplative and thoughtful, but continue to progress in terms of 
+urgency.  I routinely respond to urgent situations, providing input with less information than would 
+naturally be comfortable, stretching myself and enabling a sense of urgency.  ET leadership team 
+meetings have been a forum for development in this area, making decisions on the various 
+management of the ET organization.  Talent calibration meetings and ratings are another 
+example of demonstrating a sense of urgency.  We came in to calibrations and rapidly provided 
+the necessary number of candidates for the required slots, and had additional discussion to 
+ensure the order was justifiable, but really managed the process with a sense of urgency, 
+reviewing the data, comparing individuals, and solidifying rankings and ratings.
+ 
+Motivated the automation team to: 
+*Bring in telepresence into BMS lab, with remote monitoring, dealing with IT security issues 
+*Acquire automated buffer maker, that uses cloud technology to manage buffer recipies and 
+compositions, also involving IT security issues 
+*Cheap, automated pipettors in 4 more labs in DPST.
+ 
+*Shared perspective on the future of digital engineering with ET as part of an internal blog series. 
+*Shared with the automation strategy team, moving them away from ROI based valuation, and 
+discussing opportunities for knowledge generation by automation. 
+*Discussed expanding the role of the MVLA to digital technologies, beyond just automation 
+hardware.
+--- Page 4 ---
+BMS Confidential Information 
+*Internalized two books on the future of digital technologies, and applying learnings to the vision 
+and strategy of where DPST is going with automation and digital engineering.
+ 
+*Have access to three high performance individuals working in biologics automation this year.  
+Found opportunities for each to extract leadership opportunities, impact in different areas.  This 
+enabled John to develop skills and impact working with the EPS biologics team in the form of an 
+automated FAST template, Olu to introduce a scaleable automated pipetting solution to PST-
+Analytical, EPS, and beyond, and Peter to move into sample preparation for formulation 
+ruggedness studies.
+Acknowledgment
+Employee Acknowledgement
+Entered by : Jaquan Levons (00145659) Date : 01/24/2018
+Status : By selecting this, you certify and sign the document. The employee signature is an acknowledgment of 
+receipt and does not indicate agreement. If you disagree with any information contained in this document 
+you may submit a written statement explaining your position within the Employee Final comments section. 
+(Inactive)
+Comment :
+Objectives
+Diverisfy For Long Term Growth:  Automation Expansion
+Weight : 20
+Manager Reflection
+Label : 4 - Exceptional on Some Performance Expectations
+Enable a high performing organization and culture:  Leadership
+Weight : 25
+Manager Reflection
+Label : 2 - Strong on Some Performance Expectations
+Enhance the Value of the Portfolio:  Automation Management
+Weight : 15
+Manager Reflection
+Label : 4 - Exceptional on Some Performance Expectations
+--- Page 5 ---
+BMS Confidential Information•Fully Support Portfolio Projects as the ET Lead (Ulo & Five Prime, and PST Interface, BET DPDTL)
+ 
+Weight : 25
+Manager Reflection
+Label : 4 - Exceptional on Some Performance Expectations
+Safety & Compliance
+Weight : 15
+Manager Reflection
+Label : 3 - Delivered Strong Performance
+Section Summary
+Manager Reflection
+Calculated Label : 3.35
+Label : 3 - Delivered Strong Performance
+Behaviors
+Accountability
+We own our OUTCOMES and the OUTCOMES of OTHERS
+Label :2 - Strong on Some Performance Expectations
+Innovation
+We embrace NEW IDEAS
+Label :5 - Delivered Exceptional Performance on All 
+Expectations
+Passion
+We pursue EXCELLENCE to help patients PREVAIL
+Label :5 - Delivered Exceptional Performance on All 
+Expectations
+Speed
+We act with URGENCY and AGILITY
+Label :2 - Strong on Some Performance Expectations
+Section Summary
+Manager Reflection
+--- Page 6 ---
+BMS Confidential InformationCalculated Label : 3.5
+Label : 4 - Exceptional on Some Performance 
+Expectations
+
+================================================================================
+FILE: Levons, Jaquan Kalani  2018 Year-end Reflection  10_19_2025.pdf
+================================================================================
+--- Page 1 ---
+BMS Confidential Information
+Levons, Jaquan Kalani 2018 Year-end Reflection
+Scientific Director Organization :Engineering Technologies (Madhushree 
+Gokhale (00179108))
+Manager :Madhushree Gokhale (00179108) Location :New Brunswick - NJ
+Evaluated by :Omar Sprockel (Retired) (00043121) 01/01/2018  - 12/31/2018
+Overall
+Manager Reflection
+Comment : Jaquan was a great culture champion in ET this year; in collaboration with Jasmine he made 
+great strides in promoting the “we” culture in ET; not always to receptive ears. He should not be 
+discouraged by resistance to culture change. The new talent assessment and development 
+process, that he and Jasmine co-created for ET, more closely aligns aspirations with talent 
+development and ET deliverables .
+ 
+Jaquan was pivotal in integrating the ET and iPAS cultures, often acting as the ambassador to 
+both groups. His ET tea-times are well attended (not always the same folks) and were helpful in 
+bridging the gap and building a more cohesive team. He constantly displayed inclusiveness in 
+leadership meetings by listening and asking probing questions to understand. His willingness to 
+listen and understand other points of view is a role model.
+ 
+Jaquan's reputation for developing people was evidenced by people that have indicated that they 
+want to work for or with him. Jaquan successfully transitioned the leadership of the automation 
+team to Peter. This was a large accomplishment demonstrating his ability to grow people into 
+roles of broader influence. As a result, the iAndy distributed automation and automated 
+buffermaker were rolled out. These simplify the scientists work life and thereby making it more 
+enjoyable.
+ 
+Due to his leadership of the DAST, we now have a cross DPST automation strategy and priority 
+for automation tools. This is an area where he could have more influence of what DPST does in 
+this space.
+ 
+On digital engineering, Jaquan's achievements are on two levels. On the strategic level, he 
+created a compelling vision for DPST's digital future and presented it widely for input and 
+alignment. He needs to continue to do this to build momentum for his vision, as this is a new area 
+for most. On the tactical level the DPST team has been evaluating/ exploring/developing  some of 
+the digital tools like google glass, telepresence, speech recognition. Jaquan should build his 
+presentation skill set to show/connect the various digital streams into one cohesive picture for 
+people.
+ 
+On data digitilization, Jaquan worked with the team to develop and implement the first step in 
+PST. Jaquan should continue this path to repeat this for other parts of DPST and collaborate with 
+CSD who have similar efforts underway. This collaboration with SO on process data capture is 
+part of it.
+ 
+On 3D printing of active tablets, Jaquan, working with his team, evaluated the external landscape 
+--- Page 2 ---
+BMS Confidential Informationto determine technical feasibility. Having established that, the team is developing the plan for a 
+POC work and operational unit working with external engineering houses. Jaquan is ready to 
+transition 3D printing leadership to Sandy and assume a teach coaching role. Another people 
+development success.
+ 
+Jaquan, is a role model for safety as a manager. In addition to having this topic in his team 
+meetings, he conducts monthly walk-through all ET labs.
+ 
+This year, Jaquan made tremendous progress in delegating and making speedy decisions. His 
+team members (not just in ET) respond to his motivational style of leadership.
+ 
+Jaquan is encouraged to balance his people development preference with pragmatic/business 
+needs as he prepares himself for his next role.
+ 
+The following feedback snippet typifies the feelings of DPST team members: Jaquan provides a 
+great insight and creative mind to get things done.  He is definitely a go-getter  ....; Jaquan is an 
+inspiring person ....
+Employee Reflection
+Comment : Great!
+Acknowledgment
+Employee Acknowledgement
+Entered by : Jaquan Levons (00145659) Date : 01/25/2019
+Status : By selecting this, you certify and sign the document. The employee signature is an acknowledgment of 
+receipt and does not indicate agreement. If you disagree with any information contained in this document 
+you may submit a written statement explaining your position within the Employee Final comments section. 
+(Inactive)
+Comment :
+Contributions
+Cultivate Great Managers and Leaders
+Manager Reflection
+Label : Exceeding
+Culture and Talent
+Manager Reflection
+Label : Exceeding
+--- Page 3 ---
+BMS Confidential InformationDemonstrate a commitment to safety & documentation in how we work
+Manager Reflection
+Label : Achieving
+Digital Engineering
+Manager Reflection
+Label : Exceeding
+Digital Engineering - 3D Printed Drug Product & Data Transparency
+Manager Reflection
+Label : Exceeding
+DPST Automation Strategy Team
+Manager Reflection
+Label : Achieving
+Competencies
+Accountability
+We own our OUTCOMES and the OUTCOMES of OTHERS
+Label :Achieving
+Innovation
+We embrace NEW IDEAS
+Label :Exceeding
+Passion
+We pursue EXCELLENCE to help patients PREVAIL
+Label :Exceeding
+Speed
+We act with URGENCY and AGILITY
+Label :Exceeding
+
+================================================================================
+FILE: Levons, Jaquan Kalani  2019 Year-end Reflection  10_19_2025.pdf
+================================================================================
+--- Page 1 ---
+BMS Confidential Information
+Levons, Jaquan Kalani 2019 Year-end Reflection
+Scientific Director Organization :Engineering Technologies (Madhushree 
+Gokhale (00179108))
+Manager :Madhushree Gokhale (00179108) Location :New Brunswick - NJ
+Evaluated by :Martin McLoughlin (00390778) 09/01/2019  - 12/31/2019
+Overall
+Manager Reflection
+Comment : 2019 has been a year of significant change for BMS in general and Jaquan in particular with the 
+announcement of the Celgene acquisition at the start of the year and the retirement of Omar 
+Sprockel Jaquan’s manager over several years and his replacement by me as an interim.   2019 
+also saw the departure of two of Jaquan’s peers on the ET leadership team, Brenda to BI&A and 
+Jasmine to Merck.
+Like Jaquan these two leaders were founding members of the ET team at its formation and 
+Jaquan appears to be have been affected by their departure more than others for this reason.   
+Jaquan has a strong belief in the uniqueness and specialness of the ET culture and it appears 
+that he feels that the essence of what made ET unique is at risk with these departures.   The fact 
+is that ET is unique and does fulfil a unique role and there are no other teams like it within BMS 
+and few if any like it across the industry.    But nevertheless I recognize the replacement of a 
+charismatic leader and champion by an interim with two hats, for an indefinite period can only 
+serve to exacerbate the sense of uncertainty around the organization’s future.  
+It is therefore commendable that Jaquan has stayed engaged and remained passionate about 
+ET and its culture.   Jaquan’s passion for culture is not limited to ET however as it extends to 
+DPST, PD and enterprise wide.  
+In his specific role as lead of the Digital Engineering team Jaquan has made good progress 
+however he has had to deal with distinct headwinds.   These have been of an organizational 
+nature in his interactions with IT and procurement for the DPST of the future initiatives around 
+VR/AR, IIoT etc.   This has been a source of frustration for Jaquan.  Some feedback alluded to 
+unrealistic expectations however I don’t think this is justified given the wider rhetoric around 
+digital futures etc – Jaquan and team have been fully aligned with that and Jaquan is a vocal 
+advocate.   This was exemplified by his engaging Lou Schmukler at the Data Science summit.   
+Uncertainty caused by Celgene integration has likely added some friction to these initiatives 
+more broadly.
+On automation and 3D printing there have also been some headwinds closer to home which can 
+be summed up as innovators dilemma.   Adoption of new technologies can be slow and people 
+can be slow to see the opportunity.   Jaquan is a visionary – this is undisputed in his feedback.   
+He has a vision of a future for DPST, PD, BMS and our products and he truly wants to shape the 
+future of healthcare.   Innovators and visionaries always encounter the challenge of being ahead 
+of their time and I believe this to be the case for Jaquan in several areas.   Jaquan could perhaps 
+consider reading and studying more material on innovation strategy to help with strategies to 
+overcome these obstacles.   I know for sure he does this already however.   Another important 
+aspect is to sign up allies and champions.   Again, Jaquan does this but the headwinds suggest 
+there is still more to do.   Though vision is essential, implementation and operationalizing is also 
+important and some feedback has alluded to a need for better planning of the digital engineering 
+innovation effort and technology roadmap.   I believe Jaquan has a plan but he could do more to 
+communicate that. 
+Aside from organizational headwinds Jaquan’s team’s technical delivery has been on track and 
+--- Page 2 ---
+BMS Confidential Informationexceeded in places with several technical milestones around 3D printing being achieved for 
+example.
+Jaquan is a great communicator and a true role model for less experienced scientists within the 
+organization and more widely.   His enthusiasm is infectious and he lives the behaviors strongly.   
+He is a highly supportive colleague and leader for his team, though some feedback expressed a 
+desire for clearer direction.
+In summary, Jaquan has delivered on his objectives in a challenging year full of uncertainty and 
+has lived the behaviors throughout.
+ 
+Employee Reflection
+Comment : ...
+Acknowledgment
+Employee Acknowledgement
+Entered by : Jaquan Levons (00145659) Date : 01/30/2020
+Status : By selecting this, you certify and sign the document. Your signature is an acknowledgment of receipt and 
+does not indicate agreement. Where you disagree with your performance reflection, discuss with your 
+manager or one-over manager. You have the right to express your disagreement in a written statement, 
+using the comments box below.   THE COMMENTS BOX SHOULD NOT BE USED FOR ANY OTHER 
+PURPOSE.
+Comment :
+Contributions
+Cultivate Great Managers and Leaders - Shared Objective - Manager
+Manager Reflection
+Label : Achieving
+Digital Engineering
+Manager Reflection
+Label : Achieving
+DPST Automation Strategy Team and DPST of the Future
+Manager Reflection
+Label : Achieving
+ET Culture and Talent
+--- Page 3 ---
+BMS Confidential InformationManager Reflection
+Label : Exceeding
+ET Operations & People Management
+Manager Reflection
+Label : Exceeding
+Maximize the cohesion of the ETLT and its impact in DPST
+Manager Reflection
+Label : Achieving
+Next Gen Manufacturing:   3D Printed Drug Products
+Manager Reflection
+Label : Achieving
+Competencies
+Accountability
+We own our OUTCOMES and the OUTCOMES of OTHERS
+Label :Exceeding
+Innovation
+We embrace NEW IDEAS
+Label :Exceeding
+Passion
+We pursue EXCELLENCE to help patients PREVAIL
+Label :Exceeding
+Speed
+We act with URGENCY and AGILITY
+Label :Achieving
+
+================================================================================
+FILE: Levons, Jaquan Kalani  2020 Year-end Reflection  10_19_2025.pdf
+================================================================================
+--- Page 1 ---
+BMS Confidential Information
+Levons, Jaquan Kalani 2020 Year-end Reflection
+Scientific Director Organization :Engineering Technologies (Madhushree 
+Gokhale (00179108))
+Manager :Madhushree Gokhale (00179108) Location :New Brunswick - NJ
+Evaluated by :Srinivas Tummala (99000037) 10/01/2020  - 12/31/2020
+Overall
+Manager Reflection
+Comment : Jaquan has had a solid 2020 with some notable elements of exceeding and has demonstrated 
+strong BMS values. His leadership of the ARGILE virtual reality project over the last several 
+years and the resultant outstanding impact this technology has had in the past year (impacting 
+over 23 projects) was clearly one of his biggest accomplishments for the year. During the year 
+Jaquan spent a lot of time and effort to translate his high-level vision for Digitilization and 3-D 
+printing into a more concrete and actionable strategy and to gain stakeholder alignment. As a key 
+member of the ET LT, Jaquan has played a key role in shaping the strategy for the new ET – his 
+thoughtful perspectives, passion to see the organization succeed and his high level of integrity 
+have been critical and extremely valuable. Jaquan has also continued to play a key role in 
+helping shape the culture of ET and DPD
+ 
+ 
+Jaquan has also demonstrated strong BMS values during the year with Innovation and Passion 
+as particularly noteworthy. Jaquan is driven by and consistently demonstrates a passion to 
+pursue disruptive and bold solutions for patients (as evidenced by his vision for Digitilization as 
+well as 3-D printing). His passion for areas that he believes in is apparent and infectious. An area 
+where he has made significant strides over the last year is channel his energy to translating 
+vision/ strategy into tangible execution outcomes.
+ 
+ 
+Some keys to success in 2021 would be
+ 
+Continue his journey of Focus: on a few key priorities, and translating vision and strategy into 
+tangible outcomes that impact scientists in the organization Being more pragmatic:  in 
+understanding the best way to overcoming obstacles/hurdles. While some of his frustrations 
+about existing processes may have merit, Jaquan’s ability to navigate existing processes 
+efficiently and effectively rather than being frustrated (sometimes rightfully so) and hoping to 
+change/ circumvent the overall process (especially when it not be practical to do so  or the path to 
+do so is not clear at all) would be more effective for him and in the process help him further 
+develop his leadership muscle.   Being more organized especially in the ‘execution’ phase
+While Jaquan is very focused on developing a concrete vision and effective strategies, an 
+opportunity for him is to translate this vision and strategy into an actionable plan that can deliver 
+a tangible product in a timebound manner. One way to do this would be dividing up large, long-
+term goals into manageable chunks (with milestones, metrics to measure progress) that can 
+translate tangible results in the near/medium term
+Ability to convert ‘high level alignment’ to ‘concrete commitments for action’ –Jaquan is often able 
+to achieve high level verbal alignment but translating that alignment into concrete actions of 
+support has been often elusive. Jaquan needs to work on translating ‘high level alignment’ to 
+--- Page 2 ---
+BMS Confidential Informationconcrete next steps (for eg : by proposing and getting buy-in for concrete next steps  that need to 
+happen w/ associated timelines  for the alignment to translate into concrete elements of support)
+ 
+Employee Reflection
+Comment : Digital Strategy Alignment:
+•Developed a digital strategy & document, and built buy-in with key DPD-LT members, and 
+Rao. 
+•Developed a P-M3D strategy document with Sandy, delegated the steering committee to 
+Sandy, and enabled her to get buy-in from all key stakeholders.
+•Initiated DPD-IT Enterprise Strategy team, and leveraged strategy work to jump start teams 
+efforts
+•Working with the DPD-IT team to develop digital strategy more broadly, with inclusion across 
+functions.
+•Applying preliminary strategy perspectives to current digital projects:
+•ParDB/Lumetics/MAST - SPD Digitalization
+•Biopharm Digitalization -
+•SPAAWN - Led the team to identify an alternative technology, building a framework 
+for options analysis based on suitability for digitalization which became the basis for 
+digital strategy options analysis.  Sorted through several software options to come 
+to Biosera as an option to pilot, to facilitate Biopharm Digitalization. 
+•OPD Digitalization
+•LBO Digitalization (Nisaba)
+•PAT Digitalization
+•ARGILE  - Portfolio impact in 2020 extracts value from past years of getting budget 
+and buy-in from DPST-Nancy, & Jason Bronfeld/IT, and charting a path for early 
+use-cases that Nobel deftly navigated to have the successes observed this year.
+DPD Culture Team and Integration:
+•Identified options for D/I culture talk, including pricing and proposal. 
+•Motivated PD Leadership team discussion on race issues, and served as panelist to provide 
+perspective of race issues as a member of BOLD for PD leadership
+People Management:
+•MyVoice survey results significantly higher than BMS and high in ET. 
+•Overall engagement 83 vs 75 JKL vs BMS
+•Covid-19 Awareness +7
+•Inclusion +11
+•Engagement +8
+•Culture & Strategy + 5
+•Development of two direct reports into new managers in addition to the DR from last year 
+that became a manager.
+•Developed a 'manager readiness' framework to help identify key considerations and 
+competencies in becoming a manager.  Worked with all managers in my team to assess 
+their strengths and weakness, and facilitate broader perspective of what it means to be a 
+manager. 
+•Setup weekly 30 min project discussions with Meg to support transition to ET Rep with 
+perspective on current projects (moderately effective) and rep dynamics with capability 
+leads, hCelg development teams, DPDTs, and 1DPDT strategy team (effective). This 
+significantly contributed to Megs substantial contributions in these spaces.
+--- Page 3 ---
+BMS Confidential Information•Ensured active development plan discussions with each team member, and captured in user-
+friendly .ppt format in addition to the WorkDay format.
+•Identified development opportunities, for instance with Peter - assigned him to work w/
+Masano on ParDB  - a historically challenging work relationship, but with significant and 
+clear opportunity to demonstrate his capability and gain credibility in the SPD organization.
+•Delegated P-M3D Steering Committee, and strategic efforts to Sandy
+•Gave Bart the stretch goal of identifying the next opportunities in the Lyo space 
+development.  This led to Bart, simplifying a model by significant timescales (likely to be 
+published) enabling the integration of the model with bayesian statistical regression of 
+effective heat and mass transfer parameters that may be coorelated across scales.  The 
+work is ongoing, but the effort and direction were motivated by the challenge/goal.
+•Nicole has a great mentor in Mary, and grows continually with basic guidance and support.
+•Nobel had a year where his results are recognized at PD townhalls (Nancy & her directs 
+mentioned) and GPS Digital meetings.  This is a direct result of fostering Nobel's 
+contribution in an area that he's passionate about.
+DPD-IT Enterprise Team:
+•Charter established and completed
+•Strategic discussion initiated
+•New IT projects identified
+•Nascent results
+ 
+Acknowledgment
+Employee Acknowledgement
+Entered by : Jaquan Levons (00145659) Date : 01/29/2021
+Status : By selecting this, you certify and sign the document. Your signature is an acknowledgment of receipt and 
+does not indicate agreement. Where you disagree with your performance reflection, discuss with your 
+manager or one-over manager. You have the right to express your disagreement in a written statement, 
+using the comments box below.   THE COMMENTS BOX SHOULD NOT BE USED FOR ANY OTHER 
+PURPOSE.
+Comment :
+Contributions
+Culture and Integration
+Manager Reflection
+Label : Exceeding
+Digital Strategy
+Manager Reflection
+Label : Achieving
+--- Page 4 ---
+BMS Confidential InformationImpact the portfolio through support of ET Reps, and New Technology Development
+Manager Reflection
+Label : Achieving
+Manager Shared Objective: 
+Establish Our New Culture and Embed our People Strategy
+Manager Reflection
+Label : Exceeding
+Values
+Accountability
+We all own BMS' success and strive to be transparent and deliver on our commitments
+Label :Achieving
+Inclusion
+We embrace diversity and foster an environment where we can all work together at our full potential
+Label :Achieving
+Innovation
+We pursue disruptive and bold solutions for patients
+Label :Exceeding
+Integrity
+We demonstrate ethics, integrity and quality in everything we do for patients, customers and colleagues
+Label :Achieving
+Passion
+Our dedication to learning and excellence helps us to deliver exceptional results
+Label :Exceeding
+Urgency
+We move together with speed and quality because patients are waiting
+ 
+Label :Achieving
+
+================================================================================
+FILE: Levons, Jaquan Kalani  2021 Year-end Reflection  10_19_2025.pdf
+================================================================================
+--- Page 1 ---
+BMS Confidential Information
+Levons, Jaquan Kalani 2021 Year-end Reflection
+Scientific Director Organization :Engineering Technologies (Madhushree 
+Gokhale (00179108))
+Manager :Madhushree Gokhale (00179108) Location :New Brunswick - NJ
+Evaluated by :Srinivas Tummala (99000037) 10/01/2021  - 12/31/2021
+Overall
+Manager Reflection
+Comment : Jaquan had an excellent year in 2021 with several elements of exceeding. His contributions to 
+the DPD Digital Priorities and to the GPS Digital moonshot are particularly noteworthy. On the 
+DPD Digital Priorities, Jaquan played a key leadership role in translating the broad digital 
+priorities into concrete deliverables with defined milestones and brought together key 
+stakeholders in helping drive these projects to have impactful results in 2021. The progress 
+made on the NISABA project and the team’s plans to overcome key technical challenges was a 
+good example of that. On the PAR database project, Jaquan made significant efforts and 
+progress and bringing together diverse viewpoints and helping coalesce them into an integrated 
+strategy. On the GPS digital moonshot, once again Jaquan was able to translate an amorphous 
+concept and working closely with key stakeholders develop a path forward. He then was able to 
+drive key aspects of this project to accomplish very tangible outputs for the end of the year.
+ 
+Jaquan also demonstrated excellent core values in 2021. As a member of the ET leadership 
+team, he consistently demonstrated a clear enterprise mindset and the work he did (often behind 
+the scenes) to grow and develop scientists and managers in ET is particularly noteworthy. 
+Jaquan was also a key member of the DPD culture team efforts where he made significant 
+contributions and was called upon to present at various forums as a champion of diversity and 
+inclusion
+Employee Reflection
+Comment : •Huge impact to the proportion of digital work being done as part of IT process and less as 
+part of 'shadow IT'/outside of the process
+ 
+•CSO-PAR
+•This has been 4+ year effort, running off of grassroots DPD FTEs, and my efforts this 
+year have started to move this towards an enterprise solution pulling back on DPD 
+resources required for maintenance.
+•Negotiated between SME and PDIT to make progress 1.) finalizing an initial scope of 
+the phase I effort by structuring features/components into buckets, identifying which 
+features have DPD impact (to accommodate IT),   and compromise from Masano to 
+include a component that will provide batch history data to DPD scientists in this initial 
+phase, 2.) Motivated IT to extract business documents from what the business has 
+already developed, creating value from that effort, 3.) Motivated buy-in from Masano to 
+move forward with the Brillio vendor MVP, and to bring in additional SPD SMEs 
+leveraging management, and IT to compromise on the amount of SPD timing needed.
+•Nisaba
+•Developed milestones, Communicated network strategy delays, and impact of IT budget 
+strategy, Escalated issues with delays caused by lab computing services, getting 
+support from IT BP to resolve.
+--- Page 2 ---
+BMS Confidential Information•MAST
+•Influenced IT BP to recognize this simple tool as a DPD Strategic priority, leading him to 
+work with EIM to develop and deploy the MAST v1 app, deployed broadly in PD.
+•Other Digital Priorities
+•Prototype for Device Human Factor videos storage and augmentation conducted.
+•Biopharm digital scoped (needs lead)
+•ARGILE
+•Enable approval of video capture through cyber security to allow key functionality to be 
+used for ARGILE
+•Enable approval of data storage through cyber security to allow BMS SOPs and Work 
+Instructions to be created on ARGILE software
+•Monitor usage, device locations, and provide IT-related support to ARGILE users
+•Perceptive software approved.
+•DPD-IT
+•DPD-IT Business process developed, including an approach to valuation, executed 
+through subteams and subteam leaders to define the potential path forward, and 
+communicated.
+•Guided first level leaders through experience running the organization by developing the 
+systems to run ET.  
+ 
+ 
+GPS Digital Moonshot
+•Clearly demonstrated an ability to drive results in this objective.
+•Developed a strategy around the moonshot, articulating 4 key pillars.   Reached out to PD 
+stakeholders to get buy-in for our approach, and to recruit SMEs for participation.   Worked 
+with Department digital SMEs to get engagement from their management and teams to 
+identify 40+ participants of the assessments.   Built alignment across both consolidated 
+pillars, Knowledge Creation & Knowledge Consumption/Data Science.   Reviewed and 
+editted SOWs for both.   Communicated progress to Nancy and Anne.   Pulled core-team 
+members together, and initiated kick off meetings, sharing the strategy and goal and building 
+excitement about the execution.
+•Personally led the knowledge creation subteam, communicating with Accenture, providing 
+guidance and feedback on their approach, providing guidance on how to break down 
+personas for evaluation, recruiting Bogdan as a colead to provide perspective in our 
+conversations, culminating in key moonshot goals, and several user stories that will be 
+consolidated into MVPs.
+•Oversaw the knowledge consumption/data science efforts, providing significant guidance 
+and feedback for the team on how to proceed.
+•Developed a kick off communication to the PDSLT, provided a power point update to the PD 
+LT (after having met with most 1:1 to communicate the strategy), and developed a midterm 
+update for the PDSLT.
+•Identified synergy with the ET lab of the future effort to be part of the knowledge creation 
+team.
+ 
+Acknowledgment
+Employee Acknowledgement
+Entered by : Jaquan Levons (00145659) Date : 01/25/2022
+Status : By selecting this, you certify and sign the document. Your signature is an acknowledgment of receipt and 
+--- Page 3 ---
+BMS Confidential Informationdoes not indicate agreement. Where you disagree with your performance reflection, discuss with your 
+manager or one-over manager. You have the right to express your disagreement in a written statement, 
+using the comments box below.   THE COMMENTS BOX SHOULD NOT BE USED FOR ANY OTHER 
+PURPOSE.
+Comment :
+Contributions
+Digital product thread: seamless information connectivity across End-to-End (E2E) product development, 
+and with manufacturing and strategic partners
+Manager Reflection
+Label : Exceeding
+DPD-IT Enterprise Team
+Manager Reflection
+Label : Achieving
+ET Management  Impact the goals of Drug Product Development through the effective and aligned 
+execution of Engineering Technologies
+Manager Reflection
+Label : Achieving
+Manager Shared – Embed Our Patient-Centric Culture and Drive Our People Strategy
+Manager Reflection
+Label : Achieving
+PD Agility & Urgency Team
+Manager Reflection
+Label : Exceeding
+People Management & Development
+Manager Reflection
+--- Page 4 ---
+BMS Confidential InformationLabel : Achieving
+Values
+Accountability
+We all own BMS' success and strive to be transparent and deliver on our commitments
+Label :Achieving
+Inclusion
+We embrace diversity and foster an environment where we can all work together at our full potential
+Label :Exceeding
+Innovation
+We pursue disruptive and bold solutions for patients
+Label :Exceeding
+Integrity
+We demonstrate ethics, integrity and quality in everything we do for patients, customers and colleagues
+Label :Exceeding
+Passion
+Our dedication to learning and excellence helps us to deliver exceptional results
+Label :Exceeding
+Urgency
+We move together with speed and quality because patients are waiting
+ 
+Label :Achieving
+
+================================================================================
+FILE: Levons, Jaquan Kalani  Mid-Year Check-In  10_16_2025.pdf
+================================================================================
+--- Page 1 ---
+BMS Confidential Information
+Levons, Jaquan Kalani Mid-Year Check-In
+Scientific Director Organization :Engineering Technologies (Madhushree 
+Gokhale (00179108))
+Manager :Madhushree Gokhale (00179108) Location :New Brunswick - NJ
+Evaluated by :Madhushree Gokhale (00179108) 06/27/2025  - 08/31/2025
+Check-in Comments
+Manager Reflection
+Comment : Jaquan has demonstrated a strong commitment to advancing PD's strategic objectives, 
+particularly in the areas of development excellence (DevEx) as well as data strategy efforts in 
+DPD. For 2H in 2025, Jaquan should continue to prioritize the dev ex biopharm project with 
+enabling modelbuild and roll out to support decision making for Biopharm Part 1 to maximize 
+value capture. He should also focus on change management effort for in silico bio project. 
+Driving the ebatch record strategy with a clear implementation plan will be important to continue 
+to ensure that project timelines are met.  Lastly Jaquan should drive the GenAI strategy with a 
+specific plan to enable improved AI literacy and development workflow evolution.
+Employee Reflection
+Comment : DPD DevEx Modeling Lead
+The SPD InSilico Formulation DevEx initiative was led through sprint cycles focused on data 
+connectivity, model development, and dashboard deployment. A Model-First strategy was 
+championed, enabling predictive modeling for viscosity, high molecular weight (HMW), and 
+critical quality attributes (CQA). Integration across SPD, BD, PCO, and DBTx was facilitated, and 
+modeling tools were embedded into dashboards to reduce empirical formulation work.
+The Biopharm Digital program was launched with Biopharm Digital 0.1: ROVER in vitro, which 
+included the development of the DPD PEMM ingestion tool and SPARTAN v2.3.0. Structured 
+data capture and visualization were enabled to support early risk assessments. This was 
+followed by Biopharm Digital 0.5, which expanded the platform to include in vivo capabilities and 
+BBRC support, along with SPARTAN v2.4.0 upgrades. In silico ingestion and database 
+development were initiated to support future modeling and reduce reliance on animal studies.
+The DEM for blending and segregation project was prioritized and chartered, with alignment 
+secured across OPD, MSE, and DPD LT. Technical leads were supported in translating modeling 
+outputs into actionable insights for scale-up and tech transfer. The DEM for RTD/CM initiative 
+was similarly supported, with proven acceptable ranges (PARs) modeled to inform control 
+strategies for clinical manufacturing. The FEM for tablet compression project was shaped 
+through business case development and stakeholder alignment, enabling modeling to address 
+tablet defects. The PIV project for SDD nozzle droplet modeling was positioned to support IND 
+Tox and Phase 1 readiness through predictive modeling of spray drying dynamics.
+The Spotlight Series strategy was designed and launched to showcase high-priority innovations 
+in modeling, automation, and platforms. The DPD DevEx Platform Spotlight: SDD Platform & 
+Tools session was curated and delivered, highlighting internalization of SDD development, 
+platform compositions, and modeling integration.
+ 
+DPD DevEx Spotlight Leadership
+The DPD DevEx Spotlight Series was launched to build visibility and engagement around DevEx 
+efforts. The series was designed to align with enterprise goals such as speed to FIH and 
+--- Page 2 ---
+BMS Confidential Informationresource efficiency. The SDD Platform & Tools spotlight session was delivered, emphasizing 
+internalization of early-stage development and showcasing modeling tools like PC-SAFT and 
+machine learning for dissolution prediction.
+Change management goals were articulated to drive stakeholder engagement and adoption of 
+DevEx tools. Platform compositions using HPMC AS and Udrjit 1100 were presented, with data 
+mining and performance assessments conducted to support formulation acceleration. The 
+operationalization of the mobile miner was highlighted, enabling in-house SDD manufacturing for 
+FIH readiness.
+ 
+Digital Infrastructure and Data Strategy
+Digital transformation efforts were led across DPD, including the rollout of DevLIMS and 
+upgrades to ELN systems. The BETAR framework was implemented to address execution 
+barriers through structured issue tracking. Strategic planning documents were authored to 
+integrate modeling, data maturity, and automation goals. Coordination with IT and partner 
+functions was facilitated to align digital initiatives with enterprise priorities.
+ 
+Innovation Champion Lead
+The innovation framework was led to evaluate pilot projects and source new ideas. Projects such 
+as Helium Recovery and PS80 mitigation were reviewed, with decisions made to sunset or scale 
+based on strategic fit. Mechanisms for idea sourcing were proposed, including symposiums, 
+passive collection boards, and collision spaces. Engagement strategies were developed to foster 
+a culture of innovation across DPD.
+ 
+GenAI and LLM Strategy Development
+The GenAI strategy for DPD was spearheaded, with high-value use cases identified for 
+document drafting, data extraction, and knowledge navigation. Enterprise ChatGPT tools were 
+benchmarked, and adoption was supported through office hours and newsletters. C3.AI pilots 
+were led to extract unstructured data and integrate it into PD workflows. Strategic roadmaps 
+were developed to guide responsible AI integration.
+ 
+Organizational Leadership
+Strategic planning contributions were made through the development of 2025 ITE Objectives and 
+Digital Diamond Frameworks. Business reviews and strategy sessions were led to align 
+stakeholders on DevEx goals. Dashboards and transparency tools were supported to foster 
+cross- functional collaboration and clarify priorities.
+ 
+Scripting and Digital Enablement
+The DAI Scripting Team was co-led to enable dashboard development and data integration. 
+Dashboards for viscosity, CQA benchmarking, and biophysical modeling were developed. 
+Modeling data was integrated into visualization platforms such as Tableau and Quickbase. 
+Support was provided for digital twins and mechanistic models in formulation and process design.
+
+================================================================================
+FILE: Overall (1).pdf
+================================================================================
+--- Page 1 ---
+Overall
+BMS Confidential Information10:47 PM
+02/28/2026
+Page 1 of 3
+Manager
+Comment
+Over the past year, Jaquan consistently demonstrated top performance and drove significant impact in 
+2025. He co-led the Bio In Silico DevEx Modeling Project, delivering substantial impact through the 
+successful implementation of viscosity and HMW models within the MVP, the integration of DevLIMS 
+pilots for future data capture, and the deployment of C3.AI for historical data extraction. This strategic 
+orchestration enabled cross-boundary collaboration with PCO, resulting in seven dashboards, two 
+models, and a projected FTE and time savings setting new standards for platforms and frameworks for 
+future modeling projects and directly impacting six major programs in the portfolio. Jaquan drove the data 
+infrastructure effort for DPD, not only piloting the C3.AI data extraction tool but also guiding the transition 
+to an in-house ZS-built platform for long-term scalability and alignment with IT strategy. He commissioned 
+the DPD Data Map, led development of the data maturity framework, and delivered on critical digital 
+access initiatives such as DevLIMS, ELN templates, and OSD process data, positioning DPD to further 
+expand its digital capabilities in 2026. Jaquan’s leadership in closing out the Nisaba project and pivoting 
+the eBatch record solution to an in-house build when the vendor did not deliver resulted in a cost savings 
+of $300k YoY.
+As the DPD Modeling lead at the DevEx core team, Jaquan contributed to the modeling strategy, 
+supported the initiation of four new modeling projects, revitalized Biopharm Digital II, and implemented 
+biweekly value realization meetings. He hosted sessions at DevEx XLT and DPD Spotlight series, further 
+amplifying DevEx awareness and visibility more broadly into DPD. As Innovation Champion, under 
+Jaquan's leadership the DPD GenAI/LLM subteam was initiated curating 40+ GenAI use case ideas that 
+were also assessed against a prioritization framework and have provided some good insights to set the 
+2026 areas of focus. The team also led pilots for tools like DocGenAI and the ECL coding bot, published 
+a biweekly newsletter and instituted office hours to improve GenAI literacy. Throughout these efforts, 
+Jaquan exemplified passion, accountability, and integrity by taking ownership when projects stalled, 
+identifying root causes, and mobilizing resources or engaging stakeholders as needed to deliver in a 
+timely manner. He demonstrated innovation by championing enterprise tools and frameworks, replacing 
+legacy solutions for sustainability, and continually seeking opportunities to leverage new technology. 
+Inclusion was evident in his engagement style, consistently soliciting diverse viewpoints and fostering an 
+environment where the team felt empowered and engaged.
+Looking ahead, Jaquan has a few opportunities to further establish himself as the Digital Lead for DPD as 
+his leadership role expands. Adopting more formal prioritization and structured processes will help 
+maintain quality and scale. Steering team discussions towards a select set of actionable improvements 
+and delivering more specific outputs alongside big-picture direction, especially to support junior team 
+members will foster stronger alignment and clarity. Focusing extensive discussions into concise, 
+actionable strategies and streamlining communication through clear frameworks and frequent follow-ups 
+will enhance value delivery and sustain project momentum. Additionally, by leaning in early to ensure that 
+both the technical and strategic elements are sound, and then proactively building relationships with key 
+stakeholders at the outset of project cycles, Jaquan will strengthen collaboration and help anticipate 
+potential blockers . I look forward to Jaquan’s continued partnership in 2026.
+Employee
+Jaquan K. Levons
+2025 End of Year Reflection Summary
+1. Top 3–4 Accomplishments for 2025 with Specific Outcomes/Impact
+Led the Bio In Silico DevEx Modeling Project to Deliver First DevEx Models  
+As co-product owner, I led the strategic direction of the Bio In Silico DevEx Modeling 
+Project, delivering the first DevEx models (viscosity and HMW) and building a framework •Comment
+--- Page 2 ---
+Overall
+BMS Confidential Information10:47 PM
+02/28/2026
+Page 2 of 3
+for model characterization and data readiness. I secured funding for DevLIMS expansion, 
+integrated C3.AI for historical data extraction, and partnered with BI&T and PCO to feed 
+model development. While my co-lead focused on operational execution, I drove the 
+modeling strategy, stakeholder alignment, and tool integration—resulting in 7 dashboards, 
+2 models, and nearly 2 FTE savings, and several novel tools and frameworks for model 
+development in the future.
+Established Structural Anchors for Data Maturity and Scalable Infrastructure  
+I commissioned the DPD Data Map—a comprehensive inventory of data sources across 
+DPD—and led the development of a data maturity framework to assess digitization 
+progress. These tools enabled visibility into data gaps and informed the PD Data Strategy. 
+I expanded DevLIMS as a structured data capture tool for biologics, Nisaba powder testing 
+and characterization labs, and part of MSE workflows, and ELN templates as well. This 
+foundational work positioned DPD to scale digital capabilities with confidence and aligned 
+with enterprise standards, and greatly improved the health of the partnership with BI&T.•
+Scaled DevEx Modeling Portfolio and Drove Value Realization  
+As DevEx Modeling Core Team lead, I supported four new modeling projects (FEM, DEM, 
+PIV SDD nozzle, CM RTD), revitalized the Biopharm Digital II initiative, and implemented 
+biweekly value realization meetings. These efforts captured (structured) over 190 
+experiments and 27+ assets leveraging modeling across CSP, In Silico, and Biopharm I. I 
+authored frameworks for experiment elimination risk and ELN strategy, and drove 
+adoption of STEAM (modeling wiki) and NEXUS (model launcher), ensuring sustained 
+impact and change management.•
+Led GenAI Integration and Innovation Champion Team  
+I led the Innovation Champion team to elevate lay scientist ideas, resulting in 9 decisions 
+from the Innovation Council. I launched a GenAI/LLM subteam that piloted tools like 
+DocGenAI and the ECL coding bot, implemented GenAI office hours, and published a 
+biweekly newsletter. After collecting 40+ GenAI use cases, I proposed a strategic 
+roadmap of quick wins and big bets to maximize organizational value from GenAI today, 
+with 5 quick wins and 4 Big bets proposed, and 5 completed tools or initiatives (newsletter, 
+office hours, C3.AI, OPD guidance document bot, ECL coding starter). These efforts 
+positioned DPD as a leader in digital innovation.•
+2. Top 3–4 Examples of BMS Behaviors Most Impactful for 2025
+Passion  
+I demonstrated passion by mentoring lay scientists through the Innovation Champion 
+team, coaching them to refine and elevate their ideas. I supported colleagues like Stephen 
+Thomas and Amjad Chowdhury in scaling their innovation efforts into broader PD 
+strategies. My passion for modeling excellence was evident in the revitalization of 
+Biopharm Digital II and the strategic direction of Bio In Silico.•
+Innovation  
+I exemplified innovation by launching GenAI pilots (DocGenAI, ECL coding bot), 
+publishing a biweekly newsletter, and proposing a roadmap of quick wins and big bets. I 
+created frameworks for model readiness and experiment elimination risk, and led the 
+development of the DPD Data Map and maturity framework. The expansion of DevLIMS 
+as a structured data tool reflects my ability to build scalable infrastructure that transforms 
+how data is captured and used.•
+Inclusion  
+I fostered inclusion by re-engaging disengaged teams in Biopharm Digital II, integrating 
+diverse contributors into strategic initiatives, and democratizing access to modeling and 
+GenAI tools. I created space for lay scientists to influence strategic decisions and 
+empowered team members to lead innovation efforts, ensuring that diverse voices shaped 
+the future of digital science.•
+--- Page 3 ---
+Overall
+BMS Confidential Information10:47 PM
+02/28/2026
+Page 3 of 3
+3. Opportunities for Development
+Expand External Scientific Influence  
+While my internal leadership and strategic execution are strong, increasing visibility 
+through external collaborations, publications, or industry forums would further elevate my 
+impact and align with Scientific Director expectations. This would also support BMS’s goal 
+of thought leadership in digital and modeling innovation.•
+Strengthen Delegation and Scalable Leadership Practices  
+As your portfolio of initiatives grows, continuing to refine how you delegate ownership and 
+empower others to lead substreams will help scale your impact. Building repeatable 
+systems for onboarding, coaching, and transitioning leadership of innovation efforts can 
+ensure sustainability and allow you to focus on strategic foresight and enterprise-level 
+influence.•
+4. Additional Impact/Efforts to Highlight
+I led the development and deployment of multiple modeling capabilities across oral and 
+sterile platforms, including FEM, DEM, RTD, and coating models, enabling predictive 
+design and formulation optimization.•
+I supported the PD LLM Strategy for data extraction, piloting tools to structure 
+unstructured analytical data for biologics and oral products, and integrating these into 
+modeling workflows.•
+I contributed to the PD Information Model and SPARTAN dashboarding efforts, 
+operationalizing data contextualization and enabling rapid visualization across PD 
+domains.•
+As a people leader, I managed a high-performing team whose contributions spanned 
+many areas.  The team made substantial contributions to BMS portfolio execution by 
+deploying next-generation DEVLIMS in SPD, which automated data entry for over 90% of 
+analytical techniques. They co-led the C3.ai data extraction initiative, structuring data from 
+more than 3,000 documents with high accuracy, and addressed scale-up risks for 
+MRTX1133 liposomes using CFD-informed mitigations. The team delivered the custom 
+“Tabula” electronic batch record platform, advanced real-time dashboards, and developed 
+robust automation workflows. These efforts directly enhanced operational efficiency and 
+technology development across multiple BMS•
+
+================================================================================
+FILE: Overall (2).pdf
+================================================================================
+--- Page 1 ---
+Overall
+BMS Confidential Information10:49 PM
+02/28/2026
+Page 1 of 3
+Manager
+Comment
+Jaquan had a phenomenal performance in 2024 with significant contributions on the DevEx PD Modeling 
+Core Team, lead two DPD digital projects as a product owner/co-owner, lead on the DPD IT enterprise 
+team as well as a key member of the ITE LT.
+On the DevEx PD core team he was a key voice and thought partner in helping support and shape the 
+PD modeling strategy. Jaquan’s strength is his ability to push the boundaries and drive innovation.  He 
+championed bringing in SPARTAN as a key piece of the PD data strategy and PD-modeling platform 
+demonstrating its utility through the Biopharm digital program.  This was also recognized through the 
+individual STELA award.  As a DPD rep on the PD Dev ex modeling team, he demonstrated his passion 
+and inclusive leadership through advocacy for scientists, mentoring on building ROI justifications for 
+software funding e.g. partnership with Amy on CSP.
+As the DevEx Biopharm Digital product owner, Jaquan was accountable for the strategy and execution 
+needed to achieve Biopharm Digital goals, including integrating a diverse team. His passion and 
+engagement have led to the successful negotiation of IT resources and the deployment of the first 
+SPARTAN tool in PD with ROVER.  This investment in SPARTAN has enabled PD DevEx to identify key 
+workflows and make decisions on scaling out tools and dashboards for other organizations . This was the 
+first DPD digital project delivered through Devex in 2024. More recently, Jaquan also demonstrated his 
+leadership through serving as a mentor for Joe V who is co-leading the second DPD DevEx project in 
+Sterile space on In Silico Formulation selection and bringing his experience and lessons from the prior 
+project to drive efficiencies or identify potential barriers. Jaquan acknowledged feedback on the need for 
+enterprise solutions and worked to align on these solutions while balancing speed through a strategic bite 
+size approach to data integration prioritization that can be scaled at a subsequent time e.g. dev LIMS for 
+viscosity data. He has also played a crucial role in mentorship on the AGILE framework for others in 
+DPD, demonstrating BMS core value of inclusion.
+Additionally, as the DPD Innovation Council lead, Jaquan supported the team in 2024 driving 15 projects 
+(compared to 3 in 2023) through the framework supporting scientists to bring visibility to ideas across the 
+organization for funding. His influence as the DPD-IT Enterprise Team Lead has resulted in full PD 
+funding for business-critical software and a comprehensive transparent view of DPD software needs. 
+Finally, as an ITE Leadership Team/Pillar Lead, Jaquan has been a key thought partner on the ITE 
+strategy refresh discussions, developed operational strategies, and hired new talent to meet emerging 
+skill needs.  He is also the DAI lead where some of the key contributions of that team were the various 
+QuickBase dashboards across DPD, the expansion of Nisaba efforts with initiation of data collection and 
+the initiation of the e-batch record efforts. 
+This year Jaquan has made tremendous progress in demonstrating value and impact in the digital and 
+modeling space through his leadership in the Dev-Ex space setting up DPD as a strong voice and partner 
+with PD efforts. Throughout his efforts in 2024 he highlighted the BMS behaviors of accountability, 
+passion, inclusion and innovation. In 2025, a couple areas for Jaquan to focus on are expanding DPD 
+outcomes in the Dev ex space modeling/data space, as DPD Digital lead helping shape up the DPD 
+digital strategy in partnership with Dev-ex and also achieve key milestones for projects like Nisaba value 
+capture and the strategy for the e-batch record effort.  I look forward to Jaquan’s partnership in 2025.
+Employee
+DevEx Modeling Core Team:
+I influenced the adoption of Domain Driven design across PD through the SPARTAN tool, 
+evidenced by being awarded an individual STELA award, and in that the PD-IT team 
+committed to SPARTAN for DevEx, integrating data into the GPS Data Lake first, then into 
+SPARTAN for business contextualization. This approach saves time and accelerates •Comment
+--- Page 2 ---
+Overall
+BMS Confidential Information10:49 PM
+02/28/2026
+Page 2 of 3
+insights .
+I generated a view of DPD Modeling BOW in partnership with DPD modeling peers and 
+aligned it with the DevEx Modeling lead. This shift in partnership and funding to DevEx 
+Modeling helps alleviate PD software budget stress.•
+I ensured consistent updates to PD/GPS in iPlan through the DPD DevEx Modeling 
+portfolio, supporting value communication and ROI generation, leading to PD recognition 
+of the impact of CSP to the portfolio.•
+I was a key participant in the DevEx Modeling and Automation Symposium.•
+I significantly contributed to the PD Modeling Strategy, ensuring progress from previous 
+digital efforts is not lost.•
+Biopharm Digital:
+I negotiated with IT to provide resources for an ingestion solution, influencing IT 
+resourcing for PD DevEx.   DevEx Modeling team leverages same approach based on my 
+example.•
+I rolled out the first production version of a SPARTAN tool in PD with ROVER 0.1 in vitro, 
+with plans for further versions.   Leveraged rolling delivery strategy to ensure milestones 
+are hit, but build in needed functionality.•
+I brought in the first DPD SPARTAN Event storm, creating a Biopharm Domain Model.•
+I drove the team to regularly build and test SPARTAN dashboards, incorporating user 
+feedback.•
+Developing a new product owner as part of my team.•
+In Silico Formulation:
+I worked with SPD DMT and IT setting the foundation to upgrade the 'Lumetics' workflow 
+to an enterprise solution, managing negative sentiment and planning a Change 
+Management/Leadership strategy.•
+I influenced study design space reduction and cycle time savings, prioritizing viscosity and 
+CQA models.•
+I developed savings goals around study design space reduction and cycle time savings.•
+I mentored and developed my co-product owner skills in an AGILE framework.•
+Innovation Champions:
+The team enabled the Instrument Connectivity Streamlining project, enabling rapid access 
+to instrument data.•
+My team expanded the Innovation framework from 3 to 15 projects across DPD.•
+The team identified new innovation intake processes and executed initial approaches.•
+I captured ROI for DPD's impact and socialized the need to connect innovation to ROI.•
+DPD-IT Enterprise Team Lead:
+I worked with IT enterprise team members to solicit and prioritize DPD software needs for 
+2025.•
+I developed a comprehensive software list and communicated the new PDIT software 
+framework to DPD leadership.•
+I planned and executed a tour of DPD labs and facilities, building appreciation for DPD's 
+work and alignment with PD DevEx Model First strategy.•
+I leveraged team members to accomplish various goals, increasing the rigor of software 
+book of work development.•
+ITE Leadership Team/Pillar Lead:
+I organized ITE Strategy discussions to develop aligned views of pillars and capabilities.•
+I developed development plans for my entire team and hired a new scientist to support 
+PAT•
+--- Page 3 ---
+Overall
+BMS Confidential Information10:49 PM
+02/28/2026
+Page 3 of 3
+
+================================================================================
+FILE: Overall (3).pdf
+================================================================================
+--- Page 1 ---
+Overall
+BMS Confidential Information10:50 PM
+02/28/2026
+Page 1 of 4
+Manager
+Comment
+Key areas of impact for Jaquan in 2023 were in helping guide and articulate the ITE vision and 
+organizational design, delivering as the 1DPD lead for MyBPC3 elevating issues when appropriate and 
+also helping support first the detailed design for QL model and automation workstream and more recently 
+in support of the Modeling/Digital efforts with McKinsey. Jaquan's key strengths are in passion and 
+inclusion.  He brings a high level of passion to all his roles and engages the team in discussion to help 
+stretch the thought process and likes thinking beyond the current state.  This matches well with his role in 
+ITE driving the digital strategy key examples being Nisaba and CIFER.
+In his role as the co-1DPDL for MyBPC3 project, a first in-house developed gene therapy asset, he has 
+challenged the team to think outside the normal processes to leverage less material in development to 
+help move the project along at the desired pace. Late last year, he took on the lead role for the asset solo 
+and did an excellent job ensuring continuity for the 1DPD and working across team members as well as 
+other functional area leads to align on DP strategy for the asset.
+Jaquan and Venkat partnered well to drive the ITE strategy effort and to align it through a series of 
+discussions with rest of ITE LT.  He thinks deeply about his assignments and often demonstrates out of 
+the box thinking.  Jaquan is very thoughtful about the organization and inclusion, pressure testing 
+messaging and how it will be perceived by the organization.  This was useful in helping articulate the ITE 
+vision as was communicated in his feedback. On QL, Jaquan provided out of the box thinking during the 
+brain storming sessions and has been influential in helping us understand and articulate the 2024 vision 
+for the Modeling team structure and roles.
+A couple feedback that may be opportunities for Jaquan in 2024 would be to adapt his communication 
+style to different situations. He occasionally tends to think out loud and recognizing when this is 
+acceptable and when it is distracting may make his communication more effective. Another feedback is 
+that at times, his messages have anecdotes, and while supporting evidence is important, being direct and 
+concise can help ensure the message is received and understood.
+Employee
+MyBPC3 1DPDTL
+Drove formulation development workflow development and cost 
+estimation to support funding the program by PSO.○
+Enabled GT2 as part of the CMC team, by building alignment on clinical 
+study design and doses with the clinical scientist and CMC team lead to 
+enable precise estimation of DS demand○
+Driving evaluation of potential DP GMP sites.○
+Enabled the formulation team that has explored formulation screening 
+space, based on available literature, and limited available material, 
+leveraging cutting edge technology (UNAGI - buffer exchange - based 
+on automation workflow and technology that I lead the development for).○
+Highlighted key team risks, and worked through mitigation such as 
+proposing the lead resolution of how the CMC team will enable a 
+specific activity, and how that relates to the specifications the team will 
+meet for DS fill/empty ratios, and impact of partials.○•
+DPD-IT Enterprise Team Lead
+BETAR
+Internalized this process into the DPD-IT Enterprise 
+team on behalf of DPD, and delegated ownership to a ■○•Comment
+--- Page 2 ---
+Overall
+BMS Confidential Information10:50 PM
+02/28/2026
+Page 2 of 4
+subteam (Kevin and Karen) to own this area and 
+ensure progress.   Initiated biweekly touch points with 
+that team to determine their findings and needs, and 
+am working through presentations at each function 
+staff meeting to build awareness and collect potential 
+issues.
+Currently, DPD has demonstrated the highest activity 
+(most new projects) in the BETAR spreadsheet in all 
+of PD since the transition to BETAR (e.g., excluding 
+the CITAR entries prior to bringing across PD).■
+Built a visual dashboard to highlight projects and 
+progress on those projects.■
+Key recent resolutions include BMS laptops being sent 
+to New Hires at home, Office timeline pro■
+Wyse box for ELN issues - number of resources 
+needed has been identified by knowledge mangement 
+enterprise team, and that is being used to initaite the 
+process to acquire the necessary hardware for DPD.■
+ELN robustness issues have started engagement with 
+IT Business partner for future resolution■
+eTime issues have been significantly reduced through 
+this engagement, providing better/smoother system 
+access.   More improvements still needed.■
+Priority Projects
+Built a sub-team to develop and capture metrics to 
+push usage and highlight the value of past priority 
+projects.■
+Nisaba  has added 14 instruments that are currently 
+available to formulators for data access.   ARLDD 
+project was able to quickly determine that their blender 
+settings were incorrect because of the dynamic data 
+access.   This may not have been identified otherwise, 
+as the settings are not obvious.   This has likely been 
+an issue on other projects and just has not been 
+captured.   This will improve the robustness of our pilot 
+process development■
+CIFER The Lag3/Nivo team reviewed batches 
+generated over the past several years, getting 
+information on raw materials used and impacted, 
+planning for future batches to broaden batch 
+experience with different raw materials (e.g., glass 
+vials from Ompi vs. Schott) to enable manufacturing 
+flexibility with a view to commercial.   This tool 
+improves process robustness, enabling better broader 
+understanding of the processes we develop.■
+Lumetics  - Significant team uptake into data being 
+captured occurred due to project lead effort to bring 
+DPDTs along.   The modeling team has now integrated 
+this data source into their strategy, and QL/DevEx to 
+impact formulation development cycle times and 
+material requirements.■○
+--- Page 3 ---
+Overall
+BMS Confidential Information10:50 PM
+02/28/2026
+Page 3 of 4
+QL Dev
+Identified key areas for digital development in PD for 
+the QL team, including what areas projects are 
+needed, what approximate funding might be, and what 
+resource needs may be needed.■
+Have joined the DevEx Modeling Strategy team, and:
+Built alignment around which DPD 
+projects should start when■
+Created visibility into the DevEx 
+strategy for modeling and 
+digitalization to key SMEs and 
+leadership in DPD■■○
+ET/ITE Leadership Team
+Strategy Development
+Worked with Venkat, developing a framework for 
+developing a new ITE strategy, and executing a plan 
+that included several all-day brainstorming 
+discussions, design to enable everyone's voice and 
+gather input broadly for the team, including through 
+feedback, analyzing our current assets and talent, and 
+internalizing strategic views broadly, leading to a 
+crystallized out a view of why ET exists, what ET 
+does, where ET plays, with a cross-team pillar 
+strategy to help mitigate silo behavior and impact the 
+organization in a more integrated approach.   The 
+organization has adopted the high level strategy, and 
+operationalization is ongoing with the new boss.■○
+IDP Review
+Developed an approach to review IDPs for ET with 
+Gary, and the management team deprioritized this 
+activity given organizational changes.■○•
+ET Rep - EIF2B•
+P-M3D Printing
+Closed efforts on that team due to resource constraints, including 
+communicating the bad news to the team and praising them for their 
+results thus far.○•
+People Management
+Spent a lot of time hiring New hires :
+Amjad■
+Kara■
+Matt Newberry■
+Thomas Kovar■○
+Recognition :
+1 Promotion■
+2 STELA Nomintations■○•
+--- Page 4 ---
+Overall
+BMS Confidential Information10:50 PM
+02/28/2026
+Page 4 of 4
+Created opportunities for employees according to development plans
+Nobel's leadership of the Nisaba team has a been a 
+useful approach to his development.   Have given 
+explicit feedback, and have been dialoguing about 
+progress as he works on internalizing and growing.■
+Worked with Kristine, and created opportunity for her 
+to be a people manager, to take on significant 
+systemic initiative leadership, and portfolio experience 
+as a formulator on IL2CD25■
+Kara was able to be hired full time, and provided ET 
+rep opportunities while also coaching dynamically on 
+one project team.■○
+
+================================================================================
+FILE: Overall.pdf
+================================================================================
+--- Page 1 ---
+Overall
+BMS Confidential Information10:46 PM
+02/28/2026
+Page 1 of 3
+Manager
+Comment
+Jaquan had a phenomenal performance in 2024 with significant contributions on the DevEx PD Modeling 
+Core Team, lead two DPD digital projects as a product owner/co-owner, lead on the DPD IT enterprise 
+team as well as a key member of the ITE LT.
+On the DevEx PD core team he was a key voice and thought partner in helping support and shape the 
+PD modeling strategy. Jaquan’s strength is his ability to push the boundaries and drive innovation.  He 
+championed bringing in SPARTAN as a key piece of the PD data strategy and PD-modeling platform 
+demonstrating its utility through the Biopharm digital program.  This was also recognized through the 
+individual STELA award.  As a DPD rep on the PD Dev ex modeling team, he demonstrated his passion 
+and inclusive leadership through advocacy for scientists, mentoring on building ROI justifications for 
+software funding e.g. partnership with Amy on CSP.
+As the DevEx Biopharm Digital product owner, Jaquan was accountable for the strategy and execution 
+needed to achieve Biopharm Digital goals, including integrating a diverse team. His passion and 
+engagement have led to the successful negotiation of IT resources and the deployment of the first 
+SPARTAN tool in PD with ROVER.  This investment in SPARTAN has enabled PD DevEx to identify key 
+workflows and make decisions on scaling out tools and dashboards for other organizations . This was the 
+first DPD digital project delivered through Devex in 2024. More recently, Jaquan also demonstrated his 
+leadership through serving as a mentor for Joe V who is co-leading the second DPD DevEx project in 
+Sterile space on In Silico Formulation selection and bringing his experience and lessons from the prior 
+project to drive efficiencies or identify potential barriers. Jaquan acknowledged feedback on the need for 
+enterprise solutions and worked to align on these solutions while balancing speed through a strategic bite 
+size approach to data integration prioritization that can be scaled at a subsequent time e.g. dev LIMS for 
+viscosity data. He has also played a crucial role in mentorship on the AGILE framework for others in 
+DPD, demonstrating BMS core value of inclusion.
+Additionally, as the DPD Innovation Council lead, Jaquan supported the team in 2024 driving 15 projects 
+(compared to 3 in 2023) through the framework supporting scientists to bring visibility to ideas across the 
+organization for funding. His influence as the DPD-IT Enterprise Team Lead has resulted in full PD 
+funding for business-critical software and a comprehensive transparent view of DPD software needs. 
+Finally, as an ITE Leadership Team/Pillar Lead, Jaquan has been a key thought partner on the ITE 
+strategy refresh discussions, developed operational strategies, and hired new talent to meet emerging 
+skill needs.  He is also the DAI lead where some of the key contributions of that team were the various 
+QuickBase dashboards across DPD, the expansion of Nisaba efforts with initiation of data collection and 
+the initiation of the e-batch record efforts. 
+This year Jaquan has made tremendous progress in demonstrating value and impact in the digital and 
+modeling space through his leadership in the Dev-Ex space setting up DPD as a strong voice and partner 
+with PD efforts. Throughout his efforts in 2024 he highlighted the BMS behaviors of accountability, 
+passion, inclusion and innovation. In 2025, a couple areas for Jaquan to focus on are expanding DPD 
+outcomes in the Dev ex space modeling/data space, as DPD Digital lead helping shape up the DPD 
+digital strategy in partnership with Dev-ex and also achieve key milestones for projects like Nisaba value 
+capture and the strategy for the e-batch record effort.  I look forward to Jaquan’s partnership in 2025.
+Employee
+DevEx Modeling Core Team:
+I influenced the adoption of Domain Driven design across PD through the SPARTAN tool, 
+evidenced by being awarded an individual STELA award, and in that the PD-IT team 
+committed to SPARTAN for DevEx, integrating data into the GPS Data Lake first, then into 
+SPARTAN for business contextualization. This approach saves time and accelerates •Comment
+--- Page 2 ---
+Overall
+BMS Confidential Information10:46 PM
+02/28/2026
+Page 2 of 3
+insights .
+I generated a view of DPD Modeling BOW in partnership with DPD modeling peers and 
+aligned it with the DevEx Modeling lead. This shift in partnership and funding to DevEx 
+Modeling helps alleviate PD software budget stress.•
+I ensured consistent updates to PD/GPS in iPlan through the DPD DevEx Modeling 
+portfolio, supporting value communication and ROI generation, leading to PD recognition 
+of the impact of CSP to the portfolio.•
+I was a key participant in the DevEx Modeling and Automation Symposium.•
+I significantly contributed to the PD Modeling Strategy, ensuring progress from previous 
+digital efforts is not lost.•
+Biopharm Digital:
+I negotiated with IT to provide resources for an ingestion solution, influencing IT 
+resourcing for PD DevEx.   DevEx Modeling team leverages same approach based on my 
+example.•
+I rolled out the first production version of a SPARTAN tool in PD with ROVER 0.1 in vitro, 
+with plans for further versions.   Leveraged rolling delivery strategy to ensure milestones 
+are hit, but build in needed functionality.•
+I brought in the first DPD SPARTAN Event storm, creating a Biopharm Domain Model.•
+I drove the team to regularly build and test SPARTAN dashboards, incorporating user 
+feedback.•
+Developing a new product owner as part of my team.•
+In Silico Formulation:
+I worked with SPD DMT and IT setting the foundation to upgrade the 'Lumetics' workflow 
+to an enterprise solution, managing negative sentiment and planning a Change 
+Management/Leadership strategy.•
+I influenced study design space reduction and cycle time savings, prioritizing viscosity and 
+CQA models.•
+I developed savings goals around study design space reduction and cycle time savings.•
+I mentored and developed my co-product owner skills in an AGILE framework.•
+Innovation Champions:
+The team enabled the Instrument Connectivity Streamlining project, enabling rapid access 
+to instrument data.•
+My team expanded the Innovation framework from 3 to 15 projects across DPD.•
+The team identified new innovation intake processes and executed initial approaches.•
+I captured ROI for DPD's impact and socialized the need to connect innovation to ROI.•
+DPD-IT Enterprise Team Lead:
+I worked with IT enterprise team members to solicit and prioritize DPD software needs for 
+2025.•
+I developed a comprehensive software list and communicated the new PDIT software 
+framework to DPD leadership.•
+I planned and executed a tour of DPD labs and facilities, building appreciation for DPD's 
+work and alignment with PD DevEx Model First strategy.•
+I leveraged team members to accomplish various goals, increasing the rigor of software 
+book of work development.•
+ITE Leadership Team/Pillar Lead:
+I organized ITE Strategy discussions to develop aligned views of pillars and capabilities.•
+I developed development plans for my entire team and hired a new scientist to support 
+PAT•
+--- Page 3 ---
+Overall
+BMS Confidential Information10:46 PM
+02/28/2026
+Page 3 of 3
