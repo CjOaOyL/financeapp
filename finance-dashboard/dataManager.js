@@ -329,7 +329,10 @@ const DataManager = (() => {
 
   /**
    * Find duplicates between an array of incoming transactions and existing stored transactions.
-   * A duplicate matches on: date + amount (within 1 cent) + normalized description.
+   * A duplicate matches on: date + amount (within 1 cent).
+   * Description is used as a soft check — if normalized descriptions share significant overlap,
+   * it's a duplicate. This handles cases where the description cleaner produces slightly
+   * different results, or where tags/categories differ between imports.
    *
    * Returns:
    *   {
@@ -348,16 +351,38 @@ const DataManager = (() => {
     const nonDuplicates = [];
     const usedExistingIds = new Set();
 
+    console.log(`[DuplicateCheck] Comparing ${newTransactions.length} incoming against ${existing.length} existing transactions`);
+
     for (const newTx of newTransactions) {
       const newNorm = normalizeForComparison(newTx.description);
       const newAmt = Math.abs(parseFloat(newTx.amount) || 0);
 
       const match = existing.find(ex => {
         if (usedExistingIds.has(ex.id)) return false;
-        const sameDate = ex.date === newTx.date;
-        const sameAmount = Math.abs(Math.abs(parseFloat(ex.amount) || 0) - newAmt) < 0.015;
-        const sameDesc = normalizeForComparison(ex.description) === newNorm;
-        return sameDate && sameAmount && sameDesc;
+
+        // Must match on date
+        if (ex.date !== newTx.date) return false;
+
+        // Must match on amount (within 1.5 cents)
+        if (Math.abs(Math.abs(parseFloat(ex.amount) || 0) - newAmt) >= 0.015) return false;
+
+        // Description check: exact normalized match, OR significant word overlap
+        const exNorm = normalizeForComparison(ex.description);
+        if (exNorm === newNorm) return true;
+
+        // Fuzzy: check if descriptions share enough words
+        const exWords = new Set(exNorm.split(' ').filter(w => w.length > 2));
+        const newWords = new Set(newNorm.split(' ').filter(w => w.length > 2));
+        if (exWords.size === 0 && newWords.size === 0) return true; // both empty/short
+
+        const intersection = [...exWords].filter(w => newWords.has(w));
+        const union = new Set([...exWords, ...newWords]);
+        const similarity = union.size > 0 ? intersection.length / union.size : 0;
+
+        // Also check if one description contains the other
+        const containsMatch = exNorm.includes(newNorm) || newNorm.includes(exNorm);
+
+        return similarity >= 0.5 || containsMatch;
       });
 
       if (match) {
@@ -376,6 +401,7 @@ const DataManager = (() => {
       }
     }
 
+    console.log(`[DuplicateCheck] Result: ${duplicates.length} duplicates, ${nonDuplicates.length} new`);
     return { duplicates, nonDuplicates };
   }
 
