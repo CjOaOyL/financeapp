@@ -4,3 +4,11 @@ dist/
 *.log
 .DS_Store
 Thumbs.db
+
+# Financial data files (import fresh into the app)
+apple_card_*.json
+apple_card_transactions.json
+extracted_transactions.json
+finance-dashboard/apple_card_*.json
+finance-dashboard/extracted_transactions.json
+page_*_raw.txt
