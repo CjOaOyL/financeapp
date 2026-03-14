@@ -549,6 +549,9 @@
           </div>
         </div>
 
+        <label style="grid-column:1/-1">Notes <small style="color:var(--clr-text-muted)">(optional — assumptions, references, reminders)</small>:
+          <textarea id="income-notes" rows="2" placeholder="e.g. Based on last pay stub. Review after raise in Q3." style="resize:vertical;font-size:.85rem"></textarea>
+        </label>
         <div class="btn-row">
           <button id="btn-save-income" class="btn btn-accent">💾 Save Income Source</button>
           <button id="btn-cancel-income" class="btn btn-secondary">Cancel</button>
@@ -564,6 +567,7 @@
             <th>Type</th>
             <th>Details</th>
             <th>Monthly Est.</th>
+            <th>Notes</th>
             <th style="width:90px">Actions</th>
           </tr>
         </thead>
@@ -654,6 +658,9 @@
             <input type="number" id="expense-end" min="0" placeholder="ongoing" />
           </label>
         </div>
+        <label style="display:block;margin-top:.6rem">Notes <small style="color:var(--clr-text-muted)">(optional — assumptions, references, reminders)</small>:
+          <textarea id="expense-notes" rows="2" placeholder="e.g. Car lease quote from dealer, expires Apr 2026." style="resize:vertical;font-size:.85rem;width:100%;margin-top:.3rem"></textarea>
+        </label>
         <div class="btn-row">
           <button id="btn-save-expense" class="btn btn-accent">💾 Save Expense</button>
           <button id="btn-cancel-expense" class="btn btn-secondary">Cancel</button>
@@ -670,6 +677,7 @@
             <th>Monthly Amount</th>
             <th>Starts</th>
             <th>Ends</th>
+            <th>Notes</th>
             <th style="width:90px">Actions</th>
           </tr>
         </thead>

@@ -410,6 +410,11 @@ const Planner = (() => {
         }
       }
 
+      const notesTrim = s.notes ? s.notes.trim() : '';
+      const notesCell = notesTrim
+        ? `<span class="planner-notes" title="${escHtml(notesTrim)}">${escHtml(notesTrim.length > 40 ? notesTrim.slice(0, 38) + '…' : notesTrim)}</span>`
+        : `<span style="color:var(--clr-text-muted);font-size:.8rem">—</span>`;
+
       return `<tr class="${s.enabled ? '' : 'income-disabled'}">
         <td>
           <label class="toggle-label" style="gap:.3rem">
@@ -420,6 +425,7 @@ const Planner = (() => {
         <td>${typeIcon} ${typeLabel}</td>
         <td style="font-size:.82rem;color:var(--clr-text-muted)">${detailParts.join(' · ')}</td>
         <td class="amount-positive" style="font-weight:600">$${monthly.toFixed(2)}</td>
+        <td style="font-size:.82rem;max-width:160px">${notesCell}</td>
         <td>
           <button class="btn btn-sm btn-secondary income-edit" data-id="${s.id}" title="Edit">✏️</button>
           <button class="btn btn-sm btn-danger income-delete" data-id="${s.id}" title="Delete">✕</button>
@@ -435,6 +441,7 @@ const Planner = (() => {
       <td></td>
       <td></td>
       <td class="amount-positive" style="font-weight:700;font-size:1.1rem">$${totalMonthly.toFixed(2)}</td>
+      <td></td>
       <td></td>
     </tr>`;
 
@@ -549,6 +556,10 @@ const Planner = (() => {
     tbody.innerHTML = expenses.map(e => {
       const startLabel = e.startMonth === 0 ? 'Now' : `Month ${e.startMonth}`;
       const endLabel = e.endMonth == null ? 'Ongoing' : `Month ${e.endMonth}`;
+      const notesTrim = e.notes ? e.notes.trim() : '';
+      const notesCell = notesTrim
+        ? `<span class="planner-notes" title="${escHtml(notesTrim)}">${escHtml(notesTrim.length > 40 ? notesTrim.slice(0, 38) + '…' : notesTrim)}</span>`
+        : `<span style="color:var(--clr-text-muted);font-size:.8rem">—</span>`;
       return `<tr class="${e.enabled ? '' : 'income-disabled'}">
         <td>
           <label class="toggle-label" style="gap:.3rem">
@@ -560,6 +571,7 @@ const Planner = (() => {
         <td class="amount-negative" style="font-weight:600">$${parseFloat(e.amount).toFixed(2)}</td>
         <td>${startLabel}</td>
         <td>${endLabel}</td>
+        <td style="font-size:.82rem;max-width:160px">${notesCell}</td>
         <td>
           <button class="btn btn-sm btn-secondary expense-edit" data-id="${e.id}" title="Edit">✏️</button>
           <button class="btn btn-sm btn-danger expense-delete" data-id="${e.id}" title="Delete">✕</button>
@@ -574,6 +586,7 @@ const Planner = (() => {
       <td><strong>Total Scenario Expenses</strong></td>
       <td></td>
       <td class="amount-negative" style="font-weight:700;font-size:1.1rem">$${totalActive.toFixed(2)}</td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -709,6 +722,7 @@ const Planner = (() => {
     form.dataset.editId = source ? source.id : '';
     document.getElementById('income-name').value = source ? source.name : '';
     document.getElementById('income-type').value = source ? source.type : 'salary';
+    document.getElementById('income-notes').value = source ? (source.notes || '') : '';
 
     updateIncomeFormFields(source?.type || 'salary', source);
     form.classList.remove('hidden');
@@ -756,6 +770,7 @@ const Planner = (() => {
     if (!name) { alert('Please enter a name for this income source.'); return; }
 
     const source = { name, type };
+    source.notes = (document.getElementById('income-notes')?.value || '').trim();
 
     if (type === 'salary') {
       source.amount = parseFloat(document.getElementById('income-salary-amount').value) || 0;
@@ -803,6 +818,7 @@ const Planner = (() => {
     document.getElementById('expense-category').value = expense ? (expense.category || 'Other') : 'Other';
     document.getElementById('expense-start').value = expense ? (expense.startMonth || 0) : 0;
     document.getElementById('expense-end').value = expense ? (expense.endMonth != null ? expense.endMonth : '') : '';
+    document.getElementById('expense-notes').value = expense ? (expense.notes || '') : '';
 
     form.classList.remove('hidden');
     form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -821,7 +837,8 @@ const Planner = (() => {
     if (!name) { alert('Please enter a name for this expense.'); return; }
     if (amount <= 0) { alert('Please enter a positive monthly amount.'); return; }
 
-    const expense = { name, amount, category, startMonth, endMonth };
+    const notes = (document.getElementById('expense-notes')?.value || '').trim();
+    const expense = { name, amount, category, startMonth, endMonth, notes };
 
     if (editId) {
       updateScenarioExpense(editId, expense);

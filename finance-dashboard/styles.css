@@ -1205,4 +1205,16 @@ tr.income-disabled:hover td {
   margin-top: .2rem;
 }
 
+/* ---- Planner Notes ---- */
+.planner-notes {
+  font-size: .8rem;
+  color: var(--clr-text-muted);
+  cursor: help;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 160px;
+}
+
 
