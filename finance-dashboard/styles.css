@@ -972,3 +972,75 @@ tr.transfer-row:hover { opacity: .8; }
   border-radius: 3px;
   margin-left: .3rem;
 }
+
+/* ============================================
+   FINANCIAL PLANNER TAB
+   ============================================ */
+
+.planner-form-panel {
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-primary);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.5rem;
+  margin: 1rem 0;
+  animation: slideUp .2s ease;
+}
+.planner-form-panel h4 {
+  margin-bottom: .8rem;
+  color: var(--clr-primary);
+  font-size: 1rem;
+}
+
+.planner-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: .75rem;
+  margin-bottom: .75rem;
+}
+
+.peak-months-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: .4rem;
+  margin-top: .5rem;
+}
+.peak-month-label {
+  display: flex !important;
+  align-items: center;
+  gap: .3rem;
+  font-size: .8rem !important;
+  color: var(--clr-text-muted) !important;
+  cursor: pointer;
+  margin-bottom: 0 !important;
+}
+.peak-month-label input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--clr-warning);
+}
+
+/* Income table styling */
+#planner-income-table, #planner-expense-table, #planner-projection-table {
+  margin-top: .75rem;
+}
+tr.income-disabled td {
+  opacity: .4;
+}
+tr.income-disabled:hover td {
+  opacity: .7;
+}
+
+/* Planner KPI overrides */
+#tab-planner .kpi-grid {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+@media (max-width: 600px) {
+  .peak-months-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .planner-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

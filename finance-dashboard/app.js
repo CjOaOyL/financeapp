@@ -726,6 +726,9 @@
       case 'budget':
         refreshBudget();
         break;
+      case 'planner':
+        refreshPlanner();
+        break;
       case 'classify':
         refreshClassify();
         break;
@@ -829,6 +832,71 @@
     Budget.renderBudgetTable();
     Budget.renderBudgetChart();
   }
+
+  function refreshPlanner() {
+    Planner.render();
+  }
+
+  /* ---- Planner Tab Wiring ---- */
+
+  // Add Income Source button
+  document.getElementById('btn-add-income').addEventListener('click', () => {
+    Planner.openIncomeForm(null);
+    document.getElementById('income-form-title').textContent = 'Add Income Source';
+  });
+
+  // Save Income Source
+  document.getElementById('btn-save-income').addEventListener('click', () => {
+    Planner.saveIncomeFromForm();
+  });
+
+  // Cancel Income Form
+  document.getElementById('btn-cancel-income').addEventListener('click', () => {
+    document.getElementById('planner-income-form').classList.add('hidden');
+  });
+
+  // Income type selector — show/hide relevant fields
+  document.getElementById('income-type').addEventListener('change', (e) => {
+    Planner.updateIncomeFormFields(e.target.value, null);
+  });
+
+  // Add Scenario Expense button
+  document.getElementById('btn-add-expense').addEventListener('click', () => {
+    Planner.openExpenseForm(null);
+    document.getElementById('expense-form-title').textContent = 'Add Scenario Expense';
+  });
+
+  // Save Scenario Expense
+  document.getElementById('btn-save-expense').addEventListener('click', () => {
+    Planner.saveExpenseFromForm();
+  });
+
+  // Cancel Expense Form
+  document.getElementById('btn-cancel-expense').addEventListener('click', () => {
+    document.getElementById('planner-expense-form').classList.add('hidden');
+  });
+
+  // Projection controls
+  const plannerHorizon = document.getElementById('planner-horizon');
+  const plannerBalance = document.getElementById('planner-starting-balance');
+  if (plannerHorizon) plannerHorizon.addEventListener('change', () => Planner.renderProjection());
+  if (plannerBalance) plannerBalance.addEventListener('change', () => Planner.renderProjection());
+
+  // Listen for planner data updates
+  window.addEventListener('planner-updated', () => {
+    const activeTab = document.querySelector('.nav-btn.active');
+    if (activeTab && activeTab.dataset.tab === 'planner') {
+      Planner.renderProjection();
+    }
+  });
+
+  // Also refresh planner when budget changes
+  window.addEventListener('budget-updated', () => {
+    const activeTab = document.querySelector('.nav-btn.active');
+    if (activeTab && activeTab.dataset.tab === 'planner') {
+      Planner.renderProjection();
+    }
+  });
 
   /* ============================================
      CLASSIFY TAB — Drag-and-Drop Classification

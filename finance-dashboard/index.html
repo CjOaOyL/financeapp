@@ -34,6 +34,7 @@
     <button class="nav-btn" data-tab="merchants">🏪 Merchants</button>
     <button class="nav-btn" data-tab="savings">💡 Savings</button>
     <button class="nav-btn" data-tab="budget">🎯 Budget</button>
+    <button class="nav-btn" data-tab="planner">📋 Planner</button>
     <button class="nav-btn" data-tab="classify">🏷️ Classify</button>
   </nav>
 
@@ -384,6 +385,266 @@
     </div>
   </section>
 
+  <!-- ========== TAB: FINANCIAL PLANNER ========== -->
+  <section id="tab-planner" class="tab-content">
+    <div class="card">
+      <div class="card-header-row">
+        <div>
+          <h2>📋 Financial Planner</h2>
+          <p class="info-text">Model income scenarios, add projected expenses, and see how your savings grow over time. Uses your budget targets as the expense baseline.</p>
+        </div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+          <label style="font-size:.85rem;color:var(--clr-text-muted)">Projection:
+            <select id="planner-horizon" style="width:auto;display:inline-block;margin-left:.3rem">
+              <option value="6">6 months</option>
+              <option value="12" selected>12 months</option>
+              <option value="24">24 months</option>
+              <option value="36">36 months</option>
+            </select>
+          </label>
+          <label style="font-size:.85rem;color:var(--clr-text-muted)">Starting Balance: $
+            <input type="number" id="planner-starting-balance" value="0" step="100" min="0" style="width:120px;display:inline-block;margin-left:.3rem" />
+          </label>
+        </div>
+      </div>
+
+      <!-- KPI Summary -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Avg Monthly Income</span>
+          <span id="planner-kpi-income" class="kpi-value amount-positive">$0.00</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Avg Monthly Expenses</span>
+          <span id="planner-kpi-expenses" class="kpi-value amount-negative">$0.00</span>
+          <span class="kpi-sub">budget + scenario</span>
+        </div>
+        <div class="kpi-card highlight">
+          <span class="kpi-label">Avg Monthly Net</span>
+          <span id="planner-kpi-net" class="kpi-value">$0.00</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Max Affordable New Expense</span>
+          <span id="planner-kpi-affordable" class="kpi-value">$0.00</span>
+          <span class="kpi-sub">before going negative</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">End Balance</span>
+          <span id="planner-kpi-end-balance" class="kpi-value">$0.00</span>
+          <span class="kpi-sub">at end of projection</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Income Sources -->
+    <div class="card">
+      <div class="card-header-row">
+        <h2>💰 Income Sources</h2>
+        <button id="btn-add-income" class="btn btn-primary">+ Add Income Source</button>
+      </div>
+      <p class="info-text">Define your income streams: regular paychecks, contract gigs, tips, etc. Each type calculates differently.</p>
+
+      <!-- Income Add/Edit Form (hidden by default) -->
+      <div id="planner-income-form" class="planner-form-panel hidden">
+        <h4 id="income-form-title">Add Income Source</h4>
+        <div class="planner-form-grid">
+          <label>Name:
+            <input type="text" id="income-name" placeholder="e.g. Day Job, Freelance, Bartending" />
+          </label>
+          <label>Type:
+            <select id="income-type">
+              <option value="salary">💼 Salary / Paycheck</option>
+              <option value="contract">📝 Contract Work</option>
+              <option value="tips">💵 Tips / Variable</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- Salary fields -->
+        <div id="income-salary-fields" class="planner-form-grid">
+          <label>Amount per Paycheck ($):
+            <input type="number" id="income-salary-amount" step="0.01" min="0" placeholder="0.00" />
+          </label>
+          <label>Pay Frequency:
+            <select id="income-salary-frequency">
+              <option value="weekly">Weekly</option>
+              <option value="biweekly" selected>Bi-weekly (every 2 weeks)</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- Contract fields -->
+        <div id="income-contract-fields" class="planner-form-grid hidden">
+          <label>Average per Contract ($):
+            <input type="number" id="income-contract-amount" step="0.01" min="0" placeholder="0.00" />
+          </label>
+          <label>Estimated Contracts per Month:
+            <input type="number" id="income-contract-frequency" step="0.1" min="0" placeholder="e.g. 2" />
+          </label>
+        </div>
+
+        <!-- Tips fields -->
+        <div id="income-tips-fields" class="planner-form-grid hidden">
+          <label>Min Tips per Shift ($):
+            <input type="number" id="income-tips-min" step="1" min="0" placeholder="50" />
+          </label>
+          <label>Max Tips per Shift ($):
+            <input type="number" id="income-tips-max" step="1" min="0" placeholder="300" />
+          </label>
+          <label>Shifts per Month:
+            <input type="number" id="income-tips-shifts" step="1" min="0" placeholder="12" />
+          </label>
+          <label>Peak Season Multiplier:
+            <input type="number" id="income-tips-peak-multiplier" step="0.1" min="1" value="1.5" placeholder="1.5" />
+          </label>
+          <div class="peak-months-grid">
+            <span style="font-size:.82rem;color:var(--clr-text-muted);grid-column:1/-1">Peak Months (when tips are higher):</span>
+            <label class="peak-month-label"><input type="checkbox" class="peak-month-cb" value="0" /> Jan</label>
+            <label class="peak-month-label"><input type="checkbox" class="peak-month-cb" value="1" /> Feb</label>
+            <label class="peak-month-label"><input type="checkbox" class="peak-month-cb" value="2" /> Mar</label>
+            <label class="peak-month-label"><input type="checkbox" class="peak-month-cb" value="3" /> Apr</label>
+            <label class="peak-month-label"><input type="checkbox" class="peak-month-cb" value="4" /> May</label>
+            <label class="peak-month-label"><input type="checkbox" class="peak-month-cb" value="5" /> Jun</label>
+            <label class="peak-month-label"><input type="checkbox" class="peak-month-cb" value="6" /> Jul</label>
+            <label class="peak-month-label"><input type="checkbox" class="peak-month-cb" value="7" /> Aug</label>
+            <label class="peak-month-label"><input type="checkbox" class="peak-month-cb" value="8" /> Sep</label>
+            <label class="peak-month-label"><input type="checkbox" class="peak-month-cb" value="9" /> Oct</label>
+            <label class="peak-month-label"><input type="checkbox" class="peak-month-cb" value="10" /> Nov</label>
+            <label class="peak-month-label"><input type="checkbox" class="peak-month-cb" value="11" /> Dec</label>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button id="btn-save-income" class="btn btn-accent">💾 Save Income Source</button>
+          <button id="btn-cancel-income" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Income Sources Table -->
+      <table id="planner-income-table">
+        <thead>
+          <tr>
+            <th style="width:40px">On</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Details</th>
+            <th>Monthly Est.</th>
+            <th style="width:90px">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="planner-income-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Scenario Expenses -->
+    <div class="card">
+      <div class="card-header-row">
+        <h2>🧾 Scenario Expenses</h2>
+        <button id="btn-add-expense" class="btn btn-primary">+ Add Expense</button>
+      </div>
+      <p class="info-text">Add expenses you're considering — a car payment, rent increase, new subscription — to see their impact on your projection.</p>
+
+      <!-- Expense Add/Edit Form (hidden by default) -->
+      <div id="planner-expense-form" class="planner-form-panel hidden">
+        <h4 id="expense-form-title">Add Scenario Expense</h4>
+        <div class="planner-form-grid">
+          <label>Name:
+            <input type="text" id="expense-name" placeholder="e.g. Car Payment, Gym Membership" />
+          </label>
+          <label>Monthly Amount ($):
+            <input type="number" id="expense-amount" step="0.01" min="0" placeholder="0.00" />
+          </label>
+          <label>Category:
+            <select id="expense-category">
+              <option value="Housing">Housing</option>
+              <option value="Utilities">Utilities</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Insurance">Insurance</option>
+              <option value="Healthcare">Healthcare</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Subscriptions">Subscriptions</option>
+              <option value="Education">Education</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Other" selected>Other</option>
+            </select>
+          </label>
+          <label>Start Month (0 = now):
+            <input type="number" id="expense-start" min="0" value="0" />
+          </label>
+          <label>End Month (blank = ongoing):
+            <input type="number" id="expense-end" min="0" placeholder="ongoing" />
+          </label>
+        </div>
+        <div class="btn-row">
+          <button id="btn-save-expense" class="btn btn-accent">💾 Save Expense</button>
+          <button id="btn-cancel-expense" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Scenario Expenses Table -->
+      <table id="planner-expense-table">
+        <thead>
+          <tr>
+            <th style="width:40px">On</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Monthly Amount</th>
+            <th>Starts</th>
+            <th>Ends</th>
+            <th style="width:90px">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="planner-expense-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Income Comparison Chart: Historical vs Projected -->
+    <div class="card">
+      <h3>📊 Income: Historical vs Projected</h3>
+      <p class="info-text">Compare your actual historical income from transactions against your projected income assumptions.</p>
+      <div class="chart-container" style="height:350px;position:relative">
+        <canvas id="chart-planner-income-compare"></canvas>
+      </div>
+    </div>
+
+    <!-- Savings Projection Chart -->
+    <div class="chart-grid">
+      <div class="card">
+        <h3>💰 Savings Projection</h3>
+        <div class="chart-container" style="height:350px;position:relative">
+          <canvas id="chart-planner-savings"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h3>📊 Monthly Breakdown</h3>
+        <div class="chart-container" style="height:350px;position:relative">
+          <canvas id="chart-planner-breakdown"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projection Table -->
+    <div class="card">
+      <h3>📅 Month-by-Month Projection</h3>
+      <div class="table-wrap">
+        <table id="planner-projection-table">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Income</th>
+              <th>Budget Expenses</th>
+              <th>Scenario Expenses</th>
+              <th>Net Savings</th>
+              <th>Cumulative Balance</th>
+            </tr>
+          </thead>
+          <tbody id="planner-projection-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
   <!-- ========== TAB: CLASSIFY ========== -->
   <section id="tab-classify" class="tab-content">
     <div class="card">
@@ -476,6 +737,7 @@
   <script src="charts.js"></script>
   <script src="analysis.js"></script>
   <script src="budget.js"></script>
+  <script src="planner.js"></script>
   <script src="exporter.js"></script>
   <script src="classifier.js"></script>
   <script src="app.js"></script>

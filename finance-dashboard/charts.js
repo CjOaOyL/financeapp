@@ -359,6 +359,184 @@ const Charts = (() => {
     });
   }
 
+  /* ---- Financial Planner Charts ---- */
+
+  /**
+   * Savings projection: cumulative savings line + monthly net bars
+   */
+  function renderPlannerSavings(labels, cumulativeData, netData) {
+    getOrCreate('chart-planner-savings', {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Cumulative Savings',
+            data: cumulativeData,
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16,185,129,.12)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 4,
+            pointHoverRadius: 7,
+            yAxisID: 'y'
+          },
+          {
+            type: 'bar',
+            label: 'Monthly Net',
+            data: netData,
+            backgroundColor: netData.map(v => v >= 0 ? 'rgba(16,185,129,.5)' : 'rgba(239,68,68,.5)'),
+            borderWidth: 0,
+            yAxisID: 'y1'
+          }
+        ]
+      },
+      options: {
+        ...defaultOptions,
+        scales: {
+          x: { ...defaultOptions.scales.x },
+          y: {
+            type: 'linear',
+            position: 'left',
+            ticks: { color: '#8b8fa3', callback: v => '$' + v.toLocaleString() },
+            grid: { color: '#2d3244' },
+            title: { display: true, text: 'Cumulative Balance', color: '#8b8fa3' }
+          },
+          y1: {
+            type: 'linear',
+            position: 'right',
+            ticks: { color: '#8b8fa3', callback: v => '$' + v.toLocaleString() },
+            grid: { drawOnChartArea: false },
+            title: { display: true, text: 'Monthly Net', color: '#8b8fa3' }
+          }
+        },
+        plugins: {
+          ...defaultOptions.plugins,
+          tooltip: {
+            ...defaultOptions.plugins.tooltip,
+            callbacks: { label: ctx => `${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}` }
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Income comparison: historical (bar) + projected (line)
+   */
+  function renderPlannerIncomeComparison(comparison) {
+    const { histMonths, histIncome, projMonths, projIncome } = comparison;
+
+    // Merge all month labels in order
+    const allMonths = [...new Set([...histMonths, ...projMonths])].sort();
+    const histMap = {};
+    histMonths.forEach((m, i) => histMap[m] = histIncome[i]);
+    const projMap = {};
+    projMonths.forEach((m, i) => projMap[m] = projIncome[i]);
+
+    const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const labels = allMonths.map(ym => {
+      const [y, m] = ym.split('-');
+      return MONTH_NAMES[parseInt(m) - 1] + ' ' + y;
+    });
+
+    getOrCreate('chart-planner-income-compare', {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Historical Income',
+            data: allMonths.map(m => histMap[m] ?? null),
+            backgroundColor: '#6366f1cc',
+            borderWidth: 0
+          },
+          {
+            type: 'line',
+            label: 'Projected Income',
+            data: allMonths.map(m => projMap[m] ?? null),
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16,185,129,.08)',
+            borderDash: [6, 3],
+            fill: false,
+            tension: 0.3,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            spanGaps: true
+          }
+        ]
+      },
+      options: {
+        ...defaultOptions,
+        plugins: {
+          ...defaultOptions.plugins,
+          tooltip: {
+            ...defaultOptions.plugins.tooltip,
+            callbacks: { label: ctx => ctx.parsed.y != null ? `${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}` : '' }
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Monthly breakdown: stacked bar with income, budget expenses, scenario expenses
+   */
+  function renderPlannerBreakdown(labels, incomeData, budgetData, scenarioData) {
+    getOrCreate('chart-planner-breakdown', {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Income',
+            data: incomeData,
+            backgroundColor: '#10b981cc',
+            borderWidth: 0,
+            stack: 'income'
+          },
+          {
+            label: 'Budget Expenses',
+            data: budgetData.map(v => -v),
+            backgroundColor: '#6366f1cc',
+            borderWidth: 0,
+            stack: 'expenses'
+          },
+          {
+            label: 'Scenario Expenses',
+            data: scenarioData.map(v => -v),
+            backgroundColor: '#ef4444cc',
+            borderWidth: 0,
+            stack: 'expenses'
+          }
+        ]
+      },
+      options: {
+        ...defaultOptions,
+        scales: {
+          x: { ...defaultOptions.scales.x, stacked: true },
+          y: {
+            ...defaultOptions.scales.y,
+            stacked: true,
+            ticks: {
+              color: '#8b8fa3',
+              callback: v => (v < 0 ? '-' : '') + '$' + Math.abs(v).toLocaleString()
+            }
+          }
+        },
+        plugins: {
+          ...defaultOptions.plugins,
+          tooltip: {
+            ...defaultOptions.plugins.tooltip,
+            callbacks: {
+              label: ctx => `${ctx.dataset.label}: $${Math.abs(ctx.parsed.y).toFixed(2)}`
+            }
+          }
+        }
+      }
+    });
+  }
+
   return {
     renderImportLine,
     renderOverviewBar, renderOverviewPie,
@@ -367,6 +545,9 @@ const Charts = (() => {
     renderMerchantBar,
     renderSavingsWaterfall,
     renderBudgetComparison,
+    renderPlannerSavings,
+    renderPlannerIncomeComparison,
+    renderPlannerBreakdown,
     PALETTE
   };
 })();
