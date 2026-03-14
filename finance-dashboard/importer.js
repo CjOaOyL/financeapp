@@ -1005,6 +1005,67 @@ const Importer = (() => {
     document.getElementById('json-status').textContent = 'Discarded JSON transactions.';
   }
 
+  /* ---- Full Backup Restore ---- */
+
+  /**
+   * Restore a backup JSON file produced by Exporter.exportBackup().
+   * Restores all finance_dashboard_* localStorage keys and triggers a full UI refresh.
+   * @param {File} file
+   */
+  function restoreBackup(file) {
+    if (!file) return;
+    const statusEl = document.getElementById('backup-restore-status');
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!data || typeof data !== 'object') throw new Error('Invalid backup format');
+
+        // Must look like our backup (version key or at least one finance_dashboard_ key)
+        const keys = Object.keys(data).filter(k => k.startsWith('finance_dashboard_'));
+        if (keys.length === 0 && !data._meta) {
+          throw new Error('This does not appear to be a Finance Dashboard backup file.');
+        }
+
+        const proceed = confirm(
+          `Restore backup from ${data._meta?.exportDate ? new Date(data._meta.exportDate).toLocaleDateString() : 'unknown date'}?\n\n` +
+          `This will overwrite: transactions, budget, and planner data.\n` +
+          `Found ${keys.length} data store(s) to restore.\n\n` +
+          `Current data will be replaced. Continue?`
+        );
+        if (!proceed) return;
+
+        let restored = 0;
+        for (const key of keys) {
+          try {
+            localStorage.setItem(key, JSON.stringify(data[key]));
+            restored++;
+          } catch (err) {
+            console.warn(`Could not restore key ${key}:`, err);
+          }
+        }
+
+        if (statusEl) {
+          statusEl.textContent = `✅ Restored ${restored} data store(s) successfully. Refreshing…`;
+          statusEl.className = 'status-text success';
+        }
+
+        // Reload after short delay so user sees the success message
+        setTimeout(() => window.location.reload(), 1200);
+
+      } catch (err) {
+        const msg = `Restore failed: ${err.message}`;
+        if (statusEl) {
+          statusEl.textContent = `❌ ${msg}`;
+          statusEl.className = 'status-text error';
+        } else {
+          alert(msg);
+        }
+      }
+    };
+    reader.readAsText(file);
+  }
+
   /* ---- Utility ---- */
 
   function escapeHtml(str) {
@@ -1025,6 +1086,7 @@ const Importer = (() => {
     handleManualEntry,
     normalizeDate,
     escapeHtml,
+    restoreBackup,
     /** Clear pending state and hide preview for a given source after duplicate resolution */
     finishImport(source, message, statusClass = 'success') {
       if (source === 'pdf') {

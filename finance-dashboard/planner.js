@@ -103,6 +103,13 @@ const Planner = (() => {
         return amt; // monthly
       }
 
+      case 'hourly': {
+        const rate = parseFloat(source.hourlyRate) || 0;
+        const hours = parseFloat(source.hoursPerWeek) || 0;
+        const netFactor = parseFloat(source.netFactor != null ? source.netFactor : 1);
+        return rate * hours * (52 / 12) * netFactor;
+      }
+
       case 'contract': {
         const avg = parseFloat(source.avgAmount) || 0;
         const occ = parseFloat(source.monthlyOccurrences) || 0;
@@ -358,6 +365,7 @@ const Planner = (() => {
 
   const INCOME_TYPE_LABELS = {
     salary: '💼 Salary / Paycheck',
+    hourly: '⏱ Hourly Wage',
     contract: '📝 Contract Work',
     tips: '💵 Tips / Variable'
   };
@@ -379,12 +387,19 @@ const Planner = (() => {
 
     tbody.innerHTML = sources.map(s => {
       const monthly = monthlyIncomeForSource(s, calMonth);
-      const typeIcon = s.type === 'salary' ? '💼' : s.type === 'contract' ? '📝' : '💵';
-      const typeLabel = s.type === 'salary' ? 'Salary' : s.type === 'contract' ? 'Contract' : 'Tips';
+      const ICONS = { salary: '💼', hourly: '⏱', contract: '📝', tips: '💵' };
+      const LABELS = { salary: 'Salary', hourly: 'Hourly', contract: 'Contract', tips: 'Tips' };
+      const typeIcon = ICONS[s.type] || '💰';
+      const typeLabel = LABELS[s.type] || s.type;
       const detailParts = [];
 
       if (s.type === 'salary') {
         detailParts.push(`$${parseFloat(s.amount).toFixed(2)} / ${s.frequency}`);
+      } else if (s.type === 'hourly') {
+        detailParts.push(`$${parseFloat(s.hourlyRate || 0).toFixed(2)}/hr`);
+        detailParts.push(`${s.hoursPerWeek || 0} hrs/wk`);
+        const nf = parseFloat(s.netFactor != null ? s.netFactor : 1);
+        if (nf < 0.999) detailParts.push(`Net ${(nf * 100).toFixed(0)}%`);
       } else if (s.type === 'contract') {
         detailParts.push(`$${parseFloat(s.avgAmount).toFixed(2)} × ${s.monthlyOccurrences}/mo`);
       } else if (s.type === 'tips') {
@@ -702,6 +717,7 @@ const Planner = (() => {
 
   function updateIncomeFormFields(type, source) {
     document.getElementById('income-salary-fields').classList.toggle('hidden', type !== 'salary');
+    document.getElementById('income-hourly-fields').classList.toggle('hidden', type !== 'hourly');
     document.getElementById('income-contract-fields').classList.toggle('hidden', type !== 'contract');
     document.getElementById('income-tips-fields').classList.toggle('hidden', type !== 'tips');
 
@@ -709,6 +725,12 @@ const Planner = (() => {
       if (type === 'salary') {
         document.getElementById('income-salary-amount').value = source.amount || '';
         document.getElementById('income-salary-frequency').value = source.frequency || 'biweekly';
+      } else if (type === 'hourly') {
+        document.getElementById('income-hourly-rate').value = source.hourlyRate || '';
+        document.getElementById('income-hourly-hours').value = source.hoursPerWeek || '';
+        const nf = source.netFactor != null ? source.netFactor : 1;
+        document.getElementById('income-hourly-net-factor').value = nf;
+        document.getElementById('income-hourly-net-factor').dispatchEvent(new Event('input'));
       } else if (type === 'contract') {
         document.getElementById('income-contract-amount').value = source.avgAmount || '';
         document.getElementById('income-contract-frequency').value = source.monthlyOccurrences || '';
@@ -738,6 +760,11 @@ const Planner = (() => {
     if (type === 'salary') {
       source.amount = parseFloat(document.getElementById('income-salary-amount').value) || 0;
       source.frequency = document.getElementById('income-salary-frequency').value;
+    } else if (type === 'hourly') {
+      source.hourlyRate = parseFloat(document.getElementById('income-hourly-rate').value) || 0;
+      source.hoursPerWeek = parseFloat(document.getElementById('income-hourly-hours').value) || 0;
+      source.netFactor = parseFloat(document.getElementById('income-hourly-net-factor').value);
+      if (isNaN(source.netFactor) || source.netFactor <= 0) source.netFactor = 1;
     } else if (type === 'contract') {
       source.avgAmount = parseFloat(document.getElementById('income-contract-amount').value) || 0;
       source.monthlyOccurrences = parseFloat(document.getElementById('income-contract-frequency').value) || 0;
@@ -808,6 +835,83 @@ const Planner = (() => {
     renderProjection();
   }
 
+  /* ---- Wage Scenario Calculator ---- */
+
+  /**
+   * Given a known current situation and a proposed new rate/hours,
+   * compute the projected net monthly income.
+   * @param {number} currentRate  - current hourly rate
+   * @param {number} currentHours - current hours per week
+   * @param {number} knownNetMonthly - actual known net monthly income (take-home)
+   * @param {number} newRate  - proposed new hourly rate
+   * @param {number} newHours - proposed new hours per week
+   */
+  function computeWageScenario(currentRate, currentHours, knownNetMonthly, newRate, newHours) {
+    const WEEKLY_TO_MONTHLY = 52 / 12;
+    const currentGrossMonthly = currentRate * currentHours * WEEKLY_TO_MONTHLY;
+    const impliedNetFactor = currentGrossMonthly > 0 ? (knownNetMonthly / currentGrossMonthly) : 1;
+    const capped = Math.min(Math.max(impliedNetFactor, 0.01), 1.5); // sanity-cap
+    const newGrossMonthly = newRate * newHours * WEEKLY_TO_MONTHLY;
+    const newNetMonthly = newGrossMonthly * capped;
+    const annualGross = newGrossMonthly * 12;
+    const annualNet = newNetMonthly * 12;
+    const monthlyDiff = newNetMonthly - (knownNetMonthly || 0);
+    const annualDiff = monthlyDiff * 12;
+    return {
+      currentGrossMonthly,
+      currentNetMonthly: knownNetMonthly,
+      impliedNetFactor: capped,
+      newGrossMonthly,
+      newNetMonthly,
+      annualGross,
+      annualNet,
+      monthlyDiff,
+      annualDiff
+    };
+  }
+
+  function renderWageCalculator() {
+    const el = document.getElementById('wage-calc-result');
+    if (!el) return;
+
+    const curRate  = parseFloat(document.getElementById('wage-current-rate')?.value) || 0;
+    const curHours = parseFloat(document.getElementById('wage-current-hours')?.value) || 0;
+    const curNet   = parseFloat(document.getElementById('wage-current-net')?.value) || 0;
+    const newRate  = parseFloat(document.getElementById('wage-new-rate')?.value) || curRate;
+    const newHours = parseFloat(document.getElementById('wage-new-hours')?.value) || curHours;
+
+    if (curRate <= 0 || curHours <= 0) {
+      el.innerHTML = '<p style="color:var(--clr-text-muted)">Enter your current rate and hours to see projections.</p>';
+      return;
+    }
+
+    const r = computeWageScenario(curRate, curHours, curNet, newRate || curRate, newHours || curHours);
+    const pctChange = r.currentNetMonthly > 0 ? ((r.monthlyDiff / r.currentNetMonthly) * 100) : 0;
+    const arrow = r.monthlyDiff >= 0 ? '▲' : '▼';
+    const diffColor = r.monthlyDiff >= 0 ? 'var(--clr-income)' : 'var(--clr-expense)';
+
+    el.innerHTML = `
+      <div class="wage-scenario-grid">
+        <div class="wage-scenario-card">
+          <div class="wage-label">Current Net/Month</div>
+          <div class="wage-value">${fmt(r.currentNetMonthly)}</div>
+          <div class="wage-sub">Gross: ${fmt(r.currentGrossMonthly)} · Net factor: ${(r.impliedNetFactor * 100).toFixed(1)}%</div>
+        </div>
+        <div class="wage-scenario-card wage-scenario-new">
+          <div class="wage-label">Projected Net/Month at new rate</div>
+          <div class="wage-value">${fmt(r.newNetMonthly)}</div>
+          <div class="wage-sub">Gross: ${fmt(r.newGrossMonthly)} · Annual net: ${fmt(r.annualNet)}</div>
+        </div>
+        <div class="wage-scenario-card wage-scenario-diff" style="border-color:${diffColor}">
+          <div class="wage-label">Monthly Difference</div>
+          <div class="wage-value" style="color:${diffColor}">${arrow} ${fmt(Math.abs(r.monthlyDiff))}</div>
+          <div class="wage-sub">Annual: ${arrow} ${fmt(Math.abs(r.annualDiff))} (${pctChange >= 0 ? '+' : ''}${pctChange.toFixed(1)}%)</div>
+        </div>
+      </div>`;
+  }
+
+  function fmt(v) { return '$' + (v || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
   /* ---- Full Tab Render ---- */
 
   function render() {
@@ -839,10 +943,12 @@ const Planner = (() => {
     getMonthlyBudgetTotal, getScenarioExpenseForMonth,
     projectSavings, getIncomeComparison, getIncomeBreakdown,
     maxAffordableExpense,
+    computeWageScenario,
     // Rendering
     render, renderBudgetBaseline, renderIncomeSources, renderScenarioExpenses, renderProjection,
     openIncomeForm, saveIncomeFromForm, updateIncomeFormFields,
     openExpenseForm, saveExpenseFromForm,
+    renderWageCalculator,
     // Constants
     INCOME_TYPE_LABELS, MONTH_NAMES, formatMonthLabel
   };

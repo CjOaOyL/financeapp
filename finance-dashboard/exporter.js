@@ -22,6 +22,37 @@ const Exporter = (() => {
     downloadFile('transactions_export.csv', csv, 'text/csv');
   }
 
+  /**
+   * Export a full JSON backup of all finance data:
+   * transactions, budget, and planner settings.
+   * Can be restored via Restore Backup in the header.
+   */
+  function exportBackup() {
+    const PREFIX = 'finance_dashboard_';
+    const backup = {
+      _meta: {
+        version: 2,
+        exportDate: new Date().toISOString(),
+        app: 'Personal Finance Dashboard'
+      }
+    };
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(PREFIX)) {
+        try {
+          backup[key] = JSON.parse(localStorage.getItem(key));
+        } catch {
+          backup[key] = localStorage.getItem(key);
+        }
+      }
+    }
+
+    const json = JSON.stringify(backup, null, 2);
+    const date = new Date().toISOString().slice(0, 10);
+    downloadFile(`finance_backup_${date}.json`, json, 'application/json');
+  }
+
   /* ============================================
      PDF Report — charts + summary tables
      ============================================ */
@@ -61,6 +92,9 @@ const Exporter = (() => {
       const monthlyData = Analysis.getMonthlyBreakdown();
       const recommendations = Analysis.getSavingsRecommendations();
       const budget = DataManager.getBudget();
+      const plannerIncome = (typeof Planner !== 'undefined') ? Planner.getIncomeSources() : [];
+      const plannerExpenses = (typeof Planner !== 'undefined') ? Planner.getScenarioExpenses() : [];
+      const plannerProjection = (typeof Planner !== 'undefined') ? Planner.projectSavings(12, 0) : [];
       const now = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
       const period = monthlyData.length > 0
         ? `${monthlyData[0].month} to ${monthlyData[monthlyData.length - 1].month}`
@@ -216,7 +250,101 @@ const Exporter = (() => {
         [0.28, 0.20, 0.17, 0.20, 0.15]
       );
 
-      // ===== PAGE 3: Trends =====
+      // ===== PAGE 3: Income Analysis =====
+      pdf.addPage();
+      y = margin;
+      addSectionHeader(pdf, 'Income Analysis', margin, y, pageW);
+      y += 14;
+
+      // Income monthly table
+      const incomeMonths = monthlyData.filter(m => m.income > 0);
+      if (incomeMonths.length > 0) {
+        const totalInc = incomeMonths.reduce((s, m) => s + m.income, 0);
+        const avgMonthlyInc = totalInc / incomeMonths.length;
+        const maxInc = incomeMonths.reduce((a, b) => a.income > b.income ? a : b);
+        const minInc = incomeMonths.reduce((a, b) => a.income < b.income ? a : b);
+        const variance = incomeMonths.reduce((s, m) => s + Math.pow(m.income - avgMonthlyInc, 2), 0) / incomeMonths.length;
+        const stdDev = Math.sqrt(variance);
+        const cv = avgMonthlyInc > 0 ? ((stdDev / avgMonthlyInc) * 100) : 0;
+        const stabilityLabel = cv < 10 ? 'Very Stable' : cv < 25 ? 'Stable' : cv < 50 ? 'Moderate Variability' : 'High Variability';
+        const stabilityColor = cv < 10 ? CLR.accent : cv < 25 ? [16, 185, 129] : cv < 50 ? [245, 158, 11] : CLR.danger;
+
+        // Income KPI cards
+        const incKpis = [
+          { label: 'Total Income', value: `$${totalInc.toFixed(2)}`, color: CLR.accent },
+          { label: 'Avg Monthly Income', value: `$${avgMonthlyInc.toFixed(2)}`, color: CLR.accent },
+          { label: 'Peak Month', value: `${maxInc.month}: $${maxInc.income.toFixed(2)}`, color: CLR.dark },
+          { label: 'Lowest Month', value: `${minInc.month}: $${minInc.income.toFixed(2)}`, color: CLR.gray },
+          { label: 'Std Deviation', value: `$${stdDev.toFixed(2)}`, color: CLR.gray },
+          { label: 'Stability', value: `${stabilityLabel} (${cv.toFixed(0)}% CV)`, color: stabilityColor }
+        ];
+        const iKpiW = (contentW - 8) / 3;
+        const iKpiH = 18;
+        for (let i = 0; i < incKpis.length; i++) {
+          const col = i % 3;
+          const row = Math.floor(i / 3);
+          const kx = margin + col * (iKpiW + 4);
+          const ky = y + row * (iKpiH + 3);
+          pdf.setFillColor(249, 250, 251);
+          pdf.setDrawColor(...CLR.lightGray);
+          pdf.roundedRect(kx, ky, iKpiW, iKpiH, 2, 2, 'FD');
+          pdf.setFontSize(7);
+          pdf.setFont('helvetica', 'normal');
+          pdf.setTextColor(...CLR.gray);
+          pdf.text(incKpis[i].label, kx + iKpiW / 2, ky + 6, { align: 'center' });
+          pdf.setFontSize(9);
+          pdf.setFont('helvetica', 'bold');
+          pdf.setTextColor(...incKpis[i].color);
+          pdf.text(incKpis[i].value, kx + iKpiW / 2, ky + 13, { align: 'center' });
+        }
+        y += 2 * (iKpiH + 3) + 6;
+
+        // Income vs expenses ratio table
+        if (checkPageBreak(pdf, y, 10 + monthlyData.length * 5.5, margin)) { y = margin + 8; }
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'bold');
+        pdf.setTextColor(...CLR.dark);
+        pdf.text('Monthly Income vs Expenses', margin, y);
+        y += 3;
+        y = drawTable(pdf, y, margin, contentW,
+          ['Month', 'Income', 'Expenses', 'Net', 'Savings Rate', 'Inc/Exp Ratio'],
+          monthlyData.map(m => {
+            const net = m.income - m.expenses;
+            const savRate = m.income > 0 ? ((net / m.income) * 100) : 0;
+            const ratio = m.expenses > 0 ? (m.income / m.expenses) : 0;
+            return [
+              m.month,
+              `$${m.income.toFixed(2)}`,
+              `$${m.expenses.toFixed(2)}`,
+              { text: `$${net.toFixed(2)}`, color: net >= 0 ? CLR.accent : CLR.danger },
+              { text: `${savRate.toFixed(0)}%`, color: savRate >= 20 ? CLR.accent : savRate >= 0 ? CLR.dark : CLR.danger },
+              { text: ratio.toFixed(2), color: ratio >= 1 ? CLR.accent : CLR.danger }
+            ];
+          }),
+          [0.15, 0.18, 0.18, 0.18, 0.16, 0.15]
+        );
+        y += 4;
+
+        // Trend chart
+        if (chartImages['chart-trends-line']) {
+          if (checkPageBreak(pdf, y, 70, margin)) { y = margin + 8; }
+          pdf.setFontSize(10);
+          pdf.setFont('helvetica', 'bold');
+          pdf.setTextColor(...CLR.dark);
+          pdf.text('Spending & Income Trend', margin, y);
+          y += 3;
+          const imgH = addChartImage(pdf, chartImages['chart-trends-line'], margin, y, contentW, 55);
+          y += imgH + 6;
+        }
+      } else {
+        pdf.setFontSize(9);
+        pdf.setFont('helvetica', 'normal');
+        pdf.setTextColor(...CLR.gray);
+        pdf.text('No income data in transactions. Import statements with income entries to see analysis.', margin, y);
+        y += 8;
+      }
+
+      // ===== PAGE 4: Trends =====
       pdf.addPage();
       y = margin;
       addSectionHeader(pdf, 'Spending Trends', margin, y, pageW);
@@ -404,6 +532,116 @@ const Exporter = (() => {
         }
       }
 
+      // ===== PAGE 6: Financial Planner =====
+      if (plannerIncome.length > 0 || plannerExpenses.length > 0 || plannerProjection.length > 0) {
+        pdf.addPage();
+        y = margin;
+        addSectionHeader(pdf, 'Financial Planner', margin, y, pageW);
+        y += 14;
+
+        // Income Sources table
+        if (plannerIncome.length > 0) {
+          pdf.setFontSize(10);
+          pdf.setFont('helvetica', 'bold');
+          pdf.setTextColor(...CLR.dark);
+          pdf.text('Planned Income Sources', margin, y);
+          y += 3;
+          const typeLabels = { salary: 'Salary', hourly: 'Hourly', contract: 'Contract', tips: 'Tips' };
+          y = drawTable(pdf, y, margin, contentW,
+            ['Name', 'Type', 'Details', 'Monthly Est.', 'Status'],
+            plannerIncome.map(s => {
+              let detail = '';
+              if (s.type === 'salary') detail = `$${parseFloat(s.amount || 0).toFixed(2)}/${s.frequency || 'mo'}`;
+              else if (s.type === 'hourly') detail = `$${parseFloat(s.hourlyRate || 0).toFixed(2)}/hr × ${s.hoursPerWeek || 0}h/wk`;
+              else if (s.type === 'contract') detail = `$${parseFloat(s.avgAmount || 0).toFixed(2)} × ${s.monthlyOccurrences || 0}/mo`;
+              else if (s.type === 'tips') detail = `$${s.minPerShift || 0}–$${s.maxPerShift || 0}/shift × ${s.shiftsPerMonth || 0}/mo`;
+              const calMonth = new Date().getMonth();
+              const monthly = (typeof Planner !== 'undefined') ? Planner.monthlyIncomeForSource(s, calMonth) : 0;
+              return [
+                s.name,
+                typeLabels[s.type] || s.type,
+                detail,
+                { text: `$${monthly.toFixed(2)}`, color: CLR.accent },
+                s.enabled ? 'Active' : 'Disabled'
+              ];
+            }),
+            [0.30, 0.14, 0.30, 0.14, 0.12]
+          );
+          y += 4;
+        }
+
+        // Scenario Expenses table
+        if (plannerExpenses.length > 0) {
+          if (checkPageBreak(pdf, y, 15 + plannerExpenses.length * 5.5, margin)) { y = margin + 8; }
+          pdf.setFontSize(10);
+          pdf.setFont('helvetica', 'bold');
+          pdf.setTextColor(...CLR.dark);
+          pdf.text('Scenario Expenses', margin, y);
+          y += 3;
+          y = drawTable(pdf, y, margin, contentW,
+            ['Name', 'Category', 'Monthly', 'Starts', 'Ends', 'Status'],
+            plannerExpenses.map(e => [
+              e.name,
+              e.category || 'Other',
+              { text: `$${parseFloat(e.amount || 0).toFixed(2)}`, color: CLR.danger },
+              e.startMonth === 0 ? 'Now' : `Month ${e.startMonth}`,
+              e.endMonth == null ? 'Ongoing' : `Month ${e.endMonth}`,
+              e.enabled ? 'Active' : 'Disabled'
+            ]),
+            [0.30, 0.18, 0.14, 0.12, 0.12, 0.14]
+          );
+          y += 4;
+        }
+
+        // Projection table (first 12 months)
+        if (plannerProjection.length > 0) {
+          if (checkPageBreak(pdf, y, 15 + plannerProjection.length * 5.5, margin)) { y = margin + 8; }
+          pdf.setFontSize(10);
+          pdf.setFont('helvetica', 'bold');
+          pdf.setTextColor(...CLR.dark);
+          pdf.text('12-Month Savings Projection', margin, y);
+          y += 3;
+          y = drawTable(pdf, y, margin, contentW,
+            ['Month', 'Income', 'Budget Exp.', 'Scenario Exp.', 'Net', 'Cumulative'],
+            plannerProjection.map(p => {
+              const net = p.netSavings;
+              return [
+                p.monthLabel,
+                `$${(p.income || 0).toFixed(2)}`,
+                `$${(p.budgetExpenses || 0).toFixed(2)}`,
+                `$${(p.scenarioExpenses || 0).toFixed(2)}`,
+                { text: `$${net.toFixed(2)}`, color: net >= 0 ? CLR.accent : CLR.danger },
+                { text: `$${(p.cumulativeSavings || 0).toFixed(2)}`, color: (p.cumulativeSavings || 0) >= 0 ? CLR.accent : CLR.danger }
+              ];
+            }),
+            [0.16, 0.16, 0.16, 0.16, 0.16, 0.20]
+          );
+          y += 4;
+
+          // Planner charts
+          if (chartImages['chart-planner-savings']) {
+            if (checkPageBreak(pdf, y, 65, margin)) { y = margin + 8; }
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setTextColor(...CLR.dark);
+            pdf.text('Savings Projection', margin, y);
+            y += 3;
+            const imgH = addChartImage(pdf, chartImages['chart-planner-savings'], margin, y, contentW, 55);
+            y += imgH + 4;
+          }
+          if (chartImages['chart-planner-income-compare']) {
+            if (checkPageBreak(pdf, y, 65, margin)) { y = margin + 8; }
+            pdf.setFontSize(10);
+            pdf.setFont('helvetica', 'bold');
+            pdf.setTextColor(...CLR.dark);
+            pdf.text('Historical vs Projected Income', margin, y);
+            y += 3;
+            const imgH = addChartImage(pdf, chartImages['chart-planner-income-compare'], margin, y, contentW, 55);
+            y += imgH + 4;
+          }
+        }
+      }
+
       // Footer on every page
       const totalPages = pdf.internal.getNumberOfPages();
       for (let p = 1; p <= totalPages; p++) {
@@ -440,7 +678,7 @@ const Exporter = (() => {
    */
   async function ensureChartsRendered() {
     // Temporarily show each tab so Chart.js populates the canvases
-    const tabsToRender = ['overview', 'categories', 'trends', 'merchants', 'savings', 'budget'];
+    const tabsToRender = ['overview', 'categories', 'trends', 'merchants', 'savings', 'budget', 'planner'];
     const currentActive = document.querySelector('.nav-btn.active');
     const currentTab = currentActive ? currentActive.dataset.tab : 'import';
 
@@ -468,7 +706,8 @@ const Exporter = (() => {
       'chart-trends-line', 'chart-trends-stacked', 'chart-trends-delta',
       'chart-merchants-bar',
       'chart-savings-waterfall',
-      'chart-budget-comparison'
+      'chart-budget-comparison',
+      'chart-planner-savings', 'chart-planner-income-compare', 'chart-planner-breakdown'
     ];
 
     const images = {};
@@ -669,5 +908,5 @@ const Exporter = (() => {
     return div.innerHTML;
   }
 
-  return { exportCSV, exportPDFReport };
+  return { exportCSV, exportPDFReport, exportBackup };
 })();

@@ -1174,3 +1174,35 @@ tr.income-disabled:hover td {
   }
 }
 
+/* ---- Wage Scenario Calculator ---- */
+.wage-scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: .6rem;
+}
+.wage-scenario-card {
+  background: var(--clr-bg-input, #1a1d27);
+  border: 1px solid var(--clr-border, #2d3244);
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+}
+.wage-scenario-new { border-color: var(--clr-income, #10b981); }
+.wage-scenario-diff { border-width: 2px; }
+.wage-label {
+  font-size: .78rem;
+  color: var(--clr-text-muted, #8b8fa3);
+  margin-bottom: .3rem;
+}
+.wage-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--clr-text, #e4e6ef);
+}
+.wage-sub {
+  font-size: .75rem;
+  color: var(--clr-text-muted, #8b8fa3);
+  margin-top: .2rem;
+}
+
+

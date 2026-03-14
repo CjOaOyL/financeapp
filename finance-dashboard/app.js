@@ -58,6 +58,12 @@
   /* ---- Header Actions ---- */
   document.getElementById('btn-export-report').addEventListener('click', () => Exporter.exportPDFReport());
   document.getElementById('btn-export-csv').addEventListener('click', () => Exporter.exportCSV());
+  document.getElementById('btn-export-backup').addEventListener('click', () => Exporter.exportBackup());
+  document.getElementById('backup-restore-input').addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) Importer.restoreBackup(file);
+    e.target.value = ''; // reset so the same file can be re-selected
+  });
   document.getElementById('btn-clear-data').addEventListener('click', () => {
     if (confirm('Delete all transaction data and budget targets? This cannot be undone.')) {
       DataManager.clearAll();
@@ -858,6 +864,84 @@
   // Income type selector — show/hide relevant fields
   document.getElementById('income-type').addEventListener('change', (e) => {
     Planner.updateIncomeFormFields(e.target.value, null);
+  });
+
+  // Hourly income auto-compute
+  function updateHourlyComputed() {
+    const rate  = parseFloat(document.getElementById('income-hourly-rate')?.value) || 0;
+    const hours = parseFloat(document.getElementById('income-hourly-hours')?.value) || 0;
+    const nf    = parseFloat(document.getElementById('income-hourly-net-factor')?.value) || 1;
+    const monthly = rate * hours * (52 / 12) * nf;
+    const el = document.getElementById('income-hourly-computed');
+    if (el) el.value = monthly > 0 ? `$${monthly.toFixed(2)}/month` : '—';
+  }
+  ['income-hourly-rate', 'income-hourly-hours', 'income-hourly-net-factor'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', updateHourlyComputed);
+  });
+
+  // Wage Scenario Calculator
+  const wageInputIds = ['wage-current-rate', 'wage-current-hours', 'wage-current-net', 'wage-new-rate', 'wage-new-hours'];
+  wageInputIds.forEach(id => {
+    document.getElementById(id)?.addEventListener('input', () => {
+      // auto-populate net-factor hint into the hourly fields when wage calc is filled
+      const newRateEl = document.getElementById('wage-new-rate');
+      const curRateEl = document.getElementById('wage-current-rate');
+      const curHoursEl = document.getElementById('wage-current-hours');
+      const curNetEl = document.getElementById('wage-current-net');
+      if (curRateEl?.value && curHoursEl?.value && curNetEl?.value) {
+        const r = Planner.computeWageScenario(
+          parseFloat(curRateEl.value), parseFloat(curHoursEl.value), parseFloat(curNetEl.value),
+          parseFloat(newRateEl?.value || curRateEl.value), parseFloat(document.getElementById('wage-new-hours')?.value || curHoursEl.value)
+        );
+        const nfEl = document.getElementById('income-hourly-net-factor');
+        if (nfEl && r.impliedNetFactor > 0) {
+          nfEl.value = r.impliedNetFactor.toFixed(4);
+        }
+      }
+    });
+  });
+
+  document.getElementById('btn-wage-calc')?.addEventListener('click', () => Planner.renderWageCalculator());
+
+  document.getElementById('btn-wage-use-as-income')?.addEventListener('click', () => {
+    const curRate  = parseFloat(document.getElementById('wage-current-rate')?.value) || 0;
+    const curHours = parseFloat(document.getElementById('wage-current-hours')?.value) || 0;
+    const curNet   = parseFloat(document.getElementById('wage-current-net')?.value) || 0;
+    const newRate  = parseFloat(document.getElementById('wage-new-rate')?.value) || curRate;
+    const newHours = parseFloat(document.getElementById('wage-new-hours')?.value) || curHours;
+
+    if (newRate <= 0 || newHours <= 0) {
+      alert('Enter a valid rate and hours before creating an income source.');
+      return;
+    }
+
+    const r = Planner.computeWageScenario(curRate, curHours, curNet, newRate, newHours);
+    const name = curRate !== newRate || curHours !== newHours
+      ? `Hourly @ $${newRate.toFixed(2)}/hr (×${newHours}h/wk)`
+      : `Hourly @ $${newRate.toFixed(2)}/hr`;
+
+    Planner.addIncomeSource({
+      name,
+      type: 'hourly',
+      hourlyRate: newRate,
+      hoursPerWeek: newHours,
+      netFactor: r.impliedNetFactor,
+      enabled: true
+    });
+
+    // Navigate to planner + refresh
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    const plannerBtn = document.querySelector('.nav-btn[data-tab="planner"]');
+    if (plannerBtn) plannerBtn.click();
+
+    alert(`✅ Added income source "${name}"\n$${r.newNetMonthly.toFixed(2)}/month net (${(r.impliedNetFactor * 100).toFixed(1)}% net factor)`);
+  });
+
+  // Wage calculator link from hourly income form
+  document.getElementById('income-hourly-calc-link')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('wage-calculator-card')?.scrollIntoView({ behavior: 'smooth' });
   });
 
   // Add Scenario Expense button

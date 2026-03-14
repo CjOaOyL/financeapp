@@ -22,9 +22,15 @@
     <div class="header-actions">
       <button id="btn-export-report" class="btn btn-accent" title="Export full analysis report as PDF">📄 Export PDF Report</button>
       <button id="btn-export-csv" class="btn btn-secondary" title="Export transactions as CSV">⬇ Export CSV</button>
+      <button id="btn-export-backup" class="btn btn-secondary" title="Export full backup (transactions + budget + planner)">💾 Backup</button>
+      <label class="btn btn-secondary" title="Restore a previously saved backup" style="cursor:pointer;margin:0">
+        📂 Restore Backup
+        <input type="file" id="backup-restore-input" accept=".json" style="display:none" />
+      </label>
       <button id="btn-clear-data" class="btn btn-danger" title="Clear all data">🗑 Clear Data</button>
     </div>
   </header>
+  <div id="backup-restore-status" class="status-text" style="text-align:center;padding:.3rem 1.5rem;min-height:1.4em"></div>
 
   <nav id="main-nav">
     <button class="nav-btn active" data-tab="import">📥 Import Data</button>
@@ -463,9 +469,28 @@
           <label>Type:
             <select id="income-type">
               <option value="salary">💼 Salary / Paycheck</option>
+              <option value="hourly">⏱ Hourly Wage</option>
               <option value="contract">📝 Contract Work</option>
               <option value="tips">💵 Tips / Variable</option>
             </select>
+          </label>
+        </div>
+
+        <!-- Hourly fields -->
+        <div id="income-hourly-fields" class="planner-form-grid hidden">
+          <label>Hourly Rate ($):
+            <input type="number" id="income-hourly-rate" step="0.01" min="0" placeholder="e.g. 25.00" />
+          </label>
+          <label>Hours per Week:
+            <input type="number" id="income-hourly-hours" step="0.5" min="0" placeholder="e.g. 40" />
+          </label>
+          <label title="What fraction of gross pay you take home (e.g. 0.75 = 75%). Leave at 1.0 if amount is already net.">
+            Net Factor (gross→net ratio):
+            <input type="number" id="income-hourly-net-factor" step="0.01" min="0.01" max="1.5" value="1" placeholder="0.75" />
+            <small style="color:var(--clr-text-muted)">Use the <a href="#" id="income-hourly-calc-link">Wage Calculator</a> below to compute this automatically.</small>
+          </label>
+          <label>Estimated Monthly Net (computed):
+            <input type="text" id="income-hourly-computed" readonly placeholder="—" style="background:var(--clr-bg-card);cursor:default" />
           </label>
         </div>
 
@@ -544,6 +569,50 @@
         </thead>
         <tbody id="planner-income-tbody"></tbody>
       </table>
+    </div>
+
+    </div>
+
+    <!-- Wage Scenario Calculator -->
+    <div class="card" id="wage-calculator-card">
+      <div class="card-header-row">
+        <h2>⏱ Wage Scenario Calculator</h2>
+        <span class="info-text" style="font-size:.85rem">Estimate your take-home pay at a new rate or different hours.</span>
+      </div>
+      <p class="info-text">Enter your current situation to calibrate the tax/deduction factor, then adjust rate or hours to project your new income.</p>
+      <div class="planner-form-grid" style="align-items:end">
+        <fieldset style="border:1px solid var(--clr-border);border-radius:8px;padding:.8rem 1rem">
+          <legend style="font-weight:600;padding:0 .4rem">📍 Current Situation</legend>
+          <div class="planner-form-grid">
+            <label>Current Hourly Rate ($):
+              <input type="number" id="wage-current-rate" step="0.01" min="0" placeholder="e.g. 25.00" />
+            </label>
+            <label>Current Hours/Week:
+              <input type="number" id="wage-current-hours" step="0.5" min="0" placeholder="e.g. 40" />
+            </label>
+            <label title="Your actual take-home pay per month (after taxes and deductions). This is used to compute your net factor.">
+              Known Net Monthly Take-home ($):
+              <input type="number" id="wage-current-net" step="0.01" min="0" placeholder="e.g. 3200.00" />
+            </label>
+          </div>
+        </fieldset>
+        <fieldset style="border:1px solid var(--clr-border);border-radius:8px;padding:.8rem 1rem">
+          <legend style="font-weight:600;padding:0 .4rem">🎯 New Scenario</legend>
+          <div class="planner-form-grid">
+            <label>New Hourly Rate ($) <small style="color:var(--clr-text-muted)">(leave blank to keep current)</small>:
+              <input type="number" id="wage-new-rate" step="0.01" min="0" placeholder="same as current" />
+            </label>
+            <label>New Hours/Week <small style="color:var(--clr-text-muted)">(leave blank to keep current)</small>:
+              <input type="number" id="wage-new-hours" step="0.5" min="0" placeholder="same as current" />
+            </label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="btn-row" style="margin-top:.8rem">
+        <button id="btn-wage-calc" class="btn btn-primary">📊 Calculate</button>
+        <button id="btn-wage-use-as-income" class="btn btn-accent" title="Create an hourly income source from the new scenario values">➕ Add as Income Source</button>
+      </div>
+      <div id="wage-calc-result" style="margin-top:1rem"></div>
     </div>
 
     <!-- Scenario Expenses -->
