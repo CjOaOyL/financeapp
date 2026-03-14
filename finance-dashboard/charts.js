@@ -13,6 +13,23 @@ const Charts = (() => {
 
   const chartInstances = {};
 
+  /* ---- Helpers ---- */
+  /** Simple rolling average; returns array of same length with nulls for positions without full window */
+  function rollingAverage(arr, windowSize) {
+    if (!Array.isArray(arr) || windowSize <= 1) return arr.map(v => v == null ? null : v);
+    const out = new Array(arr.length).fill(null);
+    let sum = 0;
+    for (let i = 0; i < arr.length; i++) {
+      const v = typeof arr[i] === 'number' ? arr[i] : 0;
+      sum += v;
+      if (i >= windowSize) sum -= (typeof arr[i - windowSize] === 'number' ? arr[i - windowSize] : 0);
+      if (i >= windowSize - 1) {
+        out[i] = sum / windowSize;
+      }
+    }
+    return out;
+  }
+
   /**
    * Render a line chart from filtered transactions grouped by date.
    * Shows daily expense total as a line and income as a separate line.
@@ -39,11 +56,13 @@ const Charts = (() => {
     // Merge and sort all dates
     const allDates = [...new Set([...Object.keys(expenseByDate), ...Object.keys(incomeByDate)])].sort();
 
-    // Build cumulative running total
+    // Build cumulative running total and daily series
     let cumExpense = 0;
-    const expenseData = allDates.map(d => { cumExpense += (expenseByDate[d] || 0); return cumExpense; });
+    const expenseDaily = allDates.map(d => expenseByDate[d] || 0);
+    const expenseData = expenseDaily.map(v => { cumExpense += v; return cumExpense; });
     let cumIncome = 0;
-    const incomeData = allDates.map(d => { cumIncome += (incomeByDate[d] || 0); return cumIncome; });
+    const incomeDaily = allDates.map(d => incomeByDate[d] || 0);
+    const incomeData = incomeDaily.map(v => { cumIncome += v; return cumIncome; });
 
     // Format date labels
     const labels = allDates.map(d => {
@@ -76,6 +95,27 @@ const Charts = (() => {
         pointHoverRadius: 6
       });
     }
+
+    // Add rolling average of expenses (30-day default)
+    try {
+      const rollDays = 30;
+      const expenseRoll = rollingAverage(expenseDaily, rollDays);
+      // Only include rolling series if there's enough data
+      if (expenseRoll.some(v => v != null)) {
+        datasets.push({
+          label: `${rollDays}-day Rolling Avg (Expenses)`,
+          data: expenseRoll,
+          borderColor: '#f59e0b',
+          backgroundColor: 'rgba(245,158,11,0.06)',
+          fill: false,
+          tension: 0.3,
+          borderDash: [4,3],
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          yAxisID: undefined
+        });
+      }
+    } catch (e) { /* non-fatal */ }
 
     getOrCreate('chart-import-line', {
       type: 'line',
@@ -212,21 +252,44 @@ const Charts = (() => {
   /* ---- Trend Charts ---- */
 
   function renderTrendsLine(monthlyData) {
+    const labels = monthlyData.map(d => d.month);
+    const spending = monthlyData.map(d => d.expenses);
+
+    const datasets = [
+      {
+        label: 'Monthly Spending',
+        data: spending,
+        borderColor: '#6366f1',
+        backgroundColor: 'rgba(99,102,241,.15)',
+        fill: true,
+        tension: .3,
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }
+    ];
+
+    try {
+      const rollWindow = 3; // 3-month rolling average
+      const roll = rollingAverage(spending, rollWindow);
+      if (roll.some(v => v != null)) {
+        datasets.push({
+          type: 'line',
+          label: `${rollWindow}-mo Rolling Avg (Spending)`,
+          data: roll,
+          borderColor: '#f59e0b',
+          backgroundColor: 'rgba(245,158,11,0.06)',
+          borderDash: [4,2],
+          fill: false,
+          tension: .3,
+          pointRadius: 0,
+          spanGaps: true
+        });
+      }
+    } catch (e) { /* non-fatal */ }
+
     getOrCreate('chart-trends-line', {
       type: 'line',
-      data: {
-        labels: monthlyData.map(d => d.month),
-        datasets: [{
-          label: 'Monthly Spending',
-          data: monthlyData.map(d => d.expenses),
-          borderColor: '#6366f1',
-          backgroundColor: 'rgba(99,102,241,.15)',
-          fill: true,
-          tension: .3,
-          pointRadius: 5,
-          pointHoverRadius: 7
-        }]
-      },
+      data: { labels, datasets },
       options: defaultOptions
     });
   }
@@ -425,54 +488,79 @@ const Charts = (() => {
    * Income comparison: historical (bar) + projected (line)
    */
   function renderPlannerIncomeComparison(comparison) {
-    const { histMonths, histIncome, projMonths, projIncome } = comparison;
+    const { histMonths = [], histIncome = [], projMonths = [], projIncome = [] } = comparison || {};
 
     // Merge all month labels in order
-    const allMonths = [...new Set([...histMonths, ...projMonths])].sort();
+    const allMonths = [...new Set([...(histMonths || []), ...(projMonths || [])])].sort();
     const histMap = {};
-    histMonths.forEach((m, i) => histMap[m] = histIncome[i]);
+    (histMonths || []).forEach((m, i) => histMap[m] = histIncome[i]);
     const projMap = {};
-    projMonths.forEach((m, i) => projMap[m] = projIncome[i]);
+    (projMonths || []).forEach((m, i) => projMap[m] = projIncome[i]);
 
     const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const labels = allMonths.map(ym => {
       const [y, m] = ym.split('-');
-      return MONTH_NAMES[parseInt(m) - 1] + ' ' + y;
+      return MONTH_NAMES[parseInt(m, 10) - 1] + ' ' + y;
     });
+
+    // compute 3-month rolling average for historical income
+    let rollMapped = [];
+    try {
+      const rollWindow = 3;
+      const rollHist = rollingAverage(histIncome || [], rollWindow);
+      rollMapped = allMonths.map(m => {
+        const idx = (histMonths || []).indexOf(m);
+        return idx >= 0 ? rollHist[idx] : null;
+      });
+    } catch (e) { rollMapped = []; }
+
+    const datasets = [
+      {
+        label: 'Historical Income',
+        data: allMonths.map(m => histMap[m] ?? null),
+        backgroundColor: '#6366f1cc',
+        borderWidth: 0
+      },
+      {
+        type: 'line',
+        label: 'Projected Income',
+        data: allMonths.map(m => projMap[m] ?? null),
+        borderColor: '#10b981',
+        backgroundColor: 'rgba(16,185,129,.08)',
+        borderDash: [6, 3],
+        fill: false,
+        tension: 0.3,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        spanGaps: true
+      }
+    ];
+
+    if (rollMapped && rollMapped.some(v => v != null)) {
+      datasets.push({
+        type: 'line',
+        label: `3-mo Rolling Avg (Historical)`,
+        data: rollMapped,
+        borderColor: '#a855f7',
+        backgroundColor: 'rgba(168,85,247,.06)',
+        borderDash: [4,2],
+        fill: false,
+        tension: 0.3,
+        pointRadius: 3,
+        spanGaps: true
+      });
+    }
 
     getOrCreate('chart-planner-income-compare', {
       type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Historical Income',
-            data: allMonths.map(m => histMap[m] ?? null),
-            backgroundColor: '#6366f1cc',
-            borderWidth: 0
-          },
-          {
-            type: 'line',
-            label: 'Projected Income',
-            data: allMonths.map(m => projMap[m] ?? null),
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16,185,129,.08)',
-            borderDash: [6, 3],
-            fill: false,
-            tension: 0.3,
-            pointRadius: 5,
-            pointHoverRadius: 7,
-            spanGaps: true
-          }
-        ]
-      },
+      data: { labels, datasets },
       options: {
         ...defaultOptions,
         plugins: {
           ...defaultOptions.plugins,
           tooltip: {
             ...defaultOptions.plugins.tooltip,
-            callbacks: { label: ctx => ctx.parsed.y != null ? `${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}` : '' }
+            callbacks: { label: ctx => ctx.parsed && ctx.parsed.y != null ? `${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}` : '' }
           }
         }
       }
@@ -483,55 +571,36 @@ const Charts = (() => {
    * Monthly breakdown: stacked bar with income, budget expenses, scenario expenses
    */
   function renderPlannerBreakdown(labels, incomeData, budgetData, scenarioData) {
+    const datasets = [
+      {
+        label: 'Income',
+        data: incomeData || [],
+        backgroundColor: '#10b981cc',
+        borderWidth: 0
+      },
+      {
+        label: 'Budgeted Expenses',
+        data: budgetData || [],
+        backgroundColor: '#6366f1cc',
+        borderWidth: 0
+      },
+      {
+        label: 'Scenario Expenses',
+        data: scenarioData || [],
+        backgroundColor: '#ef4444cc',
+        borderWidth: 0
+      }
+    ];
+
     getOrCreate('chart-planner-breakdown', {
       type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Income',
-            data: incomeData,
-            backgroundColor: '#10b981cc',
-            borderWidth: 0,
-            stack: 'income'
-          },
-          {
-            label: 'Budget Expenses',
-            data: budgetData.map(v => -v),
-            backgroundColor: '#6366f1cc',
-            borderWidth: 0,
-            stack: 'expenses'
-          },
-          {
-            label: 'Scenario Expenses',
-            data: scenarioData.map(v => -v),
-            backgroundColor: '#ef4444cc',
-            borderWidth: 0,
-            stack: 'expenses'
-          }
-        ]
-      },
+      data: { labels: labels || [], datasets },
       options: {
         ...defaultOptions,
         scales: {
+          ...defaultOptions.scales,
           x: { ...defaultOptions.scales.x, stacked: true },
-          y: {
-            ...defaultOptions.scales.y,
-            stacked: true,
-            ticks: {
-              color: '#8b8fa3',
-              callback: v => (v < 0 ? '-' : '') + '$' + Math.abs(v).toLocaleString()
-            }
-          }
-        },
-        plugins: {
-          ...defaultOptions.plugins,
-          tooltip: {
-            ...defaultOptions.plugins.tooltip,
-            callbacks: {
-              label: ctx => `${ctx.dataset.label}: $${Math.abs(ctx.parsed.y).toFixed(2)}`
-            }
-          }
+          y: { ...defaultOptions.scales.y, stacked: true }
         }
       }
     });
