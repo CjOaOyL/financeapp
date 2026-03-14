@@ -974,6 +974,136 @@ tr.transfer-row:hover { opacity: .8; }
 }
 
 /* ============================================
+   FINANCIAL PLANNER
+   ============================================ */
+
+/* Planner form panels */
+.planner-form-panel {
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  margin: 1rem 0;
+}
+.planner-form-panel h4 {
+  margin-bottom: .8rem;
+  font-size: 1rem;
+  color: var(--clr-text);
+}
+.planner-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: .75rem;
+  margin-bottom: .75rem;
+}
+.peak-months-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: .4rem;
+  margin-top: .5rem;
+}
+.peak-month-label {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .8rem;
+  color: var(--clr-text-muted);
+  cursor: pointer;
+}
+.peak-month-label input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--clr-warning);
+}
+
+/* Disabled income/expense row */
+.income-disabled {
+  opacity: .45;
+}
+
+/* Budget baseline in planner */
+.planner-budget-empty {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--clr-text-muted);
+}
+.planner-budget-empty a {
+  color: var(--clr-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+.planner-budget-empty a:hover { text-decoration: underline; }
+
+.planner-budget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .8rem;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+.budget-source-ok {
+  font-size: .85rem;
+  color: var(--clr-accent);
+  font-weight: 600;
+}
+.budget-source-warn {
+  font-size: .85rem;
+  color: var(--clr-warning);
+  font-weight: 600;
+}
+
+.planner-budget-categories {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  margin-bottom: .8rem;
+}
+.planner-budget-cat-row {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  font-size: .85rem;
+}
+.planner-budget-cat-name {
+  min-width: 130px;
+  color: var(--clr-text-muted);
+  font-weight: 500;
+}
+.planner-budget-cat-bar-wrap {
+  flex: 1;
+  height: 8px;
+  background: var(--clr-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.planner-budget-cat-bar {
+  height: 100%;
+  background: var(--clr-primary);
+  border-radius: 4px;
+  transition: width .3s;
+}
+.planner-budget-cat-amt {
+  min-width: 80px;
+  text-align: right;
+  font-weight: 600;
+  color: var(--clr-expense);
+}
+.planner-budget-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: .6rem;
+  border-top: 1px solid var(--clr-border);
+}
+
+@media (max-width: 768px) {
+  .peak-months-grid { grid-template-columns: repeat(4, 1fr); }
+  .planner-form-grid { grid-template-columns: 1fr; }
+}
+
+
+/* ============================================
    FINANCIAL PLANNER TAB
    ============================================ */
 

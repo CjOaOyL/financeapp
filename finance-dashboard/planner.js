@@ -185,19 +185,55 @@ const Planner = (() => {
   /* ---- Monthly Budget Baseline ---- */
 
   /**
+   * Get the full per-category budget breakdown.
+   * Returns { categories: [{category, target, avgSpend}], total, source } where
+   * source is 'budget' if targets exist, or 'historical' as fallback.
+   */
+  function getBudgetBreakdown() {
+    const budget = DataManager.getBudget();
+    const entries = Object.entries(budget);
+
+    if (entries.length > 0 && entries.some(([, b]) => (b.target || 0) > 0)) {
+      const categories = entries
+        .filter(([cat]) => cat !== 'Income' && cat !== 'Transfer')
+        .map(([category, b]) => ({
+          category,
+          target: b.target || 0,
+          avgSpend: b.avgSpend || 0
+        }))
+        .sort((a, b) => b.target - a.target);
+      const total = categories.reduce((sum, c) => sum + c.target, 0);
+      return { categories, total, source: 'budget' };
+    }
+
+    // Fallback: derive from historical spending averages
+    const hist = getHistoricalExpenses();
+    if (hist.length === 0) return { categories: [], total: 0, source: 'none' };
+
+    // Use Analysis if available for per-category breakdown
+    if (typeof Analysis !== 'undefined' && Analysis.getCategoryBreakdown) {
+      const breakdown = Analysis.getCategoryBreakdown();
+      const categories = breakdown
+        .filter(c => c.category !== 'Income' && c.category !== 'Transfer')
+        .map(c => ({
+          category: c.category,
+          target: Math.round(c.avgPerMonth * 100) / 100,
+          avgSpend: Math.round(c.avgPerMonth * 100) / 100
+        }));
+      const total = categories.reduce((s, c) => s + c.target, 0);
+      return { categories, total, source: 'historical' };
+    }
+
+    const avgTotal = hist.reduce((s, h) => s + h.expenses, 0) / hist.length;
+    return { categories: [{ category: 'All Expenses', target: avgTotal, avgSpend: avgTotal }], total: avgTotal, source: 'historical' };
+  }
+
+  /**
    * Total monthly budget from budget targets, or average historical spending
    * as fallback.
    */
   function getMonthlyBudgetTotal() {
-    const budget = DataManager.getBudget();
-    const budgetEntries = Object.values(budget);
-    if (budgetEntries.length > 0) {
-      return budgetEntries.reduce((sum, b) => sum + (b.target || 0), 0);
-    }
-    // Fallback: average monthly expenses from history
-    const hist = getHistoricalExpenses();
-    if (hist.length === 0) return 0;
-    return hist.reduce((s, h) => s + h.expenses, 0) / hist.length;
+    return getBudgetBreakdown().total;
   }
 
   /* ---- Scenario Expense for a Month ---- */
@@ -408,6 +444,77 @@ const Planner = (() => {
       btn.addEventListener('click', () => {
         const source = getIncomeSources().find(s => s.id === btn.dataset.id);
         if (source) openIncomeForm(source);
+      });
+    });
+  }
+
+  /* ---- Render: Budget Baseline ---- */
+
+  function renderBudgetBaseline() {
+    const container = document.getElementById('planner-budget-baseline');
+    if (!container) return;
+
+    const bb = getBudgetBreakdown();
+
+    if (bb.source === 'none') {
+      container.innerHTML = `
+        <div class="planner-budget-empty">
+          <p>⚠️ No budget set and no transaction history found.</p>
+          <p>Go to the <a href="#" class="planner-goto-budget">🎯 Budget tab</a> to set monthly spending targets, or import transactions first.</p>
+        </div>`;
+      bindBudgetLink(container);
+      return;
+    }
+
+    const sourceLabel = bb.source === 'budget'
+      ? '✅ Using your budget targets'
+      : '⚠️ No budget set — using historical averages as fallback';
+    const sourceClass = bb.source === 'budget' ? 'budget-source-ok' : 'budget-source-warn';
+
+    let html = `
+      <div class="planner-budget-header">
+        <span class="${sourceClass}">${sourceLabel}</span>
+        <a href="#" class="planner-goto-budget btn btn-sm btn-secondary">🎯 Edit Budget</a>
+      </div>
+      <div class="planner-budget-categories">`;
+
+    for (const cat of bb.categories) {
+      if (cat.target <= 0) continue;
+      const pct = bb.total > 0 ? ((cat.target / bb.total) * 100).toFixed(0) : 0;
+      html += `
+        <div class="planner-budget-cat-row">
+          <span class="planner-budget-cat-name">${escHtml(cat.category)}</span>
+          <div class="planner-budget-cat-bar-wrap">
+            <div class="planner-budget-cat-bar" style="width:${pct}%"></div>
+          </div>
+          <span class="planner-budget-cat-amt">$${cat.target.toFixed(2)}</span>
+        </div>`;
+    }
+
+    html += `
+      </div>
+      <div class="planner-budget-total">
+        <strong>Total Monthly Budget Expenses:</strong>
+        <span class="amount-negative" style="font-weight:700;font-size:1.1rem">$${bb.total.toFixed(2)}</span>
+      </div>`;
+
+    container.innerHTML = html;
+    bindBudgetLink(container);
+  }
+
+  function bindBudgetLink(container) {
+    container.querySelectorAll('.planner-goto-budget').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Navigate to budget tab
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        const budgetBtn = document.querySelector('.nav-btn[data-tab="budget"]');
+        if (budgetBtn) budgetBtn.classList.add('active');
+        document.getElementById('tab-budget').classList.add('active');
+        // Trigger budget refresh
+        Budget.renderBudgetTable();
+        Budget.renderBudgetChart();
       });
     });
   }
@@ -704,6 +811,7 @@ const Planner = (() => {
   /* ---- Full Tab Render ---- */
 
   function render() {
+    renderBudgetBaseline();
     renderIncomeSources();
     renderScenarioExpenses();
     renderProjection();
@@ -732,7 +840,7 @@ const Planner = (() => {
     projectSavings, getIncomeComparison, getIncomeBreakdown,
     maxAffordableExpense,
     // Rendering
-    render, renderIncomeSources, renderScenarioExpenses, renderProjection,
+    render, renderBudgetBaseline, renderIncomeSources, renderScenarioExpenses, renderProjection,
     openIncomeForm, saveIncomeFromForm, updateIncomeFormFields,
     openExpenseForm, saveExpenseFromForm,
     // Constants
