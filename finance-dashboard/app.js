@@ -966,6 +966,21 @@
   if (plannerHorizon) plannerHorizon.addEventListener('change', () => Planner.renderProjection());
   if (plannerBalance) plannerBalance.addEventListener('change', () => Planner.renderProjection());
 
+  // Save current planner state as a named scenario
+  document.getElementById('btn-save-scenario')?.addEventListener('click', () => {
+    const count = Planner.getScenarios().length;
+    const name = prompt('Scenario name:', 'Scenario ' + (count + 1));
+    if (name === null) return; // cancelled
+    const notes = prompt('Notes (optional — assumptions, reminders):', '');
+    Planner.saveCurrentAsScenario((name || '').trim() || 'Scenario ' + (count + 1), (notes || '').trim());
+    Planner.renderScenarios();
+  });
+
+  // Compare selected scenarios
+  document.getElementById('btn-compare-scenarios')?.addEventListener('click', () => {
+    Planner.renderScenarioComparison();
+  });
+
   // Listen for planner data updates
   window.addEventListener('planner-updated', () => {
     const activeTab = document.querySelector('.nav-btn.active');

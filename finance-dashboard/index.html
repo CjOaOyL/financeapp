@@ -728,6 +728,28 @@
           <tbody id="planner-projection-tbody"></tbody>
         </table>
       </div>
+      <div class="btn-row" style="margin-top:1rem">
+        <button id="btn-save-scenario" class="btn btn-accent">💾 Save as Scenario</button>
+      </div>
+    </div>
+
+    <!-- Saved Scenarios + Comparison -->
+    <div class="card">
+      <div class="card-header-row">
+        <h2>🗂 Saved Scenarios</h2>
+        <button id="btn-compare-scenarios" class="btn btn-primary" disabled>⚖ Compare Selected</button>
+      </div>
+      <p class="info-text">Save snapshots of your income/expense setup to compare different plans side by side. Check 2 or more to compare.</p>
+      <div id="scenarios-list"></div>
+      <div id="scenario-comparison-area" style="margin-top:1rem"></div>
+    </div>
+
+    <!-- Scenario Comparison Chart -->
+    <div class="card hidden" id="card-scenario-compare">
+      <h3>📈 Scenario Comparison — Cumulative Savings</h3>
+      <div class="chart-container" style="height:370px;position:relative">
+        <canvas id="chart-scenario-compare"></canvas>
+      </div>
     </div>
   </section>
 

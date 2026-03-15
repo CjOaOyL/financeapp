@@ -1217,4 +1217,100 @@ tr.income-disabled:hover td {
   max-width: 160px;
 }
 
+/* ---- Saved Scenarios ---- */
+.scenario-empty {
+  font-size: .88rem;
+  color: var(--clr-text-muted);
+  padding: .4rem 0;
+}
+.scenario-card {
+  background: var(--clr-bg-card);
+  border: 1px solid var(--clr-border);
+  border-radius: 8px;
+  padding: .75rem 1rem;
+  margin-bottom: .75rem;
+  transition: border-color .15s;
+}
+.scenario-card:hover { border-color: var(--clr-primary); }
+.scenario-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  flex-wrap: wrap;
+  margin-bottom: .5rem;
+}
+.scenario-compare-label {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: .82rem;
+  cursor: pointer;
+  white-space: nowrap;
+  padding-top: .1rem;
+}
+.scenario-card-title {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+}
+.scenario-card-actions {
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+}
+.btn-sm {
+  padding: .25rem .55rem;
+  font-size: .78rem;
+  border-radius: 5px;
+}
+.scenario-card-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem .9rem;
+}
+.sc-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 90px;
+}
+.sc-stat-label {
+  font-size: .72rem;
+  color: var(--clr-text-muted);
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.sc-stat-val {
+  font-size: .95rem;
+  font-weight: 600;
+}
 
+/* ---- Scenario Comparison Table ---- */
+.scenario-compare-table-wrap {
+  overflow-x: auto;
+  margin-bottom: .75rem;
+}
+.scenario-compare-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: .83rem;
+}
+.scenario-compare-table th,
+.scenario-compare-table td {
+  border: 1px solid var(--clr-border);
+  padding: .4rem .65rem;
+  text-align: right;
+  white-space: nowrap;
+}
+.scenario-compare-table th:first-child,
+.scenario-compare-table td:first-child {
+  text-align: left;
+}
+.scenario-compare-table thead {
+  background: var(--clr-bg-elevated, #1e2028);
+}
+.scenario-compare-table thead th {
+  font-weight: 700;
+}

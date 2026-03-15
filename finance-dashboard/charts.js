@@ -606,6 +606,66 @@ const Charts = (() => {
     });
   }
 
+  /**
+   * Render a multi-line cumulative savings comparison chart.
+   * @param {Array<{label: string, projection: Array}>} results
+   */
+  function renderScenarioComparison(results) {
+    const canvas = document.getElementById('chart-scenario-compare');
+    if (!canvas || !results || results.length === 0) return;
+
+    const colors = [
+      '#6c8cff', '#ff6b6b', '#4bd48a', '#ffd166',
+      '#a78bfa', '#f97316', '#22d3ee', '#f43f5e'
+    ];
+
+    // All projections should share the same month labels (use longest)
+    const longestIdx = results.reduce((best, r, i) => r.projection.length > results[best].projection.length ? i : best, 0);
+    const labels = results[longestIdx].projection.map(p => {
+      if (!p.monthLabel) return '';
+      const [y, m] = p.monthLabel.split('-');
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return `${months[parseInt(m,10)-1]} ${y}`;
+    });
+
+    const datasets = results.map((r, i) => ({
+      label: r.label,
+      data: r.projection.map(p => p.cumulativeSavings),
+      borderColor: colors[i % colors.length],
+      backgroundColor: colors[i % colors.length] + '22',
+      fill: false,
+      tension: 0.35,
+      pointRadius: 3,
+      pointHoverRadius: 6
+    }));
+
+    getOrCreate('chart-scenario-compare', {
+      type: 'line',
+      data: { labels, datasets },
+      options: {
+        ...defaultOptions,
+        plugins: {
+          ...defaultOptions.plugins,
+          legend: { display: true, position: 'top' },
+          tooltip: {
+            callbacks: {
+              label: ctx => `${ctx.dataset.label}: $${(ctx.parsed.y ?? 0).toFixed(2)}`
+            }
+          }
+        },
+        scales: {
+          ...defaultOptions.scales,
+          y: {
+            ...defaultOptions.scales.y,
+            ticks: {
+              callback: v => '$' + v.toLocaleString()
+            }
+          }
+        }
+      }
+    });
+  }
+
   return {
     renderImportLine,
     renderOverviewBar, renderOverviewPie,
@@ -617,6 +677,7 @@ const Charts = (() => {
     renderPlannerSavings,
     renderPlannerIncomeComparison,
     renderPlannerBreakdown,
+    renderScenarioComparison,
     PALETTE
   };
 })();

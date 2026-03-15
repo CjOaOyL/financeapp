@@ -351,6 +351,262 @@ const Planner = (() => {
     return Math.max(0, income - budgetBase - currentScenario);
   }
 
+  /* ---- Named Scenario Storage ---- */
+
+  const SCENARIOS_KEY = 'finance_dashboard_planner_scenarios';
+
+  function getScenarios() {
+    try { return JSON.parse(localStorage.getItem(SCENARIOS_KEY) || '[]'); } catch { return []; }
+  }
+  function _saveScenarios(list) { localStorage.setItem(SCENARIOS_KEY, JSON.stringify(list)); }
+
+  /** Snapshot the current active planner state as a named scenario. */
+  function saveCurrentAsScenario(name, notes) {
+    const list = getScenarios();
+    const horizonEl = document.getElementById('planner-horizon');
+    const balanceEl = document.getElementById('planner-starting-balance');
+    const sc = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      name: (name || 'Scenario ' + (list.length + 1)).trim(),
+      notes: (notes || '').trim(),
+      createdAt: new Date().toISOString(),
+      incomeSources: JSON.parse(JSON.stringify(getIncomeSources())),
+      scenarioExpenses: JSON.parse(JSON.stringify(getScenarioExpenses())),
+      horizon: parseInt(horizonEl?.value) || 12,
+      startingBalance: parseFloat(balanceEl?.value) || 0
+    };
+    list.push(sc);
+    _saveScenarios(list);
+    return sc;
+  }
+
+  function deleteScenario(id) {
+    _saveScenarios(getScenarios().filter(s => s.id !== id));
+    renderScenarios();
+    renderScenarioComparison();
+  }
+
+  function renameScenario(id, name, notes) {
+    const list = getScenarios();
+    const idx = list.findIndex(s => s.id === id);
+    if (idx >= 0) { list[idx].name = name; list[idx].notes = notes; _saveScenarios(list); }
+  }
+
+  /** Load a saved scenario into the active planner state. */
+  function loadScenario(id) {
+    const sc = getScenarios().find(s => s.id === id);
+    if (!sc) return;
+    saveIncomeSources(sc.incomeSources || []);
+    saveScenarioExpenses(sc.scenarioExpenses || []);
+    const horizonEl = document.getElementById('planner-horizon');
+    const balanceEl = document.getElementById('planner-starting-balance');
+    if (horizonEl) horizonEl.value = sc.horizon || 12;
+    if (balanceEl) balanceEl.value = sc.startingBalance || 0;
+    render();
+  }
+
+  /**
+   * Run a projection from a scenario snapshot (read-only — does not touch active state).
+   */
+  function projectFromSnapshot(sc, months) {
+    months = months || sc.horizon || 12;
+    const startingBalance = sc.startingBalance || 0;
+    const now = new Date();
+    const startYear = now.getFullYear();
+    const startMonth = now.getMonth();
+    const budgetBase = getMonthlyBudgetTotal();
+    const projection = [];
+    let cumulative = startingBalance;
+
+    for (let i = 0; i < months; i++) {
+      const calMonth = (startMonth + i) % 12;
+      const year = startYear + Math.floor((startMonth + i) / 12);
+      const monthLabel = `${year}-${String(calMonth + 1).padStart(2, '0')}`;
+
+      const income = (sc.incomeSources || [])
+        .filter(s => s.enabled !== false)
+        .reduce((sum, s) => sum + monthlyIncomeForSource(s, calMonth), 0);
+
+      const scenarioExp = (sc.scenarioExpenses || [])
+        .filter(e => e.enabled !== false)
+        .filter(e => { const st = parseInt(e.startMonth) || 0; const en = e.endMonth != null ? parseInt(e.endMonth) : Infinity; return i >= st && i <= en; })
+        .reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+
+      const totalExpenses = budgetBase + scenarioExp;
+      const net = income - totalExpenses;
+      cumulative += net;
+      projection.push({
+        monthLabel,
+        income: Math.round(income * 100) / 100,
+        budgetExpenses: Math.round(budgetBase * 100) / 100,
+        scenarioExpenses: Math.round(scenarioExp * 100) / 100,
+        totalExpenses: Math.round(totalExpenses * 100) / 100,
+        netSavings: Math.round(net * 100) / 100,
+        cumulativeSavings: Math.round(cumulative * 100) / 100
+      });
+    }
+    return projection;
+  }
+
+  /* ---- Render: Saved Scenarios List ---- */
+
+  function renderScenarios() {
+    const container = document.getElementById('scenarios-list');
+    if (!container) return;
+    const scenarios = getScenarios();
+    const compareBtn = document.getElementById('btn-compare-scenarios');
+
+    if (scenarios.length === 0) {
+      container.innerHTML = '<p class="scenario-empty">No saved scenarios yet. Use <strong>Save as Scenario</strong> to snapshot the current planner state.</p>';
+      if (compareBtn) compareBtn.disabled = true;
+      return;
+    }
+
+    const now = new Date();
+    const calMonth = now.getMonth();
+    const budgetBase = getMonthlyBudgetTotal();
+
+    container.innerHTML = scenarios.map(sc => {
+      const income = (sc.incomeSources || [])
+        .filter(s => s.enabled !== false)
+        .reduce((sum, s) => sum + monthlyIncomeForSource(s, calMonth), 0);
+      const exp = budgetBase + (sc.scenarioExpenses || [])
+        .filter(e => e.enabled !== false && (parseInt(e.startMonth) || 0) === 0)
+        .reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+      const net = income - exp;
+      const dateStr = sc.createdAt ? new Date(sc.createdAt).toLocaleDateString() : '—';
+      return `
+        <div class="scenario-card" id="sc-card-${sc.id}">
+          <div class="scenario-card-header">
+            <label class="toggle-label scenario-compare-label" title="Select for comparison">
+              <input type="checkbox" class="scenario-compare-cb" data-id="${sc.id}" />
+              Compare
+            </label>
+            <div class="scenario-card-title">
+              <strong>${escHtml(sc.name)}</strong>
+              ${sc.notes ? `<span class="planner-notes" title="${escHtml(sc.notes)}">${escHtml(sc.notes.length > 70 ? sc.notes.slice(0, 68) + '…' : sc.notes)}</span>` : ''}
+            </div>
+            <div class="scenario-card-actions">
+              <button class="btn btn-sm btn-secondary sc-load" data-id="${sc.id}" title="Load into planner">📂 Load</button>
+              <button class="btn btn-sm btn-secondary sc-rename" data-id="${sc.id}" title="Rename / edit notes">✏️</button>
+              <button class="btn btn-sm btn-danger sc-delete" data-id="${sc.id}" title="Delete">✕</button>
+            </div>
+          </div>
+          <div class="scenario-card-stats">
+            <span class="sc-stat"><span class="sc-stat-label">Monthly Income</span><span class="sc-stat-val amount-positive">$${income.toFixed(2)}</span></span>
+            <span class="sc-stat"><span class="sc-stat-label">Monthly Net</span><span class="sc-stat-val ${net >= 0 ? 'amount-positive' : 'amount-negative'}">$${net.toFixed(2)}</span></span>
+            <span class="sc-stat"><span class="sc-stat-label">Annual Net</span><span class="sc-stat-val ${net >= 0 ? 'amount-positive' : 'amount-negative'}">$${(net * 12).toFixed(2)}</span></span>
+            <span class="sc-stat"><span class="sc-stat-label">Income Sources</span><span class="sc-stat-val">${(sc.incomeSources || []).length}</span></span>
+            <span class="sc-stat"><span class="sc-stat-label">Scenario Expenses</span><span class="sc-stat-val">${(sc.scenarioExpenses || []).length}</span></span>
+            <span class="sc-stat"><span class="sc-stat-label">Horizon</span><span class="sc-stat-val">${sc.horizon || 12} mo</span></span>
+            <span class="sc-stat"><span class="sc-stat-label">Saved</span><span class="sc-stat-val">${dateStr}</span></span>
+          </div>
+        </div>`;
+    }).join('');
+
+    container.querySelectorAll('.sc-load').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sc = getScenarios().find(s => s.id === btn.dataset.id);
+        if (confirm(`Load "${sc?.name}"? This replaces your active income sources and expenses.`)) loadScenario(btn.dataset.id);
+      });
+    });
+    container.querySelectorAll('.sc-delete').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sc = getScenarios().find(s => s.id === btn.dataset.id);
+        if (confirm(`Delete scenario "${sc?.name}"?`)) deleteScenario(btn.dataset.id);
+      });
+    });
+    container.querySelectorAll('.sc-rename').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sc = getScenarios().find(s => s.id === btn.dataset.id);
+        if (!sc) return;
+        const name = prompt('Rename scenario:', sc.name);
+        if (name === null) return;
+        const notes = prompt('Notes (optional):', sc.notes || '');
+        renameScenario(btn.dataset.id, (name.trim() || sc.name), (notes || '').trim());
+        renderScenarios();
+      });
+    });
+    container.querySelectorAll('.scenario-compare-cb').forEach(cb => {
+      cb.addEventListener('change', () => renderScenarioComparison());
+    });
+    if (compareBtn) compareBtn.disabled = scenarios.length < 2;
+  }
+
+  /* ---- Render: Side-by-Side Scenario Comparison ---- */
+
+  function renderScenarioComparison() {
+    const container = document.getElementById('scenario-comparison-area');
+    if (!container) return;
+
+    const checked = [...document.querySelectorAll('.scenario-compare-cb:checked')].map(cb => cb.dataset.id);
+    const selected = checked.map(id => getScenarios().find(s => s.id === id)).filter(Boolean);
+
+    if (selected.length < 2) {
+      container.innerHTML = '<p class="scenario-empty">Check 2 or more scenarios above to compare them side by side.</p>';
+      const chartEl = document.getElementById('chart-scenario-compare');
+      if (chartEl) chartEl.closest('.card')?.classList.add('hidden');
+      return;
+    }
+
+    const horizon = Math.max(...selected.map(s => s.horizon || 12));
+    const results = selected.map(sc => ({ scenario: sc, projection: projectFromSnapshot(sc, horizon) }));
+
+    // Show chart card
+    const chartCard = document.getElementById('chart-scenario-compare')?.closest('.card');
+    if (chartCard) chartCard.classList.remove('hidden');
+    Charts.renderScenarioComparison(results.map(r => ({ label: r.scenario.name, projection: r.projection })));
+
+    // Summary table
+    const metrics = [
+      { label: 'Monthly Income',      fn: r => `$${(r.projection[0]?.income ?? 0).toFixed(2)}`,                          cls: ()  => 'amount-positive' },
+      { label: 'Monthly Budget Exp.', fn: r => `$${(r.projection[0]?.budgetExpenses ?? 0).toFixed(2)}`,                   cls: ()  => '' },
+      { label: 'Scenario Expenses',   fn: r => `$${(r.projection[0]?.scenarioExpenses ?? 0).toFixed(2)}`,                 cls: ()  => 'amount-negative' },
+      { label: 'Monthly Net',         fn: r => `$${(r.projection[0]?.netSavings ?? 0).toFixed(2)}`,                       cls: r   => (r.projection[0]?.netSavings ?? 0) >= 0 ? 'amount-positive' : 'amount-negative' },
+      { label: 'Annual Net',          fn: r => `$${((r.projection[0]?.netSavings ?? 0) * 12).toFixed(2)}`,                cls: r   => (r.projection[0]?.netSavings ?? 0) >= 0 ? 'amount-positive' : 'amount-negative' },
+      { label: `${horizon}-mo Cumulative`, fn: r => `$${(r.projection[r.projection.length - 1]?.cumulativeSavings ?? 0).toFixed(2)}`, cls: r => (r.projection[r.projection.length - 1]?.cumulativeSavings ?? 0) >= 0 ? 'amount-positive' : 'amount-negative' },
+      { label: 'Income Sources',      fn: r => (r.scenario.incomeSources || []).length,                                   cls: ()  => '' },
+      { label: 'Scenario Expenses',   fn: r => (r.scenario.scenarioExpenses || []).length,                                cls: ()  => '' },
+      { label: 'Starting Balance',    fn: r => `$${(r.scenario.startingBalance || 0).toFixed(2)}`,                        cls: ()  => '' },
+    ];
+
+    let html = `
+      <div class="scenario-compare-table-wrap">
+        <table class="scenario-compare-table">
+          <thead><tr><th>Metric</th>${selected.map(sc => `<th>${escHtml(sc.name)}</th>`).join('')}</tr></thead>
+          <tbody>
+            ${metrics.map(m => `<tr><td style="font-weight:600">${m.label}</td>${results.map(r => `<td class="${m.cls(r)}">${m.fn(r)}</td>`).join('')}</tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <h4 style="margin:1.4rem 0 .5rem">Month-by-Month Net / Cumulative</h4>
+      <div class="scenario-compare-table-wrap">
+        <table class="scenario-compare-table">
+          <thead>
+            <tr>
+              <th>Month</th>
+              ${selected.map(sc => `<th>${escHtml(sc.name)}<br><small style="font-weight:400;opacity:.75">Net / Cumulative</small></th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>`;
+
+    for (let i = 0; i < horizon; i++) {
+      const lbl = results[0].projection[i]?.monthLabel || `Month ${i + 1}`;
+      html += `<tr><td>${formatMonthLabel(lbl)}</td>`;
+      for (const r of results) {
+        const p = r.projection[i];
+        const net = p?.netSavings ?? null;
+        const cum = p?.cumulativeSavings ?? null;
+        const cls = net === null ? '' : net >= 0 ? 'amount-positive' : 'amount-negative';
+        html += `<td class="${cls}" style="white-space:nowrap">${net !== null ? '$' + net.toFixed(2) : '—'} / ${cum !== null ? '$' + cum.toFixed(2) : '—'}</td>`;
+      }
+      html += `</tr>`;
+    }
+
+    html += `</tbody></table></div>`;
+    container.innerHTML = html;
+  }
+
   /* ---- Helpers ---- */
 
   function uid() {
@@ -936,6 +1192,7 @@ const Planner = (() => {
     renderIncomeSources();
     renderScenarioExpenses();
     renderProjection();
+    renderScenarios();
   }
 
   /* ---- Escape HTML (use shared if available) ---- */
@@ -961,6 +1218,9 @@ const Planner = (() => {
     projectSavings, getIncomeComparison, getIncomeBreakdown,
     maxAffordableExpense,
     computeWageScenario,
+    // Scenarios
+    getScenarios, saveCurrentAsScenario, deleteScenario, renameScenario, loadScenario,
+    projectFromSnapshot, renderScenarios, renderScenarioComparison,
     // Rendering
     render, renderBudgetBaseline, renderIncomeSources, renderScenarioExpenses, renderProjection,
     openIncomeForm, saveIncomeFromForm, updateIncomeFormFields,
