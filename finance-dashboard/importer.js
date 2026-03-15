@@ -367,17 +367,27 @@ const Importer = (() => {
 
     // Phase 2: Detect column layout by X-position clustering
     // Find the statement year from header text like "11/15/25 - 12/14/25"
-    let statementYear = new Date().getFullYear();
+    // Captures BOTH start and end year/month so we can handle year-boundary
+    // statements (e.g. 12/15/25 - 01/14/26) correctly.
+    let statementStartYear = new Date().getFullYear();
+    let statementEndYear   = statementStartYear;
+    let statementStartMonth = 1;
+    let statementEndMonth   = 12;
     const yearPattern = /(\d{1,2})\/(\d{1,2})\/(\d{2,4})\s*[-–]\s*(\d{1,2})\/(\d{1,2})\/(\d{2,4})/;
     for (const item of allItems) {
       const ym = item.text.match(yearPattern);
       if (ym) {
-        let yr = parseInt(ym[6]);
-        if (yr < 100) yr += 2000;
-        statementYear = yr;
+        statementStartMonth = parseInt(ym[1]);
+        statementStartYear  = parseInt(ym[3]);
+        statementEndMonth   = parseInt(ym[4]);
+        statementEndYear    = parseInt(ym[6]);
+        if (statementStartYear < 100) statementStartYear += 2000;
+        if (statementEndYear   < 100) statementEndYear   += 2000;
         break;
       }
     }
+    // For backward compat, keep a single statementYear (end year)
+    const statementYear = statementEndYear;
 
     // Phase 3: Detect column boundaries by finding where dates, descriptions, and amounts live
     // Date items: short text matching MM-DD at leftmost x
@@ -505,7 +515,13 @@ const Importer = (() => {
         if (!dm) continue;
         const month = parseInt(dm[1]);
         const day = parseInt(dm[2]);
-        const fullDate = `${statementYear}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        // Handle year-boundary statements: if a statement spans Dec→Jan,
+        // December transactions belong to the start year, January to the end year.
+        let txYear = statementYear;
+        if (statementStartYear !== statementEndYear) {
+          txYear = (month >= statementStartMonth) ? statementStartYear : statementEndYear;
+        }
+        const fullDate = `${txYear}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
         const isIncome = !ar.hasMinus;
         const rawDesc = dr.desc;
