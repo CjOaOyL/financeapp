@@ -621,6 +621,18 @@ const Importer = (() => {
       return `${year}-${String(mo).padStart(2,'0')}-${m[2].padStart(2,'0')}`;
     }
 
+    // MM-DD or MM/DD without year (some CSVs / spreadsheets drop the year)
+    m = dateStr.match(/^(\d{1,2})[\/\-](\d{1,2})$/);
+    if (m) {
+      const month = parseInt(m[1], 10);
+      const day = parseInt(m[2], 10);
+      // Infer year: assume recent past if month is later in year than current month
+      let year = new Date().getFullYear();
+      const nowMonth = new Date().getMonth() + 1;
+      if (month > nowMonth) year -= 1; // e.g., importing in Mar 2026 a "12-xx" should be 2025
+      return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
+
     return null;
   }
 
