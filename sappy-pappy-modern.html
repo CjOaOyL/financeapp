@@ -1019,8 +1019,6 @@
         <li><a href="#video">Story Time</a></li>
         <li><a href="#community">Community</a></li>
         <li><a href="#social">Gallery</a></li>
-        <li><a href="black-chick-magic.html">Black Chick Magic</a></li>
-        <li><a href="bluebear/index.html">Blue Bear Cottage</a></li>
         <li><a href="contact.html" class="nav__cta">Contact</a></li>
       </ul>
       <button class="nav__toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
@@ -1061,7 +1059,7 @@
             <div class="now">$18</div>
             <div class="label">Hardcover — Special Price</div>
           </div>
-          <div id="product-component-1599413952543"></div>
+          <a href="https://sappy-pappy.myshopify.com/" class="btn">Buy Now 🛒</a>
         </div>
       </div>
     </div>
@@ -1124,7 +1122,7 @@
 
           <p class="buy-options-label">🎨 Choose Your Format</p>
           <div class="buy-options">
-            <a href="https://www.lulu.com/en/us/shop/thandis-dad-and-jess-mcbride/pedal-pedal/hardcover/product-mzj9v5.html" class="buy-option buy-option--featured">
+            <a href="https://sappy-pappy.myshopify.com/" class="buy-option buy-option--featured">
               <div class="buy-option__left">
                 <div class="buy-option__icon">📦</div>
                 <div>
@@ -1402,8 +1400,6 @@
         <a href="contact.html">Contact Us</a>
         <a href="privacy.html">Privacy Policy</a>
         <a href="https://www.blackloraxfarm.com/" target="_blank" rel="noopener">Black Lorax Farm</a>
-        <a href="black-chick-magic.html">Black Chick Magic</a>
-        <a href="bluebear/index.html">Blue Bear Cottage</a>
       </div>
       <div class="footer__divider"></div>
       <p class="footer__copy">© 2026 Sappy Pappy. All rights reserved.</p>
@@ -1443,54 +1439,6 @@
         ? 'var(--sky-dark)'
         : 'var(--sky)';
     }, { passive: true });
-  </script>
-
-  <!-- Shopify Buy Button embed -->
-  <script type="text/javascript">
-  (function () {
-    var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-    if (window.ShopifyBuy) {
-      if (window.ShopifyBuy.UI) { ShopifyBuyInit(); } else { loadScript(); }
-    } else { loadScript(); }
-    function loadScript() {
-      var script = document.createElement('script');
-      script.async = true; script.src = scriptURL;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
-      script.onload = ShopifyBuyInit;
-    }
-    function ShopifyBuyInit() {
-      var client = ShopifyBuy.buildClient({
-        domain: 'sappy-pappy.myshopify.com',
-        storefrontAccessToken: '66d8f3e4c2fd817eff5f86cf0cfc8695',
-      });
-      ShopifyBuy.UI.onReady(client).then(function (ui) {
-        ui.createComponent('product', {
-          id: '5591084859552',
-          node: document.getElementById('product-component-1599413952543'),
-          moneyFormat: '%24%7B%7Bamount%7D%7D',
-          options: {
-            "product": {
-              "styles": {
-                "button": {
-                  "font-family": "'Nunito', sans-serif",
-                  "font-weight": "800",
-                  "font-size": "1rem",
-                  "background-color": "#ff6b6b",
-                  "border-radius": "999px",
-                  "padding": ".75rem 1.75rem",
-                  ":hover": { "background-color": "#e05252" },
-                  ":focus": { "background-color": "#e05252" }
-                }
-              },
-              "buttonDestination": "checkout",
-              "contents": { "img": false, "title": false, "price": false },
-              "text": { "button": "Buy Now 🛒" }
-            }
-          }
-        });
-      });
-    }
-  })();
   </script>
 
   <!-- Curator.io social feed (preserving original embed) -->
