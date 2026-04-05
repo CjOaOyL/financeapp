@@ -6,6 +6,16 @@ const DataManager = (() => {
   const STORAGE_KEY = 'finance_dashboard_transactions';
   const BUDGET_KEY  = 'finance_dashboard_budget';
 
+  // Categories that belong to the STR business context (auto-assigned on import)
+  const BUSINESS_CATEGORIES = new Set([
+    'STR Income', 'Rental Utilities', 'Rental Maintenance', 'Rental Supplies'
+  ]);
+
+  /** Determine context from category: 'business' or 'personal' */
+  function autoContext(category) {
+    return BUSINESS_CATEGORIES.has(category) ? 'business' : 'personal';
+  }
+
   // Default spending categories with keywords for auto-categorization
   const CATEGORY_KEYWORDS = {
     'Housing':          ['rent', 'mortgage', 'hoa', 'property tax', 'apartment', 'lease', 'landlord', 'condo', 'townhome', 'real estate', 'zillow', 'redfin', 'trulia', 'home equity'],
@@ -56,15 +66,19 @@ const DataManager = (() => {
   function add(txArray) {
     if (!Array.isArray(txArray)) txArray = [txArray];
     const existing = getAll();
-    const newTx = txArray.map(tx => ({
-      id: tx.id || uid(),
-      date: tx.date,                          // "YYYY-MM-DD"
-      description: (tx.description || '').trim(),
-      amount: parseFloat(tx.amount) || 0,      // positive = expense, negative = income (or use sign convention)
-      category: tx.category || autoCategory(tx.description),
-      account: tx.account || 'Unknown',
-      cardholder: tx.cardholder || 'Unknown',
-    }));
+    const newTx = txArray.map(tx => {
+      const category = tx.category || autoCategory(tx.description);
+      return {
+        id: tx.id || uid(),
+        date: tx.date,
+        description: (tx.description || '').trim(),
+        amount: parseFloat(tx.amount) || 0,
+        category,
+        context: tx.context || autoContext(category),
+        account: tx.account || 'Unknown',
+        cardholder: tx.cardholder || 'Unknown',
+      };
+    });
     saveAll([...existing, ...newTx]);
     return newTx;
   }
@@ -136,8 +150,9 @@ const DataManager = (() => {
   }
 
   /** Filter transactions by criteria */
-  function filter({ account, cardholder, category, month, search } = {}) {
+  function filter({ account, cardholder, category, month, search, context } = {}) {
     let txs = getAll();
+    if (context && context !== 'all') txs = txs.filter(t => (t.context || 'personal') === context);
     if (account && account !== 'all') txs = txs.filter(t => t.account === account);
     if (cardholder && cardholder !== 'all') txs = txs.filter(t => (t.cardholder || 'Unknown') === cardholder);
     if (category && category !== 'all') txs = txs.filter(t => t.category === category);
@@ -153,14 +168,24 @@ const DataManager = (() => {
     return txs;
   }
 
-  /** Get expenses only (amount > 0) */
-  function getExpenses() {
-    return getAll().filter(t => t.amount > 0 && t.category !== 'Income' && t.category !== 'Transfer');
+  // Active context for analysis — set by app.js when user switches the toggle
+  let _activeContext = 'personal';
+  function setActiveContext(ctx) { _activeContext = ctx; }
+  function getActiveContext() { return _activeContext; }
+
+  function _contextFilter(txs) {
+    if (_activeContext === 'all') return txs;
+    return txs.filter(t => (t.context || 'personal') === _activeContext);
   }
 
-  /** Get income only */
+  /** Get expenses only (amount > 0), scoped to active context */
+  function getExpenses() {
+    return _contextFilter(getAll().filter(t => t.amount > 0 && t.category !== 'Income' && t.category !== 'Transfer'));
+  }
+
+  /** Get income only, scoped to active context */
   function getIncome() {
-    return getAll().filter(t => t.amount < 0 || t.category === 'Income');
+    return _contextFilter(getAll().filter(t => t.amount < 0 || t.category === 'Income'));
   }
 
   // Budget helpers
@@ -482,20 +507,24 @@ const DataManager = (() => {
     }
 
     // Add non-duplicates
-    const newTx = nonDuplicates.map(tx => ({
-      id: tx.id || uid(),
-      date: tx.date,
-      description: (tx.description || '').trim(),
-      amount: parseFloat(tx.amount) || 0,
-      category: tx.category || autoCategory(tx.description),
-      account: tx.account || 'Unknown',
-      cardholder: tx.cardholder || 'Unknown',
-      _originalDesc: tx._originalDesc,
-      _txType: tx._txType,
-      _merchant: tx._merchant,
-      _isIncome: tx._isIncome,
-      _raw: tx._raw,
-    }));
+    const newTx = nonDuplicates.map(tx => {
+      const category = tx.category || autoCategory(tx.description);
+      return {
+        id: tx.id || uid(),
+        date: tx.date,
+        description: (tx.description || '').trim(),
+        amount: parseFloat(tx.amount) || 0,
+        category,
+        context: tx.context || autoContext(category),
+        account: tx.account || 'Unknown',
+        cardholder: tx.cardholder || 'Unknown',
+        _originalDesc: tx._originalDesc,
+        _txType: tx._txType,
+        _merchant: tx._merchant,
+        _isIncome: tx._isIncome,
+        _raw: tx._raw,
+      };
+    });
 
     saveAll([...all, ...newTx]);
     return newTx;
@@ -509,6 +538,7 @@ const DataManager = (() => {
     getBudget, saveBudget,
     detectTransferPairs, markTransferPair, unmarkTransferPair, getConfirmedTransfers,
     findDuplicates, addWithDuplicateResolution,
-    CATEGORIES, CATEGORY_KEYWORDS, uid
+    CATEGORIES, CATEGORY_KEYWORDS, BUSINESS_CATEGORIES, autoContext,
+    setActiveContext, getActiveContext, uid
   };
 })();

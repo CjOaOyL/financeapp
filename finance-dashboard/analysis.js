@@ -4,9 +4,12 @@
 
 const Analysis = (() => {
 
-  /** Compute monthly aggregates (expenses + income) */
+  /** Compute monthly aggregates (expenses + income), scoped to active context */
   function getMonthlyBreakdown() {
-    const all = DataManager.getAll();
+    const ctx = DataManager.getActiveContext();
+    const all = ctx === 'all'
+      ? DataManager.getAll()
+      : DataManager.getAll().filter(t => (t.context || 'personal') === ctx);
     const byMonth = {};
 
     for (const tx of all) {

@@ -10,6 +10,30 @@
   let sortField = 'date';
   let sortDir = -1; // -1 = desc
   let filteredTransactions = [];
+  let activeContext = 'personal'; // 'personal' | 'business' | 'all'
+
+  /* ---- Context Toggle ---- */
+  const subtitleEl = document.getElementById('header-subtitle');
+  const subtitleLabels = {
+    personal: '6-Month Personal Finance Analysis',
+    business: 'Short-Term Rental Business Analysis',
+    all: '6-Month Expenditure Analysis & Budget Planner'
+  };
+
+  document.querySelectorAll('.ctx-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeContext = btn.dataset.ctx;
+      DataManager.setActiveContext(activeContext);
+      document.querySelectorAll('.ctx-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      subtitleEl.textContent = subtitleLabels[activeContext];
+      currentPage = 1;
+      refreshFilters();
+      refreshTransactionTable();
+      const activeTab = document.querySelector('.nav-btn.active');
+      if (activeTab) refreshTab(activeTab.dataset.tab);
+    });
+  });
 
   /* ---- Navigation ---- */
   document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -207,6 +231,9 @@
       });
     });
   }
+
+  // Set initial context on DataManager
+  DataManager.setActiveContext(activeContext);
 
   // Initialize confirmed transfers on load
   renderConfirmedTransfers();
@@ -610,7 +637,7 @@
       search: document.getElementById('filter-search').value
     };
 
-    filteredTransactions = DataManager.filter(filters);
+    filteredTransactions = DataManager.filter({ ...filters, context: activeContext });
 
     // Sort
     filteredTransactions.sort((a, b) => {
@@ -650,6 +677,11 @@
         </td>
         <td>${escHtml(tx.account)}</td>
         <td>${escHtml(tx.cardholder || 'Unknown')}</td>
+        <td>
+          <button class="ctx-toggle-btn ${tx.context === 'business' ? 'ctx-business' : 'ctx-personal'}" data-id="${tx.id}" data-ctx="${tx.context || 'personal'}" title="Click to switch context">
+            ${tx.context === 'business' ? 'B' : 'P'}
+          </button>
+        </td>
         <td><button class="btn btn-sm btn-danger delete-tx" data-id="${tx.id}">✕</button></td>
       </tr>`;
     }).join('');
@@ -658,6 +690,14 @@
     tbody.querySelectorAll('.cat-select').forEach(sel => {
       sel.addEventListener('change', () => {
         DataManager.update(sel.dataset.id, { category: sel.value });
+      });
+    });
+
+    // Context toggle handlers
+    tbody.querySelectorAll('.ctx-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const newCtx = btn.dataset.ctx === 'business' ? 'personal' : 'business';
+        DataManager.update(btn.dataset.id, { context: newCtx });
       });
     });
 

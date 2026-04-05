@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Personal Finance Dashboard</title>
+  <title>Finance Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -16,8 +16,15 @@
 <body>
   <header>
     <div class="header-content">
-      <h1>💰 Personal Finance Dashboard</h1>
-      <p class="subtitle">6-Month Expenditure Analysis &amp; Budget Planner</p>
+      <h1>💰 Finance Dashboard</h1>
+      <p class="subtitle" id="header-subtitle">6-Month Expenditure Analysis &amp; Budget Planner</p>
+    </div>
+    <div class="context-toggle-wrap">
+      <div class="context-toggle" id="context-toggle">
+        <button class="ctx-btn" data-ctx="all">All</button>
+        <button class="ctx-btn active" data-ctx="personal">Personal</button>
+        <button class="ctx-btn" data-ctx="business">Business</button>
+      </div>
     </div>
     <div class="header-actions">
       <button id="btn-export-report" class="btn btn-accent" title="Export full analysis report as PDF">📄 Export PDF Report</button>
@@ -126,6 +133,7 @@
             <label>Amount ($): <input type="number" id="manual-amount" step="0.01" placeholder="0.00" required /></label>
             <label>Category:
               <select id="manual-category">
+                <optgroup label="— Personal —">
                 <option value="Housing">Housing</option>
                 <option value="Utilities">Utilities</option>
                 <option value="Groceries">Groceries</option>
@@ -143,6 +151,13 @@
                 <option value="Income">Income</option>
                 <option value="Transfer">Transfer</option>
                 <option value="Other">Other</option>
+                </optgroup>
+                <optgroup label="— Business (STR) —">
+                <option value="STR Income">STR Income</option>
+                <option value="Rental Utilities">Rental Utilities</option>
+                <option value="Rental Maintenance">Rental Maintenance</option>
+                <option value="Rental Supplies">Rental Supplies</option>
+                </optgroup>
               </select>
             </label>
             <label>Account:
@@ -176,6 +191,7 @@
               <th data-sort="category">Category ⇅</th>
               <th data-sort="account">Account ⇅</th>
               <th data-sort="cardholder">Cardholder ⇅</th>
+              <th>Context</th>
               <th>Actions</th>
             </tr>
           </thead>
