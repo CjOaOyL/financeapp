@@ -30,6 +30,15 @@ const Importer = (() => {
       return appleCardTxs;
     }
 
+    // Try Carver Bank format (M/DD dates, trailing-minus debits, Activity in Date Order section)
+    console.log(`[PDF Parser] Attempting Carver Bank parser...`);
+    const carverTxs = await parseCarverBankPDF(pdf, file.name);
+    console.log(`[PDF Parser] Carver Bank parser returned ${carverTxs.length} transactions`);
+    if (carverTxs.length > 0) {
+      console.log(`[PDF Parser] Using Carver Bank results`);
+      return carverTxs;
+    }
+
     // Try spatial (coordinate-based) extraction for Navy Federal format
     console.log(`[PDF Parser] Attempting spatial (Navy Federal) parser...`);
     const spatialTxs = await parsePDFSpatial(pdf, file.name);
@@ -340,6 +349,144 @@ const Importer = (() => {
       console.log(`[Apple Card Parser] First:`, transactions[0]);
       console.log(`[Apple Card Parser] Last:`, transactions[transactions.length - 1]);
     }
+    return transactions;
+  }
+
+  /**
+   * Carver Bank PDF parser — handles "Activity in Date Order" layout.
+   * Dates are M/DD (no year in field), amounts use trailing '-' for debits.
+   * Multi-line transactions have continuation lines below the primary row.
+   */
+  async function parseCarverBankPDF(pdf, sourceName) {
+    // Collect all text items with spatial coords so we can reconstruct lines
+    const allItems = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      for (const item of content.items) {
+        const text = item.str.trim();
+        if (!text) continue;
+        allItems.push({
+          x: Math.round(item.transform[4]),
+          y: Math.round(item.transform[5]),
+          text,
+          page: i
+        });
+      }
+    }
+
+    const fullText = allItems.map(it => it.text).join(' ');
+
+    // Detect Carver Bank statement
+    if (!fullText.includes('Carver Bank') && !fullText.includes('Activity in Date Order')) {
+      return [];
+    }
+    console.log('[Carver Parser] Detected Carver Bank statement');
+
+    // Extract statement year from "Statement Dates M/DD/YY thru M/DD/YY"
+    // or from "Date M/DD/YY" header line
+    let statementYear = new Date().getFullYear();
+    const stmtDateMatch = fullText.match(/Statement\s+Dates?\s+\d{1,2}\/\d{2}\/(\d{2,4})/i);
+    if (stmtDateMatch) {
+      let yr = parseInt(stmtDateMatch[1]);
+      if (yr < 100) yr += 2000;
+      statementYear = yr;
+    } else {
+      // Fallback: grab year from "Date M/DD/YY" in the header
+      const headerDateMatch = fullText.match(/\bDate\s+\d{1,2}\/\d{2}\/(\d{2,4})/i);
+      if (headerDateMatch) {
+        let yr = parseInt(headerDateMatch[1]);
+        if (yr < 100) yr += 2000;
+        statementYear = yr;
+      }
+    }
+    console.log(`[Carver Parser] Statement year: ${statementYear}`);
+
+    // Reconstruct lines by grouping items with the same (page, y) coordinate
+    const lineMap = new Map();
+    for (const item of allItems) {
+      const key = `${item.page}-${item.y}`;
+      if (!lineMap.has(key)) lineMap.set(key, { page: item.page, y: item.y, items: [] });
+      lineMap.get(key).items.push(item);
+    }
+    // Sort lines top-to-bottom across pages
+    const lines = [...lineMap.values()]
+      .sort((a, b) => a.page !== b.page ? a.page - b.page : b.y - a.y)
+      .map(row => ({
+        page: row.page,
+        y: row.y,
+        text: row.items.sort((a, b) => a.x - b.x).map(it => it.text).join(' ')
+      }));
+
+    // Find the "Activity in Date Order" section and stop at "Daily Balance Information"
+    const activityIdx = lines.findIndex(l => /Activity\s+in\s+Date\s+Order/i.test(l.text));
+    if (activityIdx === -1) {
+      console.log('[Carver Parser] Activity section not found');
+      return [];
+    }
+    const endIdx = (() => {
+      const i = lines.findIndex((l, idx) => idx > activityIdx && /Daily\s+Balance\s+Information/i.test(l.text));
+      return i !== -1 ? i : lines.length;
+    })();
+    console.log(`[Carver Parser] Activity section: lines ${activityIdx}–${endIdx}`);
+
+    // Transaction primary line: M/DD <description> <amount>[-] <balance>
+    // Amount and balance are both NN,NNN.NN; debit has trailing '-'
+    const txLineRe = /^(\d{1,2}\/\d{2})\s+(.*?)\s+(\d{1,3}(?:,\d{3})*\.\d{2})(-?)\s+\d{1,3}(?:,\d{3})*\.\d{2}\s*$/;
+
+    // Lines to skip as noise (channel codes, reference IDs, phone numbers, separators)
+    const noiseRe = /^(WEB|PPD|ACH|CCD|TEL|ARC|BOC|POP|RCK|IAT|CTX)$|^\*+$|^\d{3}-\d{3}-\d{4}|^[A-Z0-9]{10,}$/;
+
+    const rawTxs = [];
+    let current = null;
+
+    for (let i = activityIdx + 1; i < endIdx; i++) {
+      const line = lines[i].text.trim();
+      if (!line) continue;
+
+      // Skip column header and separator rows
+      if (/^Date\s+Description/i.test(line) || /^\*+$/.test(line)) continue;
+
+      const match = line.match(txLineRe);
+      if (match) {
+        if (current) rawTxs.push(current);
+        const [, dateToken, desc, amtStr, minusSign] = match;
+        current = {
+          dateToken,
+          desc: desc.trim(),
+          amount: parseFloat(amtStr.replace(/,/g, '')),
+          isDebit: minusSign === '-'
+        };
+      } else if (current && line && !noiseRe.test(line)) {
+        // Continuation line — append to description (skip pure reference codes / phone numbers)
+        current.desc += ' ' + line;
+      }
+    }
+    if (current) rawTxs.push(current);
+    console.log(`[Carver Parser] Raw transactions found: ${rawTxs.length}`);
+
+    // Build final transaction objects
+    const transactions = rawTxs.map(tx => {
+      const [month, day] = tx.dateToken.split('/').map(Number);
+      const fullDate = `${statementYear}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const isIncome = !tx.isDebit;
+      const cleanResult = DescriptionCleaner.clean(tx.desc);
+      const cleanedDesc = cleanResult.cleaned;
+      return {
+        date: fullDate,
+        description: cleanedDesc,
+        amount: tx.amount,
+        category: isIncome ? 'Income' : DataManager.autoCategory(cleanedDesc),
+        account: 'Carver Bank',
+        _raw: tx.desc,
+        _originalDesc: cleanResult.original,
+        _txType: cleanResult.txType,
+        _merchant: cleanResult.merchant,
+        _isIncome: isIncome
+      };
+    });
+
+    console.log(`[Carver Parser] Final transactions: ${transactions.length}`);
     return transactions;
   }
 
