@@ -63,6 +63,21 @@ const Classifier = (() => {
     { pattern: /\bcurry\b/i, category: 'Dining', reason: 'curry — likely restaurant' },
     { pattern: /\bdeli\b/i, category: 'Dining', reason: 'deli — delicatessen' },
 
+    // Short-term rental business patterns
+    { pattern: /\bairbnb\b/i, category: 'STR Income', reason: 'Airbnb — short-term rental payout' },
+    { pattern: /\bvrbo\b/i, category: 'STR Income', reason: 'VRBO — short-term rental payout' },
+    { pattern: /arthur\s+white/i, category: 'Rental Maintenance', reason: 'Arthur White & Son — hardware store' },
+    { pattern: /long\s+energy/i, category: 'Rental Utilities', reason: 'Long Energy — heating oil supplier' },
+    { pattern: /natures?\s*way\s*pest/i, category: 'Rental Maintenance', reason: 'Natures Way Pest Control' },
+    { pattern: /natureswaypest/i, category: 'Rental Maintenance', reason: 'Natures Way Pest Control' },
+    { pattern: /\bpest\s*cont(rol)?\b/i, category: 'Rental Maintenance', reason: 'pest control service' },
+    { pattern: /\bexterminator\b/i, category: 'Rental Maintenance', reason: 'pest/exterminator service' },
+    { pattern: /heating\s+oil|fuel\s+oil|oil\s+(heat|deliver)/i, category: 'Rental Utilities', reason: 'heating/fuel oil delivery' },
+    { pattern: /\bngrid\b/i, category: 'Rental Utilities', reason: 'National Grid utility (rental property)' },
+    { pattern: /national\s+grid/i, category: 'Rental Utilities', reason: 'National Grid utility (rental property)' },
+    { pattern: /\bhandyman\b/i, category: 'Rental Maintenance', reason: 'handyman service' },
+    { pattern: /\bcontractor\b/i, category: 'Rental Maintenance', reason: 'contractor — rental maintenance' },
+
     // Gas station / convenience patterns
     { pattern: /\bgas\b/i, category: 'Transportation', reason: 'gas — fuel purchase' },
     { pattern: /\bfuel\b/i, category: 'Transportation', reason: 'fuel purchase' },
