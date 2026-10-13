@@ -158,7 +158,7 @@ const Planner = (() => {
     for (const tx of all) {
       const month = tx.date.slice(0, 7);
       if (!byMonth[month]) byMonth[month] = 0;
-      if (DataManager.isIncomeCategory(tx.category) || tx.amount < 0) {
+      if (tx.category === 'Income' || tx.amount < 0) {
         byMonth[month] += Math.abs(tx.amount);
       }
     }
@@ -179,7 +179,7 @@ const Planner = (() => {
     for (const tx of all) {
       const month = tx.date.slice(0, 7);
       if (!byMonth[month]) byMonth[month] = 0;
-      if (tx.amount > 0 && !DataManager.isIncomeCategory(tx.category) && tx.category !== 'Transfer') {
+      if (tx.amount > 0 && tx.category !== 'Income' && tx.category !== 'Transfer') {
         byMonth[month] += tx.amount;
       }
     }
@@ -202,7 +202,7 @@ const Planner = (() => {
 
     if (entries.length > 0 && entries.some(([, b]) => (b.target || 0) > 0)) {
       const categories = entries
-        .filter(([cat]) => !DataManager.isIncomeCategory(cat) && cat !== 'Transfer')
+        .filter(([cat]) => cat !== 'Income' && cat !== 'Transfer')
         .map(([category, b]) => ({
           category,
           target: b.target || 0,
@@ -221,7 +221,7 @@ const Planner = (() => {
     if (typeof Analysis !== 'undefined' && Analysis.getCategoryBreakdown) {
       const breakdown = Analysis.getCategoryBreakdown();
       const categories = breakdown
-        .filter(c => !DataManager.isIncomeCategory(c.category) && c.category !== 'Transfer')
+        .filter(c => c.category !== 'Income' && c.category !== 'Transfer')
         .map(c => ({
           category: c.category,
           target: Math.round(c.avgPerMonth * 100) / 100,

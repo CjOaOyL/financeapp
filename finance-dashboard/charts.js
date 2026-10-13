@@ -46,7 +46,7 @@ const Charts = (() => {
     const incomeByDate = {};
     for (const tx of transactions) {
       const d = tx.date;
-      if (DataManager.isIncomeCategory(tx.category) || tx._isIncome) {
+      if (tx.category === 'Income' || tx._isIncome) {
         incomeByDate[d] = (incomeByDate[d] || 0) + tx.amount;
       } else {
         expenseByDate[d] = (expenseByDate[d] || 0) + tx.amount;

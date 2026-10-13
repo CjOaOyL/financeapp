@@ -159,15 +159,6 @@ const Classifier = (() => {
     const reasons = [];
     const scores = {}; // category -> score
 
-    // 0) Saved merchant rule — a previous manual correction for this merchant
-    if (typeof MerchantRules !== 'undefined') {
-      const rule = MerchantRules.get(tx);
-      if (rule) {
-        scores[rule.category] = (scores[rule.category] || 0) + 100;
-        reasons.push(`Merchant rule: "${rule.merchant}" was previously corrected to ${rule.category}`);
-      }
-    }
-
     // 1) Pattern-based matching
     for (const rule of PATTERN_RULES) {
       if (rule.pattern.test(desc) || rule.pattern.test(originalDesc)) {

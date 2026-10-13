@@ -11,16 +11,6 @@ const DataManager = (() => {
     'STR Income', 'Rental Utilities', 'Rental Maintenance', 'Rental Supplies'
   ]);
 
-  // Categories that count as money coming in (everything else with amount > 0 is spending)
-  const INCOME_CATEGORIES = new Set(['Income', 'STR Income']);
-  function isIncomeCategory(category) { return INCOME_CATEGORIES.has(category); }
-
-  // Rental properties that STR stays are logged against (tx.property holds the key)
-  const PROPERTIES = {
-    cottage: { name: 'Blue Bear Cottage', short: 'Cottage', icon: '🏡' },
-    cabin:   { name: 'Hiker Delight Cabin', short: 'Cabin', icon: '🌲' }
-  };
-
   /** Determine context from category: 'business' or 'personal' */
   function autoContext(category) {
     return BUSINESS_CATEGORIES.has(category) ? 'business' : 'personal';
@@ -77,7 +67,7 @@ const DataManager = (() => {
     if (!Array.isArray(txArray)) txArray = [txArray];
     const existing = getAll();
     const newTx = txArray.map(tx => {
-      const category = tx.category || autoCategory(tx.description, tx._merchant);
+      const category = tx.category || autoCategory(tx.description);
       return {
         id: tx.id || uid(),
         date: tx.date,
@@ -87,22 +77,10 @@ const DataManager = (() => {
         context: tx.context || autoContext(category),
         account: tx.account || 'Unknown',
         cardholder: tx.cardholder || 'Unknown',
-        _originalDesc: tx._originalDesc,
-        _txType: tx._txType,
-        _merchant: tx._merchant,
-        _isIncome: tx._isIncome,
-        _raw: tx._raw,
-        property: tx.property,
-        stay: tx.stay,
       };
     });
     saveAll([...existing, ...newTx]);
     return newTx;
-  }
-
-  /** Get a single transaction by ID */
-  function getById(id) {
-    return getAll().find(t => t.id === id) || null;
   }
 
   /** Update a transaction by ID */
@@ -136,17 +114,8 @@ const DataManager = (() => {
     window.dispatchEvent(new CustomEvent('transactions-updated'));
   }
 
-  /**
-   * Auto-categorize based on a saved merchant rule (if any correction was made before),
-   * falling back to keyword matching. `merchant` is the resolved merchant name from
-   * DescriptionCleaner, when available — it gives merchant rules a stable lookup key
-   * independent of description formatting differences between statements.
-   */
-  function autoCategory(description, merchant) {
-    if (typeof MerchantRules !== 'undefined') {
-      const rule = MerchantRules.getByHint(merchant, description);
-      if (rule) return rule.category;
-    }
+  /** Auto-categorize based on description keywords */
+  function autoCategory(description) {
     const desc = (description || '').toLowerCase();
     for (const [cat, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
       for (const kw of keywords) {
@@ -157,9 +126,9 @@ const DataManager = (() => {
   }
 
   /** Re-categorize a description (useful after import) */
-  function recategorize(description, currentCategory, merchant) {
+  function recategorize(description, currentCategory) {
     if (currentCategory && currentCategory !== 'Other') return currentCategory;
-    return autoCategory(description, merchant);
+    return autoCategory(description);
   }
 
   /** Get unique account names */
@@ -211,12 +180,12 @@ const DataManager = (() => {
 
   /** Get expenses only (amount > 0), scoped to active context */
   function getExpenses() {
-    return _contextFilter(getAll().filter(t => t.amount > 0 && !isIncomeCategory(t.category) && t.category !== 'Transfer'));
+    return _contextFilter(getAll().filter(t => t.amount > 0 && t.category !== 'Income' && t.category !== 'Transfer'));
   }
 
   /** Get income only, scoped to active context */
   function getIncome() {
-    return _contextFilter(getAll().filter(t => t.amount < 0 || isIncomeCategory(t.category)));
+    return _contextFilter(getAll().filter(t => t.amount < 0 || t.category === 'Income'));
   }
 
   // Budget helpers
@@ -337,7 +306,7 @@ const DataManager = (() => {
     const all = getAll();
     for (const t of all) {
       if (t.transferPairId === linkId) {
-        t.category = autoCategory(t.description, t._merchant);
+        t.category = autoCategory(t.description);
         delete t.transferPairId;
       }
     }
@@ -490,9 +459,6 @@ const DataManager = (() => {
    * Matches on: same date + same amount + similar description.
    */
   function isDuplicate(txA, txB, bNorm, bAmt) {
-    // Logged STR stays carry a stable id per reservation — compare those directly
-    if (txA.stay && txB.stay) return txA.id === txB.id;
-
     // Must match on date
     if (txA.date !== txB.date) return false;
 
@@ -542,7 +508,7 @@ const DataManager = (() => {
 
     // Add non-duplicates
     const newTx = nonDuplicates.map(tx => {
-      const category = tx.category || autoCategory(tx.description, tx._merchant);
+      const category = tx.category || autoCategory(tx.description);
       return {
         id: tx.id || uid(),
         date: tx.date,
@@ -557,8 +523,6 @@ const DataManager = (() => {
         _merchant: tx._merchant,
         _isIncome: tx._isIncome,
         _raw: tx._raw,
-        property: tx.property,
-        stay: tx.stay,
       };
     });
 
@@ -567,16 +531,14 @@ const DataManager = (() => {
   }
 
   return {
-    getAll, saveAll, add, update, remove, clearAll, getById,
+    getAll, saveAll, add, update, remove, clearAll,
     autoCategory, recategorize,
     getAccounts, getUsedCategories, getMonths, filter,
     getExpenses, getIncome,
     getBudget, saveBudget,
     detectTransferPairs, markTransferPair, unmarkTransferPair, getConfirmedTransfers,
     findDuplicates, addWithDuplicateResolution,
-    normalizeForComparison,
     CATEGORIES, CATEGORY_KEYWORDS, BUSINESS_CATEGORIES, autoContext,
-    isIncomeCategory, PROPERTIES,
     setActiveContext, getActiveContext, uid
   };
 })();

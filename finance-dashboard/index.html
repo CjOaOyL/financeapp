@@ -800,13 +800,6 @@
         <span class="classify-stat"><strong id="stat-unknown">0</strong> unknown</span>
         <span class="classify-stat"><strong id="stat-vendor-matches">0</strong> vendor matches</span>
       </div>
-
-      <!-- Merchant Rules — persisted category corrections, auto-applied to future imports -->
-      <details class="card" id="merchant-rules-panel" style="margin-bottom:1rem">
-        <summary style="cursor:pointer;font-weight:600">🧠 Merchant Rules (<span id="merchant-rules-count">0</span>)</summary>
-        <p class="info-text" style="margin:.5rem 0">Correcting a category below saves a rule here — future imports of the same merchant use it automatically.</p>
-        <div id="merchant-rules-list"></div>
-      </details>
     </div>
 
     <!-- Drag-and-drop classification board -->
@@ -862,7 +855,6 @@
     <p>Data is stored locally in your browser (localStorage). No data is sent to any server.</p>
   </footer>
 
-  <script src="merchantRules.js"></script>
   <script src="dataManager.js"></script>
   <script src="descriptionCleaner.js"></script>
   <script src="importer.js"></script>

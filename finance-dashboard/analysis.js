@@ -16,7 +16,7 @@ const Analysis = (() => {
       const month = tx.date.slice(0, 7); // YYYY-MM
       if (!byMonth[month]) byMonth[month] = { expenses: 0, income: 0, count: 0 };
 
-      if (DataManager.isIncomeCategory(tx.category) || tx.amount < 0) {
+      if (tx.category === 'Income' || tx.amount < 0) {
         byMonth[month].income += Math.abs(tx.amount);
       } else if (tx.category !== 'Transfer') {
         byMonth[month].expenses += tx.amount;
