@@ -332,7 +332,7 @@ const Importer = (() => {
           date: normalizedDate,
           description: cleanedDesc,
           amount,
-          category: isIncome ? 'Income' : DataManager.autoCategory(cleanedDesc),
+          category: isIncome ? 'Income' : DataManager.autoCategory(cleanedDesc, cleanResult.merchant),
           account: 'Apple Card',
           cardholder: cardholder,
           _raw: rawDesc,
@@ -476,7 +476,7 @@ const Importer = (() => {
         date: fullDate,
         description: cleanedDesc,
         amount: tx.amount,
-        category: isIncome ? 'Income' : DataManager.autoCategory(cleanedDesc),
+        category: isIncome ? 'Income' : DataManager.autoCategory(cleanedDesc, cleanResult.merchant),
         account: 'Carver Bank',
         _raw: tx.desc,
         _originalDesc: cleanResult.original,
@@ -676,7 +676,7 @@ const Importer = (() => {
         // Clean description
         const cleanResult = DescriptionCleaner.clean(rawDesc);
         const cleanedDesc = cleanResult.cleaned;
-        const category = isIncome ? 'Income' : DataManager.autoCategory(cleanedDesc);
+        const category = isIncome ? 'Income' : DataManager.autoCategory(cleanedDesc, cleanResult.merchant);
 
         transactions.push({
           date: fullDate,
@@ -748,7 +748,7 @@ const Importer = (() => {
         date: parsedDate,
         description: cleanedDesc,
         amount: Math.abs(amount),
-        category: DataManager.autoCategory(cleanedDesc),
+        category: DataManager.autoCategory(cleanedDesc, cleanResult.merchant),
         account: sourceName.replace(/\.pdf$/i, ''),
         _raw: trimmed,
         _originalDesc: cleanResult.original,
@@ -1035,16 +1035,19 @@ const Importer = (() => {
       // Clean CSV descriptions the same way as PDF
       const cleanResult = DescriptionCleaner.clean(desc);
       const cleanedDesc = cleanResult.cleaned;
-      const category = catCol ? (row[catCol] || DataManager.autoCategory(cleanedDesc)) : DataManager.autoCategory(cleanedDesc);
+      const category = catCol
+        ? (row[catCol] || DataManager.autoCategory(cleanedDesc, cleanResult.merchant))
+        : DataManager.autoCategory(cleanedDesc, cleanResult.merchant);
 
       transactions.push({
         date,
         description: cleanedDesc,
         amount: Math.abs(amount),
-        category: DataManager.recategorize(cleanedDesc, category),
+        category: DataManager.recategorize(cleanedDesc, category, cleanResult.merchant),
         account,
         _originalDesc: cleanResult.original,
-        _txType: cleanResult.txType
+        _txType: cleanResult.txType,
+        _merchant: cleanResult.merchant
       });
     }
 
@@ -1101,6 +1104,24 @@ const Importer = (() => {
 
         for (const item of arr) {
           if (!item.date || item.amount === undefined) continue;
+
+          // STR stay records (from an Airbnb/Vrbo payout export) arrive fully categorized
+          if (item.stay) {
+            transactions.push({
+              id: item.id,
+              date: item.date,
+              description: item.description,
+              amount: Math.abs(item.amount),
+              category: item.category || 'STR Income',
+              context: item.context || 'business',
+              account: item.account || item.stay.platform,
+              property: item.property,
+              stay: item.stay,
+              _isIncome: true
+            });
+            continue;
+          }
+
           const desc = item.description || 'Unknown';
           const isIncome = item.is_income || false;
           const cleanResult = DescriptionCleaner.clean(desc);
@@ -1110,7 +1131,7 @@ const Importer = (() => {
             date: item.date,
             description: cleanedDesc,
             amount: Math.abs(item.amount),
-            category: isIncome ? 'Income' : DataManager.autoCategory(cleanedDesc),
+            category: isIncome ? 'Income' : DataManager.autoCategory(cleanedDesc, cleanResult.merchant),
             account: item.account || file.name.replace(/\.json$/i, ''),
             _raw: desc,
             _originalDesc: cleanResult.original,

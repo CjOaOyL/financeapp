@@ -12,6 +12,17 @@
   let filteredTransactions = [];
   let activeContext = 'personal'; // 'personal' | 'business' | 'all'
 
+  /**
+   * Apply a user-chosen category to a transaction and remember it as a merchant rule,
+   * so future imports of the same merchant are categorized correctly automatically.
+   */
+  function applyCategoryChange(txId, category, { promptSiblings = false } = {}) {
+    const tx = DataManager.getById(txId);
+    DataManager.update(txId, { category, _manualOverride: true });
+    if (tx) MerchantRules.set(tx, category);
+    if (promptSiblings) promptVendorSiblings(txId, category);
+  }
+
   /* ---- Context Toggle ---- */
   const subtitleEl = document.getElementById('header-subtitle');
   const subtitleLabels = {
@@ -662,13 +673,16 @@
       const hasOriginal = tx._originalDesc && tx._originalDesc !== tx.description;
       const tooltipAttr = hasOriginal ? ` title="Original: ${escHtml(tx._originalDesc)}" style="cursor:help"` : '';
       const txTypeBadge = tx._txType ? `<span style="font-size:.65rem;background:rgba(99,102,241,.15);color:var(--clr-primary);padding:.1rem .3rem;border-radius:3px;margin-left:.4rem">${escHtml(tx._txType)}</span>` : '';
+      const prop = tx.property && DataManager.PROPERTIES[tx.property];
+      const stayTitle = tx.stay ? ` title="${escHtml(stayTooltip(tx.stay))}"` : '';
+      const propertyBadge = prop ? `<span${stayTitle} style="font-size:.65rem;background:rgba(16,185,129,.15);color:#059669;padding:.1rem .3rem;border-radius:3px;margin-left:.4rem;cursor:help">${prop.icon} ${prop.short}</span>` : '';
       const isTransfer = tx.transferPairId || tx.category === 'Transfer';
       const transferBadge = isTransfer ? '<span style="font-size:.65rem;background:rgba(99,102,241,.15);color:var(--clr-primary);padding:.1rem .3rem;border-radius:3px;margin-left:.4rem">🔄 Transfer</span>' : '';
       return `
       <tr class="${isTransfer ? 'transfer-row' : ''}">
         <td>${tx.date}</td>
-        <td><span${tooltipAttr}>${escHtml(tx.description)}</span>${txTypeBadge}${transferBadge}</td>
-        <td class="${tx.category === 'Income' ? 'amount-positive' : 'amount-negative'}">$${Math.abs(tx.amount).toFixed(2)}</td>
+        <td><span${tooltipAttr}>${escHtml(tx.description)}</span>${txTypeBadge}${propertyBadge}${transferBadge}</td>
+        <td class="${DataManager.isIncomeCategory(tx.category) ? 'amount-positive' : 'amount-negative'}">$${Math.abs(tx.amount).toFixed(2)}</td>
         <td>
           <select class="cat-select" data-id="${tx.id}" style="width:auto;margin:0;padding:.2rem .4rem;font-size:.8rem;">
             ${DataManager.CATEGORIES.map(c => `<option value="${c}" ${c === tx.category ? 'selected' : ''}>${c}</option>`).join('')}
@@ -689,7 +703,7 @@
     // Category change handlers
     tbody.querySelectorAll('.cat-select').forEach(sel => {
       sel.addEventListener('change', () => {
-        DataManager.update(sel.dataset.id, { category: sel.value });
+        applyCategoryChange(sel.dataset.id, sel.value);
       });
     });
 
@@ -1190,6 +1204,30 @@
   function refreshClassify() {
     classifyAnalysis = Classifier.analyzeUnclassified();
     renderClassifyBoard();
+    renderMerchantRules();
+  }
+
+  function renderMerchantRules() {
+    const rules = MerchantRules.list();
+    document.getElementById('merchant-rules-count').textContent = rules.length;
+    const listEl = document.getElementById('merchant-rules-list');
+    if (rules.length === 0) {
+      listEl.innerHTML = '<p class="empty-message">No merchant rules yet — correct a category below to create one.</p>';
+      return;
+    }
+    listEl.innerHTML = rules.map(r => `
+      <div class="merchant-rule-row" data-key="${escHtml(r.key)}" style="display:flex;align-items:center;gap:.6rem;padding:.4rem 0;border-bottom:1px solid var(--border-color,#eee)">
+        <span style="flex:1">${escHtml(r.merchant)}</span>
+        <span>${getCategoryIcon(r.category)} ${escHtml(r.category)}</span>
+        <button class="btn btn-sm btn-danger remove-merchant-rule" data-key="${escHtml(r.key)}" title="Remove rule">✕</button>
+      </div>
+    `).join('');
+    listEl.querySelectorAll('.remove-merchant-rule').forEach(btn => {
+      btn.addEventListener('click', () => {
+        MerchantRules.remove(btn.dataset.key);
+        renderMerchantRules();
+      });
+    });
   }
 
   function renderClassifyBoard() {
@@ -1327,8 +1365,7 @@
         e.stopPropagation();
         const txId = btn.dataset.txId;
         const cat = btn.dataset.cat;
-        DataManager.update(txId, { category: cat });
-        promptVendorSiblings(txId, cat);
+        applyCategoryChange(txId, cat, { promptSiblings: true });
         refreshClassify();
       });
     });
@@ -1387,8 +1424,7 @@
       }
 
       // Update this transaction's category (mark as manual since user dragged it)
-      DataManager.update(txId, { category: targetCategory, _manualOverride: true });
-      promptVendorSiblings(txId, targetCategory);
+      applyCategoryChange(txId, targetCategory, { promptSiblings: true });
       refreshClassify();
     });
   }
@@ -1521,9 +1557,8 @@
       btn.addEventListener('click', () => {
         const txId = btn.dataset.txId;
         const cat = btn.dataset.cat;
-        DataManager.update(txId, { category: cat, _manualOverride: true });
+        applyCategoryChange(txId, cat, { promptSiblings: true });
         panel.classList.add('hidden');
-        promptVendorSiblings(txId, cat);
         refreshClassify();
       });
     });
@@ -1568,9 +1603,8 @@
         btn.addEventListener('click', () => {
           const txId = btn.dataset.txId;
           const cat = btn.dataset.cat;
-          DataManager.update(txId, { category: cat });
+          applyCategoryChange(txId, cat, { promptSiblings: true });
           panel.classList.add('hidden');
-          promptVendorSiblings(txId, cat);
           refreshClassify();
         });
       });
@@ -1594,6 +1628,18 @@
   }
 
   /* ---- Utility ---- */
+  /** One-line summary of an STR stay for the property badge tooltip */
+  function stayTooltip(st) {
+    const parts = [
+      `${st.platform} ${st.confirmation}`,
+      `${st.checkIn} → ${st.checkOut} (${st.nights} night${st.nights === 1 ? '' : 's'})`,
+      st.guest && `Guest: ${st.guest}${st.guests ? ` · ${st.guests} guest${st.guests === 1 ? '' : 's'}` : ''}`,
+      st.gross != null && `Gross $${st.gross.toFixed(2)} − fees $${st.fees.toFixed(2)} = payout $${st.payout.toFixed(2)}`,
+      st.status && st.status !== 'completed' && `Status: ${st.status}`
+    ];
+    return parts.filter(Boolean).join('\n');
+  }
+
   function escHtml(str) {
     const div = document.createElement('div');
     div.textContent = str || '';

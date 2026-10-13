@@ -10,7 +10,7 @@ const Budget = (() => {
     const budget = {};
 
     for (const cat of breakdown) {
-      if (cat.category === 'Income' || cat.category === 'Transfer') continue;
+      if (DataManager.isIncomeCategory(cat.category) || cat.category === 'Transfer') continue;
       const target = cat.avgPerMonth * (1 - reductionPercent / 100);
       budget[cat.category] = {
         target: Math.round(target * 100) / 100,
@@ -27,7 +27,7 @@ const Budget = (() => {
     const budget = DataManager.getBudget();
     const breakdown = Analysis.getCategoryBreakdown();
     const tbody = document.getElementById('budget-tbody');
-    const categories = breakdown.filter(c => c.category !== 'Income' && c.category !== 'Transfer');
+    const categories = breakdown.filter(c => !DataManager.isIncomeCategory(c.category) && c.category !== 'Transfer');
 
     let html = '';
     let totalAvg = 0, totalTarget = 0, totalDiff = 0;
@@ -104,7 +104,7 @@ const Budget = (() => {
 
     const latestMonth = months[months.length - 1];
     const txs = DataManager.filter({ month: latestMonth });
-    const expenses = txs.filter(t => t.amount > 0 && t.category !== 'Income' && t.category !== 'Transfer');
+    const expenses = txs.filter(t => t.amount > 0 && !DataManager.isIncomeCategory(t.category) && t.category !== 'Transfer');
 
     // Sum by category for latest month
     const actuals = {};
